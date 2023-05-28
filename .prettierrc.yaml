@@ -1,0 +1,6 @@
+semi: false
+singleQuote: true
+useTabs: true
+bracketSpacing: true
+arrowParens: always
+trailingComma: none

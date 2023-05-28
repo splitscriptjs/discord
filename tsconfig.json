@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+		"strict": true,
+		"baseUrl": ".",
+		"module": "CommonJS",
+		"lib": ["ES2021"],
+		"pretty": true,
+		"resolveJsonModule": true,
+		"emitDeclarationOnly": true,
+		"declaration": true,
+		"esModuleInterop": true,
+		"target": "ES2018",
+		"outDir": "dist/types",
+		"moduleResolution": "nodenext"
+	},
+	"include": ["src/**/*"]
+}
