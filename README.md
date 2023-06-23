@@ -8,9 +8,7 @@
 
 <p> Package for making discord bots</p>
 
-[![install size](https://packagephobia.com/badge?p=@splitscript.js/discord)](https://packagephobia.com/result?p=@splitscript.js/discord)
-
-[![downloads](https://img.shields.io/npm/dm/@splitscript.js/discord?color=90ee90&style=flat)](https://www.npmjs.com/package/@splitscript.js/discord)
+[![install size](https://packagephobia.com/badge?p=@splitscript.js/discord)](https://packagephobia.com/result?p=@splitscript.js/discord) [![downloads](https://img.shields.io/npm/dm/@splitscript.js/discord?color=90ee90&style=flat)](https://www.npmjs.com/package/@splitscript.js/discord)
 
 <a href='https://splitscript.js.org/discord' style='text-decoration:none;'>
 
@@ -68,8 +66,4 @@ For a full list of APIs, go to [the docs](https://splitscript.js.org/discord)
 
 <div align="center">
 
-<sub><code>v1.0.0</code> | <a href='https://splitscript.js.org/discord'>docs</a> </sub>
-
-<sub>by [ultraviolet](https://github.com/ultravioletasdf)</sub>
-
-</div>
+<sub><code>v2.0.0</code> | by [ultraviolet](https://github.com/ultravioletasdf)</sub>

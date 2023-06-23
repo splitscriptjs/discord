@@ -1,13 +1,73 @@
 import request from '../utils/request.js'
-import { Snowflake, Role } from '../types'
+import { Snowflake, Role as RawRole, RoleTags } from '../types'
+
+class Role implements RawRole {
+	/** role id */
+	id: Snowflake
+	/** role name */
+	name: string
+	/** integer representation of hex color code */
+	color: number
+	/** if role is pinned in user listing */
+	hoist: boolean
+	/** role icon hash */
+	icon?: string
+	/** role unicode emoji */
+	unicode_emoji?: string | null
+	/** position of role */
+	position: number
+	/** permission bit set */
+	permissions: string
+	/** whether role is managed by an integration */
+	managed: boolean
+	/** whether role is mentionable */
+	mentionable: boolean
+	/** tags role has */
+	tags?: RoleTags
+
+	guildId: Snowflake
+
+	/** Edits this role
+	 *
+	 * Also updates this class instance
+	 */
+	async edit(role: EditParams): Promise<Role> {
+		const result = await edit(this.guildId, this.id, role)
+		Object.assign(this, result)
+		return result
+	}
+
+	/** Deletes this role */
+	async delete() {
+		return await _delete(this.guildId, this.id)
+	}
+
+	constructor(role: RawRole, guildId: Snowflake) {
+		this.id = role.id
+		this.name = role.name
+		this.color = role.color
+		this.hoist = role.hoist
+		this.icon = role.icon
+		this.unicode_emoji = role.unicode_emoji
+		this.position = role.position
+		this.permissions = role.permissions
+		this.managed = role.managed
+		this.mentionable = role.mentionable
+		this.tags = role.tags
+
+		this.guildId = guildId
+	}
+}
 
 /** Returns a list of role objects for the guild. */
-async function list(guild_id: Snowflake): Promise<Role[]> {
-	return request.get(`guilds/${guild_id}/roles`) as unknown as Role[]
+async function list(guildId: Snowflake): Promise<Role[]> {
+	return (
+		(await request.get(`guilds/${guildId}/roles`)) as unknown as RawRole[]
+	).map((r) => new Role(r, guildId))
 }
 /** Create a new role for the guild. */
 async function create(
-	guild_id: Snowflake,
+	guildId: Snowflake,
 	role: {
 		/** name of the role, max 100 characters */
 		name?: string
@@ -25,27 +85,36 @@ async function create(
 		mentionable?: boolean
 	}
 ): Promise<Role> {
-	return request.post(`guilds/${guild_id}/roles`, role) as unknown as Role
-}
-/** Modify a guild role. */
-async function modify(
-	guild_id: Snowflake,
-	role_id: Snowflake,
-	role: {
-		name: string | null
-		permissions: string | null
-	}
-): Promise<Role> {
-	return request.patch(
-		`guilds/${guild_id}/roles/${role_id}`,
-		role
-	) as unknown as Role
-}
-/** Delete a guild role.  */
-async function _delete(guild_id: Snowflake, role_id: Snowflake): Promise<void> {
-	return request.delete(
-		`guilds/${guild_id}/roles/${role_id}`
-	) as unknown as void
+	return new Role(
+		(await request.post(`guilds/${guildId}/roles`, role)) as unknown as RawRole,
+		guildId
+	)
 }
 
-export default { list, create, modify, delete: _delete }
+type EditParams = {
+	/** name of the role, max 100 characters */
+	name: string | null
+	/** bitwise value of the enabled/disabled permissions */
+	permissions: string | null
+}
+
+/** Edit a role. */
+async function edit(
+	guildId: Snowflake,
+	roleId: Snowflake,
+	role: EditParams
+): Promise<Role> {
+	return new Role(
+		(await request.patch(
+			`guilds/${guildId}/roles/${roleId}`,
+			role
+		)) as unknown as RawRole,
+		guildId
+	)
+}
+/** Delete a role.  */
+async function _delete(guildId: Snowflake, roleId: Snowflake): Promise<void> {
+	return request.delete(`guilds/${guildId}/roles/${roleId}`) as unknown as void
+}
+
+export default { list, create, edit, delete: _delete }

@@ -1,4 +1,4 @@
-import { Presence } from '../types'
+import { Presence, Snowflake } from '../types'
 import variable from '../utils/variable.js'
 import tokenToId from '../utils/tokenToId.js'
 import { EventEmitter } from '@splitscript.js/core'
@@ -39,78 +39,16 @@ type Identify = {
 	presence?: Presence
 	intents?: IntentFlag[] | number
 }
-function connect(token: string, options: Identify = {}) {
+let resumeData: {
+	session_id?: Snowflake
+	sequence?: number
+	resumeUrl?: string
+} = {}
+function connect(token: string, options: Identify = {}, emitter: EventEmitter) {
 	if (!token) throw new Error('token must be provided')
 
 	variable.set('token', token)
 	variable.set('app_id', tokenToId(token))
-
-	const emitter = new EventEmitter('discord', '@splitscript.js/discord', [
-		'hello',
-		'ready',
-		'resumed',
-		'reconnect',
-		'invalid/session',
-		'command/permissions/update',
-		'automod/rule/create',
-		'automod/rule/update',
-		'automod/rule/delete',
-		'automod/action/execute',
-		'channel/create',
-		'channel/update',
-		'channel/delete',
-		'channel/pins/update',
-		'thread/create',
-		'thread/update',
-		'thread/delete',
-		'thread/list/sync',
-		'thread/member/update',
-		'thread/members/update',
-		'guild/create',
-		'guild/update',
-		'guild/delete',
-		'auditlog/entry/create',
-		'ban/add',
-		'ban/remove',
-		'emojis/update',
-		'stickers/update',
-		'integrations/update',
-		'member/add',
-		'member/remove',
-		'member/update',
-		'members/chunk',
-		'role/create',
-		'role/update',
-		'role/delete',
-		'scheduledevent/create',
-		'scheduledevent/update',
-		'scheduledevent/delete',
-		'scheduledevent/user/add',
-		'scheduledevent/user/remove',
-		'integration/create',
-		'integration/update',
-		'integration/delete',
-		'interaction/create',
-		'invite/create',
-		'invite/delete',
-		'message/create',
-		'message/update',
-		'message/delete',
-		'message/delete/bulk',
-		'message/reaction/add',
-		'message/reaction/remove',
-		'message/reaction/remove/all',
-		'message/reaction/remove/emoji',
-		'presence/update',
-		'stageinstance/create',
-		'stageinstance/update',
-		'stageinstance/delete',
-		'typing/start',
-		'user/update',
-		'voice/state/update',
-		'voice/server/update',
-		'webhooks/update'
-	])
 
 	const ws = new WS('wss://gateway.discord.gg/?v=10&encoding=json')
 	function heartbeat(ms: number): number {
@@ -191,27 +129,40 @@ function connect(token: string, options: Identify = {}) {
 	ws.on('message', (data) => {
 		let payload = JSON.parse(data.toString('utf-8'))
 
-		let { t, op, d } = payload
+		let { t, op, d, s } = payload
 
-		if (op === 10) {
-			// Keep connection open
-
-			const { heartbeat_interval } = d
-
-			interval = heartbeat(heartbeat_interval)
+		switch (op) {
+			case 0 && !t:
+				resumeData.sequence = s
+				break
+			case 1:
+				ws.send(JSON.stringify({ op: 1, d: null }))
+				break
+			case 7:
+				ws.send(
+					JSON.stringify({
+						op: 6,
+						d: {
+							token,
+							session_id: resumeData.session_id,
+							seq: resumeData.sequence
+						}
+					})
+				)
+				break
+			case 10:
+				interval = heartbeat(d.heartbeat_interval)
+				break
 		}
 
-		if (op === 1) {
-			ws.send(JSON.stringify({ op: 1, d: null }))
-		}
-
-		if (op === 7) {
-			ws.send(JSON.stringify({ op: 6, d: null }))
-		}
 		if (!t) return
 
 		let event: string = t.toLowerCase()
 		switch (event) {
+			case 'ready':
+				resumeData.session_id = d.session_id
+				resumeData.resumeUrl = d.resume_gateway_url
+				break
 			case 'application_command_permissions_update':
 				event = 'command_permissions_update'
 				break
@@ -296,10 +247,76 @@ function connect(token: string, options: Identify = {}) {
 
 	ws.on('close', () => {
 		setTimeout(() => {
-			connect(token, options)
+			connect(token, options, emitter)
 		}, 5000)
 	})
 }
 export function listen(token: string, options: Identify = {}) {
-	connect(token, options)
+	const emitter = new EventEmitter('discord', '@splitscript.js/discord', [
+		'hello',
+		'ready',
+		'resumed',
+		'reconnect',
+		'invalid/session',
+		'command/permissions/update',
+		'automod/rule/create',
+		'automod/rule/update',
+		'automod/rule/delete',
+		'automod/action/execute',
+		'channel/create',
+		'channel/update',
+		'channel/delete',
+		'channel/pins/update',
+		'thread/create',
+		'thread/update',
+		'thread/delete',
+		'thread/list/sync',
+		'thread/member/update',
+		'thread/members/update',
+		'guild/create',
+		'guild/update',
+		'guild/delete',
+		'auditlog/entry/create',
+		'ban/add',
+		'ban/remove',
+		'emojis/update',
+		'stickers/update',
+		'integrations/update',
+		'member/add',
+		'member/remove',
+		'member/update',
+		'members/chunk',
+		'role/create',
+		'role/update',
+		'role/delete',
+		'scheduledevent/create',
+		'scheduledevent/update',
+		'scheduledevent/delete',
+		'scheduledevent/user/add',
+		'scheduledevent/user/remove',
+		'integration/create',
+		'integration/update',
+		'integration/delete',
+		'interaction/create',
+		'invite/create',
+		'invite/delete',
+		'message/create',
+		'message/update',
+		'message/delete',
+		'message/delete/bulk',
+		'message/reaction/add',
+		'message/reaction/remove',
+		'message/reaction/remove/all',
+		'message/reaction/remove/emoji',
+		'presence/update',
+		'stageinstance/create',
+		'stageinstance/update',
+		'stageinstance/delete',
+		'typing/start',
+		'user/update',
+		'voice/state/update',
+		'voice/server/update',
+		'webhooks/update'
+	])
+	connect(token, options, emitter)
 }
