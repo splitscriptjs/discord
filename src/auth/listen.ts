@@ -44,7 +44,11 @@ let resumeData: {
 	sequence?: number
 	resumeUrl?: string
 } = {}
-function connect(token: string, options: Identify = {}, emitter: EventEmitter) {
+function connect(
+	token: string,
+	options: Identify = {},
+	emitter: EventEmitter<string[]>
+) {
 	if (!token) throw new Error('token must be provided')
 
 	variable.set('token', token)

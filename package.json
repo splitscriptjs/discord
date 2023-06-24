@@ -1,6 +1,6 @@
 {
 	"name": "@splitscript.js/discord",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"description": "Interact with the discord API in SplitScript.js",
 	"types": "./dist/types/index.d.ts",
 	"exports": {
@@ -44,7 +44,7 @@
 		"esbuild": "^0.17.18"
 	},
 	"dependencies": {
-		"@splitscript.js/core": "^1.0.4",
+		"@splitscript.js/core": "^1.1.0",
 		"@splitscript.js/https": "^1.0.4",
 		"ws": "^8.13.0"
 	}

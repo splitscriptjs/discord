@@ -35,3 +35,7 @@ e.g `channels.modify` is now `channels.edit`
 Functions with the name **modifyX** are now called **updateX**
 
 e.g `guilds.modifyMFA` is now `guilds.updateMfa`
+
+# 2.0.1
+
+Upgrade to latest `@splitscript.js/core` version

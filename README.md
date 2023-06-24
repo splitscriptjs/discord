@@ -6,7 +6,7 @@
 
 <div align="center">
 
-<p> Package for making discord bots</p>
+Package for making discord bots
 
 [![install size](https://packagephobia.com/badge?p=@splitscript.js/discord)](https://packagephobia.com/result?p=@splitscript.js/discord) [![downloads](https://img.shields.io/npm/dm/@splitscript.js/discord?color=90ee90&style=flat)](https://www.npmjs.com/package/@splitscript.js/discord)
 
@@ -66,4 +66,6 @@ For a full list of APIs, go to [the docs](https://splitscript.js.org/discord)
 
 <div align="center">
 
-<sub><code>v2.0.0</code> | by [ultraviolet](https://github.com/ultravioletasdf)</sub>
+<sub><code>v2.0.1</code> | by [ultraviolet](https://github.com/ultravioletasdf)</sub>
+
+</div>

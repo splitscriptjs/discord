@@ -1083,16 +1083,27 @@ export type ActivityButton = {
 /** Represents an Offline Guild, or a Guild whose information has not been provided through guild/create events */
 export type UnavailableGuild = { unavaliable: true } & Partial<Guild>
 export type AutomodRule = {
+	/** the id of this rule */
 	id: Snowflake
+	/** the id of the guild which this rule belongs to */
 	guild_id: Snowflake
+	/** the rule name */
 	name: string
+	/** the user which first created this rule */
 	creator_id: Snowflake
+	/** the rule event type */
 	event_type: 1
+	/** the rule trigger type */
 	trigger_type: 1 | 3 | 4 | 5
-	trigger_metadata: object
+	/** the rule trigger metadata */
+	trigger_metadata: TriggerMetadata
+	/** the actions which will execute when the rule is triggered */
 	actions: AutomodAction[]
+	/** whether the rule is enabled */
 	enabled: boolean
+	/** the role ids that should not be affected by the rule (Maximum of 20) */
 	exempt_roles: Snowflake[]
+	/** the channel ids that should not be affected by the rule (Maximum of 50) */
 	exempt_channels: Snowflake[]
 }
 /** An action which will execute whenever a rule is triggered. */
