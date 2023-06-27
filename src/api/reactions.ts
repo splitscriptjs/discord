@@ -59,7 +59,7 @@ async function create(
 	messageId: Snowflake,
 	emoji: string
 ) {
-	await request.post(
+	await request.put(
 		`channels/${channelId}/messages/${messageId}/reactions/${encodeURIComponent(
 			emoji
 		)}/@me`

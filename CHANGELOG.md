@@ -39,3 +39,7 @@ e.g `guilds.modifyMFA` is now `guilds.updateMfa`
 # 2.0.1
 
 Upgrade to latest `@splitscript.js/core` version
+
+# 2.0.2
+
+Fixed `reactions.create` (wrong `https` method)
