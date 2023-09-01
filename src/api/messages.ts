@@ -18,40 +18,41 @@ import {
 	RoleSubscriptionData,
 	Channel
 } from '../types'
+import toCamelCase from '../utils/toCamelCase.js'
 
-class Message implements RawMessage {
+class Message {
 	//#region
-	id: Snowflake
-	channel_id: Snowflake
-	author: User
-	content: string
-	timestamp: string
-	edited_timestamp: string | null
-	tts: boolean
-	mention_everyone: boolean
-	mentions: User[]
-	mention_roles: string[]
-	mention_channels?: ChannelMention[]
-	attachments: Attachment[]
-	embeds: Embed[]
-	reactions: Reaction[]
+	id!: Snowflake
+	channelId!: Snowflake
+	author!: User
+	content!: string
+	timestamp!: string
+	editedTimestamp!: string | null
+	tts!: boolean
+	mentionEveryone!: boolean
+	mentions!: User[]
+	mentionRoles!: string[]
+	mentionChannels?: ChannelMention[]
+	attachments!: Attachment[]
+	embeds!: Embed[]
+	reactions!: Reaction[]
 	nonce?: number | string
-	pinned: boolean
-	webhook_id?: Snowflake
-	type: number
+	pinned!: boolean
+	webhookId?: Snowflake
+	type!: number
 	activity?: MessageActivity
 	application?: Partial<Application>
-	application_id?: Snowflake
-	message_reference?: MessageReference
+	applicationId?: Snowflake
+	messageReference?: MessageReference
 	flags?: number
-	referenced_message?: RawMessage | null
+	referencedMessage?: RawMessage | null
 	interaction?: MessageInteraction
 	thread?: Channel
 	components?: Component[]
-	sticker_items?: StickerItem[]
+	stickerItems?: StickerItem[]
 	stickers?: Sticker[]
 	position?: number
-	role_subscription_data?: RoleSubscriptionData
+	roleSubscriptionData?: RoleSubscriptionData
 	//#endregion
 
 	/** Gets this message
@@ -59,7 +60,7 @@ class Message implements RawMessage {
 	 * Also updates this class instance
 	 */
 	async get() {
-		const result = await get(this.channel_id, this.id)
+		const result = await get(this.channelId, this.id)
 		Object.assign(this, result)
 		return result
 	}
@@ -69,48 +70,18 @@ class Message implements RawMessage {
 	 * Also updates this class instance
 	 */
 	async edit(newMessage: EditParams) {
-		const result = await edit(this.channel_id, this.id, newMessage)
+		const result = await edit(this.channelId, this.id, newMessage)
 		Object.assign(this, result)
 		return result
 	}
 
 	/** Deletes this message */
 	async delete() {
-		return await _delete(this.channel_id, this.id)
+		return await _delete(this.channelId, this.id)
 	}
 
 	constructor(rawMessage: RawMessage) {
-		this.id = rawMessage.id
-		this.channel_id = rawMessage.channel_id
-		this.author = rawMessage.author
-		this.content = rawMessage.content
-		this.timestamp = rawMessage.timestamp
-		this.edited_timestamp = rawMessage.edited_timestamp
-		this.tts = rawMessage.tts
-		this.mention_everyone = rawMessage.mention_everyone
-		this.mentions = rawMessage.mentions
-		this.mention_roles = rawMessage.mention_roles
-		this.mention_channels = rawMessage.mention_channels
-		this.attachments = rawMessage.attachments
-		this.embeds = rawMessage.embeds
-		this.reactions = rawMessage.reactions
-		this.nonce = rawMessage.nonce
-		this.pinned = rawMessage.pinned
-		this.webhook_id = rawMessage.webhook_id
-		this.type = rawMessage.type
-		this.activity = rawMessage.activity
-		this.application = rawMessage.application
-		this.application_id = rawMessage.application_id
-		this.message_reference = rawMessage.message_reference
-		this.flags = rawMessage.flags
-		this.referenced_message = rawMessage.referenced_message
-		this.interaction = rawMessage.interaction
-		this.thread = rawMessage.thread
-		this.components = rawMessage.components
-		this.sticker_items = rawMessage.sticker_items
-		this.stickers = rawMessage.stickers
-		this.position = rawMessage.position
-		this.role_subscription_data = rawMessage.role_subscription_data
+		Object.assign(this, toCamelCase(rawMessage))
 	}
 }
 /** Creates a new message */

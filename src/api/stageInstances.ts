@@ -4,22 +4,23 @@ import {
 	StageInstance as RawStageInstance,
 	StageInstancePrivacyLevel
 } from '../types'
+import toCamelCase from '../utils/toCamelCase.js'
 
-class StageInstance implements RawStageInstance {
-	id: Snowflake
-	guild_id: Snowflake
-	channel_id: Snowflake
-	topic: string
-	privacy_level: StageInstancePrivacyLevel
-	discoverable_disabled: boolean
-	guild_scheduled_event_id: Snowflake | null
+class StageInstance {
+	id!: Snowflake
+	guildId!: Snowflake
+	channelId!: Snowflake
+	topic!: string
+	privacyLevel!: StageInstancePrivacyLevel
+	discoverableDisabled!: boolean
+	guildScheduledEventId!: Snowflake | null
 
 	/** Gets this stage instance
 	 *
 	 * Also updates this class instance
 	 */
 	async get(): Promise<StageInstance> {
-		const result = await get(this.channel_id)
+		const result = await get(this.channelId)
 		Object.assign(this, result)
 		return result
 	}
@@ -28,23 +29,17 @@ class StageInstance implements RawStageInstance {
 	 * Also updates this class instance
 	 */
 	async edit(instance: EditParams): Promise<StageInstance> {
-		const result = await edit(this.channel_id, instance)
+		const result = await edit(this.channelId, instance)
 		Object.assign(this, result)
 		return result
 	}
 	/** Deletes this stage instance */
 	async delete() {
-		return await _delete(this.channel_id)
+		return await _delete(this.channelId)
 	}
 
 	constructor(data: RawStageInstance) {
-		this.id = data.id
-		this.guild_id = data.guild_id
-		this.channel_id = data.channel_id
-		this.topic = data.topic
-		this.privacy_level = data.privacy_level
-		this.discoverable_disabled = data.discoverable_disabled
-		this.guild_scheduled_event_id = data.guild_scheduled_event_id
+		Object.assign(this, toCamelCase(data))
 	}
 }
 

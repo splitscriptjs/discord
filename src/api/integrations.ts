@@ -7,50 +7,36 @@ import {
 	Snowflake,
 	User
 } from '../types.js'
+import toCamelCase from '../utils/toCamelCase.js'
 
 class Integration {
-	id: Snowflake
-	name: string
-	type: string
-	enabled: boolean
+	id!: Snowflake
+	name!: string
+	type!: string
+	enabled!: boolean
 	syncing?: boolean
-	role_id?: Snowflake
-	enable_emoticons?: boolean
-	expire_behavior?: 0 | 1
-	expire_grace_period?: number
+	roleId?: Snowflake
+	enableEmoticons?: boolean
+	expireBehavior?: 0 | 1
+	expireGracePeriod?: number
 	user?: User
-	account: Account
-	synced_at?: string
-	subscriber_count?: number
+	account!: Account
+	syncedAt?: string
+	subscriberCount?: number
 	revoked?: boolean
 	application?: IntegrationApplication
 	scopes?: OAuth2Scope[]
 
-	guild_id: Snowflake
+	guildId: Snowflake
 
 	/** Deletes this integration */
 	async delete() {
-		return await _delete(this.guild_id, this.id)
+		return await _delete(this.guildId, this.id)
 	}
-	constructor(data: RawIntegration, guild_id: Snowflake) {
-		this.id = data.id
-		this.name = data.name
-		this.type = data.type
-		this.enabled = data.enabled
-		this.syncing = data.syncing
-		this.role_id = data.role_id
-		this.enable_emoticons = data.enable_emoticons
-		this.expire_behavior = data.expire_behavior
-		this.expire_grace_period = data.expire_grace_period
-		this.user = data.user
-		this.account = data.account
-		this.synced_at = data.synced_at
-		this.subscriber_count = data.subscriber_count
-		this.revoked = data.revoked
-		this.application = data.application
-		this.scopes = data.scopes
+	constructor(data: RawIntegration, guildId: Snowflake) {
+		Object.assign(this, toCamelCase(data))
 
-		this.guild_id = guild_id
+		this.guildId = guildId
 	}
 }
 

@@ -13,51 +13,51 @@ import {
 	Emoji,
 	Sticker
 } from '../types.js'
+import toCamelCase from '../utils/toCamelCase.js'
 
 type OptionalIfTrue<T, B extends boolean> = B extends true ? T | undefined : T
 class Guild<isPartial extends boolean> {
 	//#region
-	id: Snowflake
-	name: OptionalIfTrue<string, isPartial>
-	icon: OptionalIfTrue<string | null, isPartial>
-	icon_hash?: OptionalIfTrue<string | null, isPartial>
-	splash: OptionalIfTrue<string | null, isPartial>
-	discovery_splash: OptionalIfTrue<string | null, isPartial>
+	id!: Snowflake
+	name!: OptionalIfTrue<string, isPartial>
+	icon!: OptionalIfTrue<string | null, isPartial>
+	iconHash?: OptionalIfTrue<string | null, isPartial>
+	splash!: OptionalIfTrue<string | null, isPartial>
+	discoverySplash!: OptionalIfTrue<string | null, isPartial>
 	owner?: OptionalIfTrue<boolean, isPartial>
-	owner_id: OptionalIfTrue<Snowflake, isPartial>
+	ownerId!: OptionalIfTrue<Snowflake, isPartial>
 	permissions?: OptionalIfTrue<string, isPartial>
 	region?: OptionalIfTrue<string | null, isPartial>
-	afk_channel_id: OptionalIfTrue<Snowflake | null, isPartial>
-	afk_timeout: OptionalIfTrue<number, isPartial>
-	widget_enabled?: OptionalIfTrue<boolean, isPartial>
-	widget_channel_id?: OptionalIfTrue<Snowflake | null, isPartial>
-	verification_level: OptionalIfTrue<number, isPartial>
-	default_message_notifications: OptionalIfTrue<number, isPartial>
-	explicit_content_filter: OptionalIfTrue<number, isPartial>
-	roles: OptionalIfTrue<Role[], isPartial>
-	emojis: OptionalIfTrue<Emoji[], isPartial>
-	features: OptionalIfTrue<string[], isPartial>
-	mfa_level: OptionalIfTrue<number, isPartial>
-	application_id: OptionalIfTrue<Snowflake | null, isPartial>
-	system_channel_id: OptionalIfTrue<Snowflake | null, isPartial>
-	system_channel_flags: OptionalIfTrue<number, isPartial>
-	rules_channel_id: OptionalIfTrue<Snowflake | null, isPartial>
-	max_presences?: OptionalIfTrue<number | null, isPartial>
-	max_members?: OptionalIfTrue<number, isPartial>
-	vanity_url_code: OptionalIfTrue<string | null, isPartial>
-	description: OptionalIfTrue<string | null, isPartial>
-	banner: OptionalIfTrue<string | null, isPartial>
-	premium_tier: OptionalIfTrue<number, isPartial>
-	premium_subscription_count?: OptionalIfTrue<number, isPartial>
-	preferred_locale: OptionalIfTrue<string, isPartial>
-	public_updates_channel_id: Snowflake | null
-	max_video_channel_users?: OptionalIfTrue<number, isPartial>
-	approximate_member_count?: OptionalIfTrue<number, isPartial>
-	approximate_presence_count?: OptionalIfTrue<number, isPartial>
-	welcome_screen?: OptionalIfTrue<WelcomeScreen, isPartial>
-	nsfw_level: OptionalIfTrue<number, isPartial>
+	afkChannelId!: OptionalIfTrue<Snowflake | null, isPartial>
+	afkTimeout!: OptionalIfTrue<number, isPartial>
+	widgetEnabled?: OptionalIfTrue<boolean, isPartial>
+	widgetChannelId?: OptionalIfTrue<Snowflake | null, isPartial>
+	verificationLevel!: OptionalIfTrue<number, isPartial>
+	defaultMessageNotifications!: OptionalIfTrue<number, isPartial>
+	explicitContentFilter!: OptionalIfTrue<number, isPartial>
+	roles!: OptionalIfTrue<Role[], isPartial>
+	emojis!: OptionalIfTrue<Emoji[], isPartial>
+	features!: OptionalIfTrue<string[], isPartial>
+	mfaLevel!: OptionalIfTrue<number, isPartial>
+	applicationId!: OptionalIfTrue<Snowflake | null, isPartial>
+	systemChannelId!: OptionalIfTrue<Snowflake | null, isPartial>
+	systemChannelFlags!: OptionalIfTrue<number, isPartial>
+	rulesChannelId!: OptionalIfTrue<Snowflake | null, isPartial>
+	maxPresences?: OptionalIfTrue<number | null, isPartial>
+	maxMembers?: OptionalIfTrue<number, isPartial>
+	vanityUrlCode!: OptionalIfTrue<string | null, isPartial>
+	description!: OptionalIfTrue<string | null, isPartial>
+	banner!: OptionalIfTrue<string | null, isPartial>
+	premiumTier!: OptionalIfTrue<number, isPartial>
+	premiumSubscriptionCount?: OptionalIfTrue<number, isPartial>
+	preferredLocale!: OptionalIfTrue<string, isPartial>
+	publicUpdatesChannelId!: Snowflake | null
+	maxVideoChannelUsers?: OptionalIfTrue<number, isPartial>
+	approximateMemberCount?: OptionalIfTrue<number, isPartial>
+	approximatePresenceCount?: OptionalIfTrue<number, isPartial>
+	nsfwLevel!: OptionalIfTrue<number, isPartial>
 	stickers?: OptionalIfTrue<Sticker[], isPartial>
-	premium_progress_bar_enabled: OptionalIfTrue<boolean, isPartial>
+	premiumProgressBarEnabled!: OptionalIfTrue<boolean, isPartial>
 	//#endregion
 	/** Gets this guild
 	 *
@@ -122,47 +122,7 @@ class Guild<isPartial extends boolean> {
 		}
 	}
 	constructor(data: RawGuild) {
-		this.id = data.id
-		this.name = data.name
-		this.icon = data.icon
-		this.icon_hash = data.icon_hash
-		this.splash = data.splash
-		this.discovery_splash = data.discovery_splash
-		this.owner = data.owner
-		this.owner_id = data.owner_id
-		this.permissions = data.permissions
-		this.region = data.region
-		this.afk_channel_id = data.afk_channel_id
-		this.afk_timeout = data.afk_timeout
-		this.widget_enabled = data.widget_enabled
-		this.widget_channel_id = data.widget_channel_id
-		this.verification_level = data.verification_level
-		this.default_message_notifications = data.default_message_notifications
-		this.explicit_content_filter = data.explicit_content_filter
-		this.roles = data.roles
-		this.emojis = data.emojis
-		this.features = data.features
-		this.mfa_level = data.mfa_level
-		this.application_id = data.application_id
-		this.system_channel_id = data.system_channel_id
-		this.system_channel_flags = data.system_channel_flags
-		this.rules_channel_id = data.rules_channel_id
-		this.max_presences = data.max_presences
-		this.max_members = data.max_members
-		this.vanity_url_code = data.vanity_url_code
-		this.description = data.description
-		this.banner = data.banner
-		this.premium_tier = data.premium_tier
-		this.premium_subscription_count = data.premium_subscription_count
-		this.preferred_locale = data.preferred_locale
-		this.public_updates_channel_id = data.public_updates_channel_id
-		this.max_video_channel_users = data.max_video_channel_users
-		this.approximate_member_count = data.approximate_member_count
-		this.approximate_presence_count = data.approximate_presence_count
-		this.welcome_screen = data.welcome_screen
-		this.nsfw_level = data.nsfw_level
-		this.stickers = data.stickers
-		this.premium_progress_bar_enabled = data.premium_progress_bar_enabled
+		Object.assign(this, toCamelCase(data))
 	}
 }
 type CreateParams = {

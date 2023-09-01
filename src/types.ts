@@ -5,11 +5,11 @@ export type Channel = {
 	/** type of channel */
 	type: number
 	/** id of guild */
-	guild_id?: Snowflake
+	guildId?: Snowflake
 	/** position of channel */
 	position?: number
 	/** permission overwrites for members and roles */
-	permission_overwrites?: Overwrite[]
+	permissionOverwrites?: Overwrite[]
 	/** name of channel */
 	name?: string | null
 	/** topic of channel */
@@ -17,59 +17,59 @@ export type Channel = {
 	/** whether channel is nsfw */
 	nsfw?: boolean
 	/** id of last message sent */
-	last_message_id?: Snowflake | null
+	lastMessageId?: Snowflake | null
 	/** bitrate (in bits) of voice channel */
 	bitrate?: number
 	/** user limit of voice channel */
-	user_limit?: number
+	userLimit?: number
 	/** amound of seconds a user has to wait before sending another message */
-	rate_limit_per_user?: number
+	rateLimitPerUser?: number
 	/** recipients of dm */
 	recipients?: User[]
 	/** icon hash of group dm */
 	icon?: string | null
 	/** id of group/thread creator */
-	owner_id?: Snowflake
+	ownerId?: Snowflake
 	/** application id of group dm create if bot created */
-	application_id?: Snowflake
+	applicationId?: Snowflake
 	/** whether managed by application */
 	managed?: boolean
 	/** id of parent category for a guild channel/id of text channel this thread was created in */
-	parent_id?: Snowflake | null
+	parentId?: Snowflake | null
 	/** when last pinned message was pinned */
-	last_pin_timestamp?: string | null
+	lastPinTimestamp?: string | null
 	/** voice region id of voice channel */
-	rtc_region?: string | null
+	rtcRegion?: string | null
 	/** camera video quality mode of voice channel */
-	video_quality_mode?: number
+	videoQualityMode?: number
 	/** number of messages in thread */
-	message_count?: number
+	messageCount?: number
 	/** approximate count of users in thread (max: 50) */
-	member_count?: number
+	memberCount?: number
 	/** thread-specific fields*/
-	thread_metadata?: ThreadMetadata
+	threadMetadata?: ThreadMetadata
 	/** thread member object for current user */
 	member?: ThreadMember
 	/** default duration of threads before archiving */
-	default_auto_archive_duration?: number
+	defaultAutoArchiveDuration?: number
 	/** computed permissions for bot in channel (with overwrites) */
 	permissions?: string
 	/** channel flags as bitfield */
 	flags?: number
 	/** number of messages ever sent in thread */
-	total_message_sent?: number
+	totalMessageSent?: number
 	/** tags that can be used in forum channel */
-	available_tags?: ForumTag[]
+	availableTags?: ForumTag[]
 	/** ids of tags applied to forum thread */
-	applied_tags?: string[]
+	appliedTags?: string[]
 	/** emoji shown in add reaction button of forum thread */
-	default_reaction_emoji?: DefaultReaction | null
-	/** initial rate_limit_per_user for newly created threads */
-	default_thread_rate_limit_per_user?: number
+	defaultReactionEmoji?: DefaultReaction | null
+	/** initial rateLimitPerUser for newly created threads */
+	defaultThreadRateLimitPerUser?: number
 	/** default sort order type used to order forum posts */
-	default_sort_order?: number
+	defaultSortOrder?: number
 	/** default forum layout view used to display forum posts */
-	default_forum_layout?: number
+	defaultForumLayout?: number
 }
 /** Overwrite Object */
 export type Overwrite = {
@@ -97,9 +97,9 @@ export type User = {
 	/** whether user is Offical Discord System user */
 	system?: boolean
 	/** whether user has 2fa enabled */
-	mfa_enabled?: boolean | null | undefined
+	mfaEnabled?: boolean | null | undefined
 	/** user's banner color as integer representation of hex color */
-	accent_color?: number | null | undefined
+	accentColor?: number | null | undefined
 	/** user's chosen language option */
 	locale?: string
 	/** whether user's email has been verified */
@@ -109,33 +109,33 @@ export type User = {
 	/** user's flags */
 	flags?: number
 	/** type of user's nitro subscription */
-	premium_type?: number
+	premiumType?: number
 	/** user's public flags */
-	public_flags?: number
+	publicFlags?: number
 }
 /** Thread Metadata Object */
 export type ThreadMetadata = {
 	/** whether thread is archived */
 	archived: boolean
 	/** duration of thread before archiving */
-	auto_archive_duration: number
+	autoArchiveDuration: number
 	/** timestamp when thread's archive status was last changed */
-	archive_timestamp: string
+	archiveTimestamp: string
 	/** whether thread is locked */
 	locked: boolean
 	/** whether non-moderators can add other non-moderators to a private thread */
 	invitable?: boolean
 	/** timestamp when thread was created */
-	create_timestamp?: string | null
+	createTimestamp?: string | null
 }
 /** Thread Member Object */
 export type ThreadMember = {
 	/** id of thread */
 	id?: Snowflake
 	/** id of user */
-	user_id?: Snowflake
+	userId?: Snowflake
 	/** time user last joined thread */
-	join_timestamp: string
+	joinTimestamp: string
 	/** any user-thread settings */
 	flags: number
 	/** additional information of user */
@@ -150,16 +150,16 @@ export type ForumTag = {
 	/** whether tag can only be added to or removed from threads with `MANAGE_THREADS` permission*/
 	moderated: boolean
 	/** id of guild's custom emoji */
-	emoji_id: Snowflake | null
+	emojiId: Snowflake | null
 	/** unicode character of emoji */
-	emoji_name: string | null
+	emojiName: string | null
 }
 /** Default Reaction Object */
 export type DefaultReaction = {
 	/** id of guild custom emoji */
-	emoji_id: Snowflake | null
+	emojiId: Snowflake | null
 	/** unicode character of emoji */
-	emoji_name: string | null
+	emojiName: string | null
 }
 /** Guild Member Object */
 export type GuildMember = {
@@ -172,9 +172,9 @@ export type GuildMember = {
 	/** array of role object ids */
 	roles: string[]
 	/** when user joined guild */
-	joined_at: string
+	joinedAt: string
 	/** when user started boosting guild */
-	premium_since?: string | null
+	premiumSince?: string | null
 	/** whether user is deafened in voice channels */
 	deaf: boolean
 	/** whether user is muted in voice channels */
@@ -186,7 +186,7 @@ export type GuildMember = {
 	/** total permissions of member in channel */
 	permissions?: string
 	/** when user's timeout will expire */
-	communication_disable_until?: string | null
+	communicationDisableUntil?: string | null
 }
 /** Invite Object */
 export type Invite = {
@@ -199,21 +199,21 @@ export type Invite = {
 	/** user who created invite */
 	inviter?: User
 	/** type of target for this voice channel invite */
-	target_type?: number
+	targetType?: number
 	/** user whose stream to display for this voice channel stream invite */
-	target_user?: User
+	targetUser?: User
 	/** embedded application to open for this voice channel embedded application invite */
-	target_application?: Partial<Application>
+	targetApplication?: Partial<Application>
 	/** approx count of online members */
-	approximate_presence_count?: number
+	approximatePresenceCount?: number
 	/** approx count of total members */
-	approximate_member_count?: number
+	approximateMemberCount?: number
 	/** expiration date of this invite */
-	expires_at?: string | null
+	expiresAt?: string | null
 	/** **deprecated** - stage instance data if there is a public Stage instance in the Stage channel this invite is for */
-	stage_instance?: InviteStageInstance
+	stageInstance?: InviteStageInstance
 	/** guild scheduled event data */
-	guild_scheduled_event?: GuildScheduledEvent
+	guildScheduledEvent?: GuildScheduledEvent
 }
 export type Application = {
 	/** the id of the app */
@@ -225,41 +225,41 @@ export type Application = {
 	/** the description of the app */
 	description: string
 	/** an array of rpc origin urls, if rpc is enabled */
-	rpc_origins: string[]
+	rpcOrigins: string[]
 	/** when false only app owner can join the app's bot to guilds */
-	bot_public: boolean
+	botPublic: boolean
 	/** when true the app's bot will only join upon completion of the full oauth2 code grant flow */
-	bot_require_code_grant: boolean
+	botRequireCodeGrant: boolean
 	/** the url of the app's terms of service */
-	terms_of_service_url?: string
+	termsOfServiceUrl?: string
 	/** the url of the app's privacy policy */
-	privacy_policy_url?: string
+	privacyPolicyUrl?: string
 	/** partial user object containing info on the owner of the application */
 	owner?: Partial<User>
 	/** **deprecated and will be removed** An empty string.*/
 	summary: string
 	/** the hex encoded key for verification in interactions and the GameSDK's GetTicket */
-	verify_key: string
+	verifyKey: string
 	/** if the application belongs to a team, this will be a list of the members of that team */
 	team: Team | null
 	/** if this application is a game sold on Discord, this field will be the guild to which it has been linked */
-	guild_id?: Snowflake
+	guildId?: Snowflake
 	/** if this application is a game sold on Discord, this field will be the id of the "Game SKU" that is created, if exists */
-	primary_sku_id?: Snowflake
+	primarySkuId?: Snowflake
 	/** if this application is a game sold on Discord, this field will be the URL slug that links to the store page */
 	slug?: string
 	/** the application's default rich presence invite cover image hash */
-	cover_image?: string
+	coverImage?: string
 	/** the application's public flags */
 	flags?: number
 	/** up to 5 tags describing the content and functionality of the application */
 	tags?: string[]
 	/** settings for the application's default in-app authorization link, if enabled */
-	install_params?: InstallParams
+	installParams?: InstallParams
 	/** the application's default custom authorization link, if enabled */
-	custom_install_url?: string
+	customInstallUrl?: string
 	/** the application's role connection verification entry point, which when configured will render the app as a verification method in the guild role verification configuration */
-	role_connections_verification_url?: string
+	roleConnectionsVerificationUrl?: string
 }
 export type InstallParams = {
 	/** the scopes to add the application to the server with */
@@ -277,15 +277,15 @@ export type Team = {
 	/** the name of the team */
 	name: string
 	/** the user id of the current team owner */
-	owner_user_id: Snowflake
+	ownerUserId: Snowflake
 }
 export type TeamMember = {
 	/** the user's membership state on the team */
-	membership_state: number
+	membershipState: number
 	/** will always be ["*"] */
 	permissions: string[]
 	/** the id of the parent team of which they are a member */
-	team_id: Snowflake
+	teamId: Snowflake
 	/** the avatar, discriminator, id, and username of the user */
 	user: Partial<User>
 }
@@ -297,33 +297,33 @@ export type Guild = {
 	/** icon hash */
 	icon: string | null
 	/** icon hash, returned in template object */
-	icon_hash?: string | null
+	iconHash?: string | null
 	/** splash hash */
 	splash: string | null
 	/** discovery splash hash */
-	discovery_splash: string | null
+	discoverySplash: string | null
 	/** whether user is owner of guild */
 	owner?: boolean
 	/** id of owner */
-	owner_id: Snowflake
+	ownerId: Snowflake
 	/** total permissions for user in guild (exluding overwrites) */
 	permissions?: string
 	/** **deprecated** - voice region id for guild */
 	region?: string | null
 	/** id of afk channel */
-	afk_channel_id: Snowflake | null
+	afkChannelId: Snowflake | null
 	/** afk timeout in seconds (60, 300, 900, 1800, or 3600) */
-	afk_timeout: number
+	afkTimeout: number
 	/** whether server widget is enabled */
-	widget_enabled?: boolean
+	widgetEnabled?: boolean
 	/** channel id that widget will generate an invite to, or `null` if set to no invite */
-	widget_channel_id?: Snowflake | null
+	widgetChannelId?: Snowflake | null
 	/** verification level required for guild */
-	verification_level: number
+	verificationLevel: number
 	/** default message notifications level */
-	default_message_notifications: number
+	defaultMessageNotifications: number
 	/** explicit content filter level */
-	explicit_content_filter: number
+	explicitContentFilter: number
 	/** roles in guild */
 	roles: Role[]
 	/** custom guild emojis */
@@ -331,47 +331,47 @@ export type Guild = {
 	/** enabled guild features */
 	features: string[]
 	/** required MFA level for guild */
-	mfa_level: number
+	mfaLevel: number
 	/** application id of guild creator if bot-created */
-	application_id: Snowflake | null
+	applicationId: Snowflake | null
 	/** id of channel where guild notices (e.g welcome messages and boost events) */
-	system_channel_id: Snowflake | null
+	systemChannelId: Snowflake | null
 	/** system channel flags */
-	system_channel_flags: number
+	systemChannelFlags: number
 	/** id of channel where Community guilds can */
-	rules_channel_id: Snowflake | null
+	rulesChannelId: Snowflake | null
 	/** max number of presences for guild (`null` always returned, apart from the larges tof guilds) */
-	max_presences?: number | null | undefined
+	maxPresences?: number | null | undefined
 	/** max number of members in guild */
-	max_members?: number
+	maxMembers?: number
 	/** vanity url code for guild */
-	vanity_url_code: string | null
+	vanityUrlCode: string | null
 	/** description of guild */
 	description: string | null
 	/** banner hash */
 	banner: string | null
 	/** premium tier (Server Boost level) */
-	premium_tier: number
+	premiumTier: number
 	/** number of boosts guild has */
-	premium_subscription_count?: number
+	premiumSubscriptionCount?: number
 	/** preferred locale of Community guild */
-	preferred_locale: string
+	preferredLocale: string
 	/** id of channel where admins and mods recieve notices from discord */
-	public_updates_channel_id: Snowflake | null
+	publicUpdatesChannelId: Snowflake | null
 	/** max number of users in a video channel */
-	max_video_channel_users?: number
+	maxVideoChannelUsers?: number
 	/** approx number of members in guild */
-	approximate_member_count?: number
+	approximateMemberCount?: number
 	/** approx number of non-offline members in guild */
-	approximate_presence_count?: number
+	approximatePresenceCount?: number
 	/** welcome screen of a Community guild, shown to new members */
-	welcome_screen?: WelcomeScreen
+	welcomeScreen?: WelcomeScreen
 	/** guild NSFW level */
-	nsfw_level: number
+	nsfwLevel: number
 	/** custom guild stickers */
 	stickers?: Sticker[]
 	/** whether guild has boost progress bar enabled */
-	premium_progress_bar_enabled: boolean
+	premiumProgressBarEnabled: boolean
 }
 export type Role = {
 	/** role id */
@@ -385,7 +385,7 @@ export type Role = {
 	/** role icon hash */
 	icon?: string
 	/** role unicode emoji */
-	unicode_emoji?: string | null
+	unicodeEmoji?: string | null
 	/** position of role */
 	position: number
 	/** permission bit set */
@@ -399,24 +399,24 @@ export type Role = {
 }
 export type RoleTags = {
 	/** id of the bot role belongs to */
-	bot_id?: Snowflake
+	botId?: Snowflake
 	/** id of the integration role belongs to */
-	integration_id?: Snowflake
+	integrationId?: Snowflake
 	/** whether this is guild's booster role
 	 *
 	 * `null` if "true", not present if "false" */
-	premium_subscriber?: null
+	premiumSubscriber?: null
 	/** id of this role's subscription sku and listing */
-	subscription_listing_id?: Snowflake
+	subscriptionListingId?: Snowflake
 	/** whether role is available for purchase
 	 *
 	 * `null` if "true", not present if "false" */
-	available_for_purchase?: null
+	availableForPurchase?: null
 	/** whether role is guild's linked role
 	 *
 	 *
 	 * `null` if "true", not present if "false" */
-	guild_connections?: null
+	guildConnections?: null
 }
 export type Emoji = {
 	/** emoji id */
@@ -428,7 +428,7 @@ export type Emoji = {
 	/** user that created this emoji */
 	user?: User
 	/** whether emoji must be wrapped in colons */
-	require_colons?: boolean
+	requireColons?: boolean
 	/** whether emoji is managed */
 	managed?: boolean
 	/** whether emoji is animated */
@@ -440,23 +440,23 @@ export type WelcomeScreen = {
 	/** server description showed in welcome screen */
 	description: string | null
 	/** channel shown in welcome screen, up to 5 */
-	welcome_channels: WelcomeSreenChannel[]
+	welcomeChannels: WelcomeSreenChannel[]
 }
 export type WelcomeSreenChannel = {
 	/** channel's id */
-	channel_id: Snowflake
+	channelId: Snowflake
 	/** description shown for channel */
 	description: string
 	/** emoji id, if emoji is custom */
-	emoji_id: Snowflake | null
+	emojiId: Snowflake | null
 	/** emoji name if custom, unicode character if standard, or null if not set */
-	emoji_name: string | null
+	emojiName: string | null
 }
 export type Sticker = {
 	/** id of sticker */
 	id: Snowflake
 	/** id of pack the sticker is from */
-	pack_id?: Snowflake
+	packId?: Snowflake
 	/** name of sticker */
 	name: string
 	/** description of sticker */
@@ -468,23 +468,23 @@ export type Sticker = {
 	/** type of sticker */
 	type: number
 	/** type of sticker format */
-	format_type: number
+	formatType: number
 	/** whether guild sticker can be used */
 	available?: boolean
 	/** id of guild that owns this sticker */
-	guild_id?: Snowflake
+	guildId?: Snowflake
 	/** user that uploaded guild sticker */
 	user: User
 	/** standard sticker's sort order within its pack */
-	sort_value?: number
+	sortValue?: number
 }
 export type InviteStageInstance = {
 	/** members speaking in Stage */
 	members: GuildMember[]
 	/** number of users in Stage */
-	participant_count: number
+	participantCount: number
 	/** number of users speaking in Stage */
-	speaker_count: number
+	speakerCount: number
 	/** topic of Stage instance */
 	topic: string
 }
@@ -492,39 +492,39 @@ export type GuildScheduledEvent = {
 	/** id of scheduled event */
 	id: Snowflake
 	/** guild id that scheduled event belongs to */
-	guild_id: Snowflake
+	guildId: Snowflake
 	/** channel id which scheduled event will be hosted, or `null` if schedule entity type is `EXTERNAL` */
-	channel_id: Snowflake | null
+	channelId: Snowflake | null
 	/** id of user that created scheduled event */
-	creator_id?: Snowflake | null
+	creatorId?: Snowflake | null
 	/** name of scheduled event */
 	name: string
 	/** description of scheduled event */
 	description?: string | null
 	/** time scheduled event will start */
-	scheduled_start_time: string
+	scheduledStartTime: string
 	/** time scheduled event will end */
-	scheduled_end_time: string | null
+	scheduledEndTime: string | null
 	/** privacy level of scheduled content */
-	privacy_level: number
+	privacyLevel: number
 	/** status of scheduled event */
 	status: number
 	/** type of scheduled event */
-	entity_type: number
+	entityType: number
 	/** id of entity associated with guild scheduled event */
-	entity_id: Snowflake | null
+	entityId: Snowflake | null
 	/** addotional metadata for guild scheduled event */
-	entity_metadata: EntityMetadata | null | undefined
+	entityMetadata: EntityMetadata | null | undefined
 	/** user that created scheduled event */
 	creator?: User
 	/** number of users subscribe to scheduled event */
-	user_count?: number
+	userCount?: number
 	/** cover image hash */
 	image?: string
 }
 export type GuildScheduledEventUser = {
 	/** the scheduled event id which the user subscribed to */
-	guild_scheduled_event_id: Snowflake
+	guildScheduledEventId: Snowflake
 	/** user which subscribed to an event */
 	user: User
 	/** guild member data for this user for the guild which this event belongs to, if any */
@@ -547,15 +547,15 @@ export type GuildPreview = {
 	/** splash hash */
 	splash: string | null
 	/** discovery splash hash */
-	discovery_splash: string | null
+	discoverySplash: string | null
 	/** custom guild emojis */
 	emojis: Emoji[]
 	/** enabled guild features */
 	features: string[]
 	/** approx number of members in this guild */
-	approximate_member_count: number
+	approximateMemberCount: number
 	/** approx number of online members in this guild */
-	approximate_presence_count: number
+	approximatePresenceCount: number
 	/** description for the the guild */
 	description: string | null
 	/** custom guild stickers */
@@ -567,25 +567,25 @@ export type Command = {
 	/** type of command */
 	type?: number
 	/** id of parent application */
-	application_id: Snowflake
+	applicationId: Snowflake
 	/** guild id of command, if not global */
-	guild_id?: Snowflake
+	guildId?: Snowflake
 	/** name of command */
 	name: string
 	/** localization dictionary for `name` field */
-	name_localizations: object | null | undefined
-	/** description for `chat_input` commands, empty string for `user` and `message` commands */
+	nameLocalizations: object | null | undefined
+	/** description for `chatInput` commands, empty string for `user` and `message` commands */
 	description: string
 	/** localization dictionary for `description` field */
-	description_localizations?: object | null | undefined
-	/** params for `chat_input` command, max 25 */
+	descriptionLocalizations?: object | null | undefined
+	/** params for `chatInput` command, max 25 */
 	options?: CommandOption[]
 	/**  set of permissions represent as bit set */
-	default_member_permissions: string | null
+	defaultMemberPermissions: string | null
 	/** whether command is available in dms */
-	dm_permission?: boolean
+	dmPermission?: boolean
 	/** **soon deprecated** - whether command is enabled by default */
-	default_permission?: boolean | null | undefined
+	defaultPermission?: boolean | null | undefined
 	/** whether command is age-restricted */
 	nsfw?: boolean
 	/** autoincrementing version id update during substantial record changes */
@@ -597,11 +597,11 @@ export type CommandOption = {
 	/** name of option */
 	name: string
 	/** localization dictionary for `name` */
-	name_localizations?: object | null | undefined
+	nameLocalizations?: object | null | undefined
 	/** description of option */
 	description: string
 	/** localization dictionary `description` */
-	description_localizations?: object | null | undefined
+	descriptionLocalizations?: object | null | undefined
 	/** if param is required or optional */
 	required?: boolean
 	/** choices for `string`, `integer` and `number` types for user to pick from, max 25 */
@@ -609,15 +609,15 @@ export type CommandOption = {
 	/** if option is subcommand or subcommand group type, nested options will be params */
 	options?: CommandOption[]
 	/** if opton is channel type, channels shown will be restricted to these types */
-	channel_types?: number[]
+	channelTypes?: number[]
 	/** if option is `integer` or `number`, min value permitted */
-	min_value?: number
+	minValue?: number
 	/** if option is `integer` or `number`, max value permitted */
-	max_value?: number
+	maxValue?: number
 	/** if option is `string`, min allowed length */
-	min_length?: number
+	minLength?: number
 	/** if option is `string`, max allowed length */
-	max_length?: number
+	maxLength?: number
 	/** if autocomplete interactions are enabled for `string`, `integer`, or `number` type option */
 	autocomplete?: boolean
 }
@@ -625,7 +625,7 @@ export type CommandOptionChoice = {
 	/** command option choice name */
 	name: string
 	/** localization dictionary for `name` */
-	name_localizations?: object | null | undefined
+	nameLocalizations?: object | null | undefined
 	/** value for choice */
 	value: string | number
 }
@@ -633,9 +633,9 @@ export type GuildCommandPermission = {
 	/** id of command or application id */
 	id: Snowflake
 	/** id of application command belongs to */
-	application_id: Snowflake
+	applicationId: Snowflake
 	/** id of guild */
-	guild_id: Snowflake
+	guildId: Snowflake
 	/** permissions for command in guild */
 	permissions: CommandPermission[]
 }
@@ -659,7 +659,7 @@ export type InteractionCallbackDataMessage = {
 	/** up to 10 embeds */
 	embeds?: Embed[]
 	/** allowed mentions */
-	allowed_mentions?: AllowedMentions
+	allowedMentions?: AllowedMentions
 	/** messag flags combined as bitfield (only `SUPPRESS_EMBEDS` and `EPHEMERAL` can be set) */
 	flags?: number
 	/** message components */
@@ -673,7 +673,7 @@ export type InteractionCallbackDataAutocomplete = {
 }
 export type InteractionCallbackDataModal = {
 	/** a developer-defined identifier for the modal, max 100 characters */
-	custom_id: Snowflake
+	customId: Snowflake
 	/** the title of the popup modal, max 45 characters */
 	title: string
 	/** between 1 and 5 (inclusive) components that make up the modal */
@@ -687,13 +687,13 @@ export type Attachment = {
 	/** description for the file (max 1024 characters) */
 	description?: string
 	/** the attachment's media type */
-	content_type?: string
+	contentType?: string
 	/** size of file in bytes */
 	size: number
 	/** source url of file */
 	url: string
 	/** a proxied url of file */
-	proxy_url: string
+	proxyUrl: string
 	/** height of file (if image) */
 	height?: number | null
 	/** width of file (if image) */
@@ -727,7 +727,7 @@ export type Button = {
 	/** `name`, `id`, and `animated` */
 	emoji?: Partial<Emoji>
 	/** Developer-defined identifier for the button; max 100 characters */
-	custom_id?: Snowflake
+	customId?: Snowflake
 	/** URL for link-style buttons */
 	url?: string
 	/** Whether the button is disabled (defaults to false) */
@@ -738,15 +738,15 @@ export type TextInput = {
 	/** 4 for a text input */
 	type: 4
 	/** Developer-defined identifier for the input; max 100 characters */
-	custom_id: Snowflake
+	customId: Snowflake
 	/** The Text Input Style ( `1`: Short, `2`: Paragraph) */
 	style: 1 | 2
 	/** Label for this component; max 45 characters */
 	label: string
 	/** Minimum input length for a text input; min 0, max 4000 */
-	min_length?: number
+	minLength?: number
 	/** Maximum input length for a text input; min 1, max 4000 */
-	max_length?: number
+	maxLength?: number
 	/** Whether this component is required to be filled (defaults to `true`) */
 	required?: boolean
 	/** Pre-filled value for this component; max 4000 characters */
@@ -764,17 +764,17 @@ export type SelectMenu = {
 	/** Type of select menu component (text: `3`, user: `5`, role: `6`, mentionable: `7`, channels: `8`) */
 	type: 3 | 5 | 6 | 7 | 8
 	/** ID for the select menu; max 100 characters */
-	custom_id: Snowflake
+	customId: Snowflake
 	/** Specified choices in a select menu (only required and available for string selects (type `3`); max 25 */
 	options?: SelectOption[]
 	/** List of channel types to include in the channel select component (type `8`) */
-	channel_types?: 0 | 1 | 2 | 3 | 4 | 5 | 10 | 11 | 12 | 13 | 14 | 15
+	channelTypes?: 0 | 1 | 2 | 3 | 4 | 5 | 10 | 11 | 12 | 13 | 14 | 15
 	/** Placeholder text if nothing is selected; max 150 characters */
 	placeholder?: string
 	/** Minimum number of items that must be chosen (defaults to 1); min 0, max 25 */
-	min_values?: number
+	minValues?: number
 	/** Maximum number of items that can be chosen (defaults to 1); max 25 */
-	max_values?: number
+	maxValues?: number
 	/** Whether select menu is disabled (defaults to `false`) */
 	disabled?: boolean
 }
@@ -793,12 +793,12 @@ export type SelectOption = {
 export type AllowedMentions = {
 	/** array of allowed mention types to parse from content */
 	parse: string[]
-	/** array of role_ids to mention */
+	/** array of roleIds to mention */
 	roles: string[]
-	/** array of user_ids to mention */
+	/** array of userIds to mention */
 	users: string[]
 	/** for replies, whether to mention author of message being replied to */
-	replied_user: boolean
+	repliedUser: boolean
 }
 export type Embed = {
 	/** title of embed */
@@ -832,15 +832,15 @@ export type EmbedFooter = {
 	/** footer text */
 	text: string
 	/** url of footer icon (only supports http(s) and attachments) */
-	icon_url?: string
+	iconUrl?: string
 	/** a proxied url of footer icon */
-	proxy_icon_url?: string
+	proxyIconUrl?: string
 }
 export type EmbedMedia = {
 	/** source url of media *(for `image`/`thumbnail`: only supports http(s) and attachments)* */
 	url: string
 	/** a proxied url of the media */
-	proxy_url?: string
+	proxyUrl?: string
 	/** height of media */
 	height?: number
 	/** width of media */
@@ -858,9 +858,9 @@ export type EmbedAuthor = {
 	/** url of author (only supports http(s)) */
 	url?: string
 	/** url of author icon (only supports http(s) and attachments) */
-	icon_url?: string
+	iconUrl?: string
 	/** a proxied url of author icon */
-	proxy_icon_url?: string
+	proxyIconUrl?: string
 }
 export type EmbedField = {
 	/** name of the field */
@@ -874,7 +874,7 @@ export type Message = {
 	/** id of the message */
 	id: Snowflake
 	/** id of the channel the message was sent in */
-	channel_id: Snowflake
+	channelId: Snowflake
 	/** the author of this message (not guaranteed to be a valid user) */
 	author: User
 	/** contents of the message */
@@ -882,17 +882,17 @@ export type Message = {
 	/** when this message was sent */
 	timestamp: string
 	/** when this message was edited (or null if never) */
-	edited_timestamp: string | null
+	editedTimestamp: string | null
 	/** whether this was a TTS message */
 	tts: boolean
 	/** whether this message mentions everyone */
-	mention_everyone: boolean
+	mentionEveryone: boolean
 	/** users specifically mentioned in the message */
 	mentions: User[]
 	/** roles specifically mentioned in this message */
-	mention_roles: string[]
+	mentionRoles: string[]
 	/** channels specifically mentioned in this message */
-	mention_channels?: ChannelMention[]
+	mentionChannels?: ChannelMention[]
 	/** any attached files */
 	attachments: Attachment[]
 	/** any embedded content */
@@ -904,7 +904,7 @@ export type Message = {
 	/** whether this message is pinned */
 	pinned: boolean
 	/** if the message is generated by a webhook, this is the webhook's id */
-	webhook_id?: Snowflake
+	webhookId?: Snowflake
 	/** type of message */
 	type: number
 	/** sent with Rich Presence-related chat embeds */
@@ -912,13 +912,13 @@ export type Message = {
 	/** sent with Rich Presence-related chat embeds */
 	application?: Partial<Application>
 	/** 	if the message is an Interaction or application-owned webhook, this is the id of the application */
-	application_id?: Snowflake
+	applicationId?: Snowflake
 	/** data showing the source of a crosspost, channel follow add, pin, or reply message */
-	message_reference?: MessageReference
+	messageReference?: MessageReference
 	/** message flags combined as a bitfield */
 	flags?: number
 	/** the message associated with the message_reference */
-	referenced_message?: Message | null
+	referencedMessage?: Message | null
 	/** sent if the message is a response to an Interaction */
 	interaction?: MessageInteraction
 	/** the thread that was started from this message, includes thread member object */
@@ -926,19 +926,19 @@ export type Message = {
 	/** sent if the message contains components like buttons, action rows, or other interactive components */
 	components?: Component[]
 	/** sent if the message contains stickers */
-	sticker_items?: StickerItem[]
+	stickerItems?: StickerItem[]
 	/** **deprecated** - the stickers sent with the message */
 	stickers?: Sticker[]
 	/** A generally increasing integer (there may be gaps or duplicates) that represents the approximate position of the message in a thread, it can be used to estimate the relative position of the message in a thread in company with `total_message_sent` on parent thread */
 	position?: number
 	/** data of the role subscription purchase or renewal that prompted this ROLE_SUBSCRIPTION_PURCHASE message */
-	role_subscription_data?: RoleSubscriptionData
+	roleSubscriptionData?: RoleSubscriptionData
 }
 export type ChannelMention = {
 	/** id of the channel */
 	id: Snowflake
 	/** id of the guild containing the channel */
-	guild_id: Snowflake
+	guildId: Snowflake
 	/** the type of channel */
 	type: 0 | 1 | 2 | 3 | 4 | 5 | 10 | 11 | 12 | 13 | 14 | 15
 	/** the name of the channel */
@@ -955,18 +955,18 @@ export type Reaction = {
 export type MessageActivity = {
 	/** type of message activity (`1`: `JOIN`, `2`: `SPECTATE`, `3`: `LISTEN`, `5`: `JOIN_REQUEST`) */
 	type: 1 | 2 | 3 | 5
-	/** party_id from a Rich Presence event */
-	party_id?: Snowflake
+	/** partyId from a Rich Presence event */
+	partyId?: Snowflake
 }
 export type MessageReference = {
 	/** id of the originating message */
-	message_id?: Snowflake
+	messageId?: Snowflake
 	/** id of the originating message's channel */
-	channel_id?: Snowflake
+	channelId?: Snowflake
 	/** id of the originating message's guild */
-	guild_id?: Snowflake
+	guildId?: Snowflake
 	/** when sending, whether to error if the referenced message doesn't exist instead of sending as a normal (non-reply) message, default true */
-	fail_if_not_exists?: boolean
+	failIfNotExists?: boolean
 }
 export type MessageInteraction = {
 	/** ID of the interaction */
@@ -986,17 +986,17 @@ export type StickerItem = {
 	/** name of the sticker */
 	name: string
 	/** type of sticker format (`1`: PNG, `2`: APNG, `3`: LOTTIE, `4`: GIF)*/
-	format_type: 1 | 2 | 3 | 4
+	formatType: 1 | 2 | 3 | 4
 }
 export type RoleSubscriptionData = {
 	/** the id of the sku and listing that the user is subscribed to */
-	role_subscription_listing_id: Snowflake
+	roleSubscriptionListingId: Snowflake
 	/** the name of the tier that the user is subscribed to */
-	tier_name: string
+	tierName: string
 	/** the cumulative number of months that the user has been subscribed for */
-	total_months_subscribed: number
+	totalMonthsSubscribed: number
 	/** whether this notification is for a renewal rather than a new purchase */
-	is_renewal: boolean
+	isRenewal: boolean
 }
 export type Presence = {
 	/** Unix time (in milliseconds) of when the client went idle, or null if the client is not idle */
@@ -1016,11 +1016,11 @@ export type Activity = {
 	/** Stream URL, is validated when type is 1 */
 	url?: string | null
 	/** Unix timestamp (in milliseconds) of when the activity was added to the user's session */
-	created_at: number
+	createdAt: number
 	/** Unix timestamps for start and/or end of the game */
 	timestamps?: ActivityTimestamps
 	/** Application ID for the game */
-	application_id?: Snowflake
+	applicationId?: Snowflake
 	/** What the player is currently doing */
 	details?: string | null
 	/** User's current party status */
@@ -1059,12 +1059,12 @@ export type ActivityParty = {
 	size?: number[]
 }
 export type ActivityAssets = {
-	large_image?: string
+	largeImage?: string
 	/** Text displayed when hovering over the large image of the activity */
-	large_text?: string
-	small_image?: string
+	largeText?: string
+	smallImage?: string
 	/** Text displayed when hovering over the small image of the activity */
-	small_text?: string
+	smallText?: string
 }
 export type ActivitySecrets = {
 	/** Secret for joining a party */
@@ -1086,25 +1086,25 @@ export type AutomodRule = {
 	/** the id of this rule */
 	id: Snowflake
 	/** the id of the guild which this rule belongs to */
-	guild_id: Snowflake
+	guildId: Snowflake
 	/** the rule name */
 	name: string
 	/** the user which first created this rule */
-	creator_id: Snowflake
+	creatorId: Snowflake
 	/** the rule event type */
-	event_type: 1
+	eventType: 1
 	/** the rule trigger type */
-	trigger_type: 1 | 3 | 4 | 5
+	triggerType: 1 | 3 | 4 | 5
 	/** the rule trigger metadata */
-	trigger_metadata: TriggerMetadata
+	triggerMetadata: TriggerMetadata
 	/** the actions which will execute when the rule is triggered */
 	actions: AutomodAction[]
 	/** whether the rule is enabled */
 	enabled: boolean
 	/** the role ids that should not be affected by the rule (Maximum of 20) */
-	exempt_roles: Snowflake[]
+	exemptRoles: Snowflake[]
 	/** the channel ids that should not be affected by the rule (Maximum of 50) */
-	exempt_channels: Snowflake[]
+	exemptChannels: Snowflake[]
 }
 /** An action which will execute whenever a rule is triggered. */
 export type AutomodAction = {
@@ -1116,84 +1116,84 @@ export type AutomodAction = {
 /** Additional data used when an action is executed. */
 export type AutomodActionMetadata = {
 	/** channel to which user content should be logged */
-	channel_id: Snowflake
+	channelId: Snowflake
 	/** timeout duration in seconds */
-	duration_seconds: number
+	durationSeconds: number
 	/** additional explanation that will be shown to members whenever their message is blocked */
-	custom_message?: string
+	customMessage?: string
 }
 export type TriggerMetadata = {
 	/** substrings which will be searched for in content (Maximum of 1000) */
-	keyword_filter?: string[]
+	keywordFilter?: string[]
 	/** regular expression patterns which will be matched against content (Maximum of 10) */
-	regex_patterns?: string[]
+	regexPatterns?: string[]
 	/** the internally pre-defined wordsets which will be searched for in content */
 	presets?: (1 | 2 | 3)[]
 	/** substrings which should not trigger the rule (Maximum of 100 or 1000) */
-	allow_list?: string[]
+	allowList?: string[]
 	/** total number of unique role and user mentions allowed per message (Maximum of 50) */
-	mention_total_limit?: number
+	mentionTotalLimit?: number
 }
 /** Snowflake  ID */
 export type Snowflake = `${bigint}`
 /** Used to represent a user's voice connection status. */
 export type VoiceState = {
 	/** the guild id this voice state is for */
-	guild_id?: Snowflake
+	guildId?: Snowflake
 	/** the channel id this user is connected to */
-	channel_id: Snowflake | null
+	channelId: Snowflake | null
 	/** the user id this voice state is for */
-	user_id: Snowflake
+	userId: Snowflake
 	/** the guild member this voice state is for */
 	member?: GuildMember
 	/** the session id for this voice state */
-	session_id: string
+	sessionId: string
 	/** whether this user is deafened by the server */
 	deaf: boolean
 	/** whether this user is muted by the server */
 	mute: boolean
 	/** whether this user is locally deafened */
-	self_deaf: boolean
+	selfDeaf: boolean
 	/** whether this user is locally muted */
-	self_mute: boolean
+	selfMute: boolean
 	/** whether this user is streaming using "Go Live" */
-	self_stream?: boolean
+	selfStream?: boolean
 	/** whether this user's camera is enabled */
-	self_video: boolean
+	selfVideo: boolean
 	/** whether this user's permission to speak is denied */
 	supress: boolean
 	/** the time at which the user requested to speak */
-	request_to_speak_timestamp: string | null
+	requestToSpeakTimestamp: string | null
 }
 /** A Stage Instance holds information about a live stage. */
 export type StageInstance = {
 	/** The id of this Stage instance */
 	id: Snowflake
 	/** The guild id of the associated Stage channel */
-	guild_id: Snowflake
+	guildId: Snowflake
 	/** The id of the associated Stage channel */
-	channel_id: Snowflake
+	channelId: Snowflake
 	/** The topic of the Stage instance (1-120 characters) */
 	topic: string
 	/** The privacy level of the Stage instance */
-	privacy_level: StageInstancePrivacyLevel
+	privacyLevel: StageInstancePrivacyLevel
 	/** Whether or not Stage Discovery is disabled **(deprecated)** */
-	discoverable_disabled: boolean
+	discoverableDisabled: boolean
 	/** The id of the scheduled event for this Stage instance */
-	guild_scheduled_event_id: Snowflake | null
+	guildScheduledEventId: Snowflake | null
 }
 export type StageInstancePrivacyLevel = 1 | 2
 export type AuditLogEntry = {
 	/** ID of the affected entity (webhook, user, role, etc.) */
-	target_id: string | null
+	targetId: string | null
 	/** Changes made to the target_id */
 	changes?: AuditLogChange[]
 	/** User or app that made the changes */
-	user_id: Snowflake | null
+	userId: Snowflake | null
 	/** ID of the entry */
 	id: Snowflake
 	/** Type of action that occurred */
-	action_type: number
+	actionType: number
 	/** Additional info for certain event types */
 	options?: OptionalAuditEntryInfo
 	/** Reason for the change (1-512 characters) */
@@ -1201,33 +1201,33 @@ export type AuditLogEntry = {
 }
 export type AuditLogChange = {
 	/** New value of the key */
-	new_value?: any
+	newValue?: any
 	/** Old value of the key */
-	old_value?: any
+	oldValue?: any
 	/** Name of the changed entity, with a few exceptions */
 	key: string
 }
 export type OptionalAuditEntryInfo = {
 	/** ID of the app whose permissions were targeted */
-	application_id: Snowflake
+	applicationId: Snowflake
 	/** Name of the Auto Moderation rule that was triggered */
-	auto_moderation_rule_name: string
+	autoModerationRuleName: string
 	/** Trigger type of the Auto Moderation rule that was triggered */
-	auto_moderation_rule_trigger_type: string
+	autoModerationRuleTriggerType: string
 	/** Channel in which the entities were targeted */
-	channel_id: Snowflake
+	channelId: Snowflake
 	/** Number of entities that were targeted */
 	count: string
 	/** Number of days after which inactive members were kicked */
-	delete_member_days: string
+	deleteMemberDays: string
 	/** ID of the overwritten entity */
 	id: Snowflake
 	/** Number of members removed by the prune */
-	members_removed: string
+	membersRemoved: string
 	/** ID of the message that was targeted */
-	message_id: Snowflake
+	messageId: Snowflake
 	/** Name of the role if type is "0" (not present if type is "1") */
-	role_name: string
+	roleName: string
 	/** Type of overwritten entity - role ("0") or member ("1") */
 	type: string
 }
@@ -1266,14 +1266,14 @@ export type Integration = {
 	type: string
 	enabled: boolean
 	syncing?: boolean
-	role_id?: Snowflake
-	enable_emoticons?: boolean
-	expire_behavior?: 0 | 1
-	expire_grace_period?: number
+	roleId?: Snowflake
+	enableEmoticons?: boolean
+	expireBehavior?: 0 | 1
+	expireGracePeriod?: number
 	user?: User
 	account: Account
-	synced_at?: string
-	subscriber_count?: number
+	syncedAt?: string
+	subscriberCount?: number
 	revoked?: boolean
 	application?: IntegrationApplication
 	scopes?: OAuth2Scope[]
@@ -1300,17 +1300,17 @@ export type Interaction = {
 	/** ID of the interaction */
 	id: Snowflake
 	/** ID of the application this interaction is for */
-	application_id: Snowflake
+	applicationId: Snowflake
 	/** Type of interaction */
 	type: 1 | 2 | 3 | 4 | 5
 	/** Interaction data payload */
 	data?: InteractionData
 	/** Guild that the interaction was sent from */
-	guild_id?: Snowflake
+	guildId?: Snowflake
 	/** Channel that the interaction was sent from */
 	channel?: Partial<Channel>
 	/** Channel that the interaction was sent from */
-	channel_id?: Snowflake
+	channelId?: Snowflake
 	/** Guild member data for the invoking user, including permissions */
 	member?: GuildMember
 	/** User object for the invoking user, if invoked in a DM */
@@ -1322,11 +1322,11 @@ export type Interaction = {
 	/** For components, the message they were attached to */
 	message?: Message
 	/** Bitwise set of permissions the app or bot has within the channel the interaction was sent from */
-	app_permissions?: string
+	appPermissions?: string
 	/** Selected language of the invoking user */
 	locale?: string
 	/** Guild's preferred locale, if invoked in a guild */
-	guild_locale?: string
+	guildLocale?: string
 }
 export type InteractionData = {
 	/** the ID of the invoked command */
@@ -1340,9 +1340,9 @@ export type InteractionData = {
 	/** the params + values from the user */
 	options?: CommandInteractionDataOption[]
 	/** the id of the guild the command is registered to */
-	guild_id?: Snowflake
+	guildId?: Snowflake
 	/** id of the user or message targeted by a user or message command */
-	target_id?: Snowflake
+	targetId?: Snowflake
 }
 export type ResolvedData = {
 	/** the ids and User objects */
@@ -1374,13 +1374,13 @@ export type InviteMetadata = {
 	/** number of times this invite has been used */
 	uses: number
 	/** max number of times this invite can be used */
-	max_uses: number
+	maxUses: number
 	/** duration (in seconds) after which the invite expires */
-	max_age: number
+	maxAge: number
 	/** whether this invite only grants temporary membership */
 	temporary: boolean
 	/** when this invite was created */
-	created_at: string
+	createdAt: string
 }
 export type GuildFeature =
 	| 'ANIMATED_BANNER'
@@ -1417,13 +1417,13 @@ export type MutableGuildFeature =
 	| 'RAID_ALERTS_DISABLED'
 export type AuditLog = {
 	/** List of application commands referenced in the audit log */
-	application_commands: Command
+	applicationCommands: Command
 	/** List of audit log entries, sorted from most to least recent */
-	audit_log_entries: AuditLogEntry[]
+	auditLogEntries: AuditLogEntry[]
 	/** List of auto moderation rules referenced in the audit log */
-	auto_moderation_rules: AutomodRule[]
+	autoModerationRules: AutomodRule[]
 	/** List of guild scheduled events referenced in the audit log */
-	guild_scheduled_events: GuildScheduledEvent
+	guildScheduledEvents: GuildScheduledEvent
 	/** List of partial integration objects */
 	integrations: Partial<Integration>
 	/** List of threads referenced in the audit log */
@@ -1439,9 +1439,9 @@ export type Webhook = {
 	/** the type of the webhook */
 	type: 1 | 2 | 3
 	/** the guild id this webhook is for, if any */
-	guild_id?: Snowflake | null
+	guildId?: Snowflake | null
 	/** the channel id this webhook is for, if any */
-	channel_id: Snowflake | null
+	channelId: Snowflake | null
 	/** the user this webhook was created by (not returned when getting a webhook with its token) */
 	user?: User
 	/** the default name of the webhook */
@@ -1451,11 +1451,11 @@ export type Webhook = {
 	/** the secure token of the webhook (returned for Incoming Webhooks) */
 	token?: string
 	/** the bot/OAuth2 application that created this webhook */
-	application_id: Snowflake | null
+	applicationId: Snowflake | null
 	/** the guild of the channel that this webhook is following (returned for Channel Follower Webhooks) */
-	source_guild?: Partial<Guild>
+	sourceGuild?: Partial<Guild>
 	/** the channel that this webhook is following (returned for Channel Follower Webhooks) */
-	source_channel?: Partial<Channel>
+	sourceChannel?: Partial<Channel>
 	/** the url used for executing the webhook (returned by the webhooks OAuth2 flow) */
 	url?: string
 }
@@ -1469,7 +1469,7 @@ export type WidgetSettings = {
 	/** whether the widget is enabled */
 	enabled: boolean
 	/** the widget channel id */
-	channel_id: Snowflake | null
+	channelId: Snowflake | null
 }
 export type Widget = {
 	/** guild id */
@@ -1477,13 +1477,13 @@ export type Widget = {
 	/** guild name (2-100 characters) */
 	name: string
 	/** instant invite for the guilds specified widget invite channel */
-	instant_invite: string | null
+	instantInvite: string | null
 	/** voice and stage channels which are accessible by @everyone */
 	channels: Partial<Channel>[]
 	/** special widget user objects that includes users presence (Limit 100) */
 	members: Partial<User>[]
 	/** number of online members in this guild */
-	presence_count: number
+	presenceCount: number
 }
 export type WidgetImageStyle =
 	| 'shield'
@@ -1583,21 +1583,21 @@ export type Template = {
 	/** the description for the template */
 	description: string | null
 	/** number of times this template has been used */
-	usage_count: number
+	usageCount: number
 	/** the ID of the user who created the template */
-	creator_id: Snowflake
+	creatorId: Snowflake
 	/** the user who created the template */
 	creator: User
 	/** when this template was created */
-	created_at: string
+	createdAt: string
 	/** when this template was last synced to the source guild */
-	updated_at: string
+	updatedAt: string
 	/** the ID of the guild this template is based on */
-	source_guild_id: Snowflake
+	sourceGuildId: Snowflake
 	/** the guild snapshot this template contains */
-	serialized_source_guild: Partial<Guild>
+	serializedSourceGuild: Partial<Guild>
 	/** whether the template has unsynced changes */
-	is_dirty: boolean | null
+	isDirty: boolean | null
 }
 /** Represents a pack of standard stickers */
 export type StickerPack = {
@@ -1608,11 +1608,11 @@ export type StickerPack = {
 	/** name of the sticker pack */
 	name: string
 	/** id of the pack's SKU */
-	sku_id: Snowflake
+	skuId: Snowflake
 	/** id of a sticker in the pack which is shown as the pack's icon */
-	cover_sticker_id?: Snowflake
+	coverStickerId?: Snowflake
 	/** description of the sticker pack */
 	description: string
 	/** id of the sticker pack's banner image */
-	banner_asset_id?: Snowflake
+	bannerAssetId?: Snowflake
 }

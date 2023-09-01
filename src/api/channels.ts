@@ -9,17 +9,18 @@ import {
 	ThreadMember
 } from '../types.js'
 import request from '../utils/request.js'
+import toCamelCase from '../utils/toCamelCase.js'
 class Channel {
 	/** id of channel */
-	id: Snowflake
+	id!: Snowflake
 	/** type of channel */
-	type: number
+	type!: number
 	/** id of guild */
-	guild_id?: Snowflake
+	guildId?: Snowflake
 	/** position of channel */
 	position?: number
 	/** permission overwrites for members and roles */
-	permission_overwrites?: Overwrite[]
+	permissionOverwrites?: Overwrite[]
 	/** name of channel */
 	name?: string | null
 	/** topic of channel */
@@ -27,59 +28,59 @@ class Channel {
 	/** whether channel is nsfw */
 	nsfw?: boolean
 	/** id of last message sent */
-	last_message_id?: Snowflake | null
+	lastMessageId?: Snowflake | null
 	/** bitrate (in bits) of voice channel */
 	bitrate?: number
 	/** user limit of voice channel */
-	user_limit?: number
+	userLimit?: number
 	/** amound of seconds a user has to wait before sending another message */
-	rate_limit_per_user?: number
+	rateLimitPerUser?: number
 	/** recipients of dm */
 	recipients?: User[]
 	/** icon hash of group dm */
 	icon?: string | null
 	/** id of group/thread creator */
-	owner_id?: Snowflake
+	ownerId?: Snowflake
 	/** application id of group dm create if bot created */
-	application_id?: Snowflake
+	applicationId?: Snowflake
 	/** whether managed by application */
 	managed?: boolean
 	/** id of parent category for a guild channel/id of text channel this thread was created in */
-	parent_id?: Snowflake | null
+	parentId?: Snowflake | null
 	/** when last pinned message was pinned */
-	last_pin_timestamp?: string | null
+	lastPinTimestamp?: string | null
 	/** voice region id of voice channel */
-	rtc_region?: string | null
+	rtcRegion?: string | null
 	/** camera video quality mode of voice channel */
-	video_quality_mode?: number
+	videoQualityMode?: number
 	/** number of messages in thread */
-	message_count?: number
+	messageCount?: number
 	/** approximate count of users in thread (max: 50) */
-	member_count?: number
+	memberCount?: number
 	/** thread-specific fields*/
-	thread_metadata?: ThreadMetadata
+	threadMetadata?: ThreadMetadata
 	/** thread member object for current user */
 	member?: ThreadMember
 	/** default duration of threads before archiving */
-	default_auto_archive_duration?: number
+	defaultAutoArchiveDuration?: number
 	/** computed permissions for bot in channel (with overwrites) */
 	permissions?: string
 	/** channel flags as bitfield */
 	flags?: number
 	/** number of messages ever sent in thread */
-	total_message_sent?: number
+	totalMessageSent?: number
 	/** tags that can be used in forum channel */
-	available_tags?: ForumTag[]
+	availableTags?: ForumTag[]
 	/** ids of tags applied to forum thread */
-	applied_tags?: string[]
+	appliedTags?: string[]
 	/** emoji shown in add reaction button of forum thread */
-	default_reaction_emoji?: DefaultReaction | null
+	defaultReactionEmoji?: DefaultReaction | null
 	/** initial rate_limit_per_user for newly created threads */
-	default_thread_rate_limit_per_user?: number
+	defaultThreadRateLimitPerUser?: number
 	/** default sort order type used to order forum posts */
-	default_sort_order?: number
+	defaultSortOrder?: number
 	/** default forum layout view used to display forum posts */
-	default_forum_layout?: number
+	defaultForumLayout?: number
 
 	/** Gets this channel
 	 *
@@ -104,42 +105,7 @@ class Channel {
 		return await _delete(this.id)
 	}
 	constructor(channel: RawChannel) {
-		this.id = channel.id
-		this.type = channel.type
-		this.guild_id = channel.guild_id
-		this.position = channel.position
-		this.permission_overwrites = channel.permission_overwrites
-		this.name = channel.name
-		this.topic = channel.topic
-		this.nsfw = channel.nsfw
-		this.last_message_id = channel.last_message_id
-		this.bitrate = channel.bitrate
-		this.user_limit = channel.user_limit
-		this.rate_limit_per_user = channel.rate_limit_per_user
-		this.recipients = channel.recipients
-		this.icon = channel.icon
-		this.owner_id = channel.owner_id
-		this.application_id = channel.application_id
-		this.managed = channel.managed
-		this.parent_id = channel.parent_id
-		this.last_pin_timestamp = channel.last_pin_timestamp
-		this.rtc_region = channel.rtc_region
-		this.video_quality_mode = channel.video_quality_mode
-		this.message_count = channel.message_count
-		this.member_count = channel.member_count
-		this.thread_metadata = channel.thread_metadata
-		this.member = channel.member
-		this.default_auto_archive_duration = channel.default_auto_archive_duration
-		this.permissions = channel.permissions
-		this.flags = channel.flags
-		this.total_message_sent = channel.total_message_sent
-		this.available_tags = channel.available_tags
-		this.applied_tags = channel.applied_tags
-		this.default_reaction_emoji = channel.default_reaction_emoji
-		this.default_thread_rate_limit_per_user =
-			channel.default_thread_rate_limit_per_user
-		this.default_sort_order = channel.default_sort_order
-		this.default_forum_layout = channel.default_forum_layout
+		Object.assign(this, toCamelCase(channel))
 	}
 }
 

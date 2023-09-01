@@ -3,6 +3,7 @@ import variable from '../utils/variable.js'
 import tokenToId from '../utils/tokenToId.js'
 import { EventEmitter } from '@splitscript.js/core'
 import WS from 'ws'
+import toCamelCase from '../utils/toCamelCase.js'
 type IntentFlag =
 	| 'guilds'
 	| 'guild_members'
@@ -246,7 +247,7 @@ function connect(
 				event = 'stageinstance_delete'
 				break
 		}
-		emitter.send(event.split('_'), d)
+		emitter.send(event.split('_'), toCamelCase(d))
 	})
 
 	ws.on('close', () => {

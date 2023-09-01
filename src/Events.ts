@@ -26,7 +26,7 @@ namespace Events {
 	/** Sent on connection to the websocket (discord.listen()). Defines the heartbeat interval that an app should heartbeat to. */
 	export type Hello = {
 		/** Interval (in milliseconds) an app should heartbeat with */
-		heartbeat_interval: number
+		heartbeatInterval: number
 	}
 	/** The ready event is dispatched when a client has completed the initial handshake with the gateway (for new sessions). */
 	export type Ready = {
@@ -37,14 +37,14 @@ namespace Events {
 		/** Guilds the user is in */
 		guilds: UnavailableGuild[]
 		/** Used for resuming connections */
-		session_id: string
+		sessionId: string
 		/** Gateway URL for resuming connections */
-		resume_gateway_url: string
+		resumeGatewayUrl: string
 		/** Shard information associated with this session, if sent when identifying */
 		shard?: [
-			/** shard_id */
+			/** shardId */
 			number,
-			/** num_shards */
+			/** numShards */
 			number
 		]
 		/** Contains id and flags */
@@ -77,9 +77,9 @@ namespace Events {
 	/** Sent when the current user gains access to a channel. */
 	export type ThreadListSync = {
 		/** ID of the guild */
-		guild_id: Snowflake
-		/** 	Parent channel IDs whose threads are being synced. If omitted, then threads were synced for the entire guild. This array may contain channel_ids that have no active threads as well, so you know to clear that data. */
-		channel_ids?: Snowflake[]
+		guildId: Snowflake
+		/** 	Parent channel IDs whose threads are being synced. If omitted, then threads were synced for the entire guild. This array may contain channelIds that have no active threads as well, so you know to clear that data. */
+		channelIds?: Snowflake[]
 		/** All active threads in the given channels that the current user can access */
 		threads: Channel[]
 		/** All thread member objects from the synced threads for the current user, indicating which threads the current user has been added to */
@@ -88,43 +88,43 @@ namespace Events {
 	/** Sent when the thread member object for the current user is updated.  */
 	export type ThreadMemberUpdate = {
 		/** ID of the guild */
-		guild_id: Snowflake
+		guildId: Snowflake
 	} & ThreadMember
 	/** Sent when anyone is added to or removed from a thread. */
 	export type ThreadMembersUpdate = {
 		/** ID of the thread */
 		id: Snowflake
 		/** ID of the guild */
-		guild_id: Snowflake
+		guildId: Snowflake
 		/** Approximate number of members in the thread, capped at 50 */
-		member_count: number
+		memberCount: number
 		/** Users who were added to the thread */
-		added_members?: ThreadMember[]
+		addedMembers?: ThreadMember[]
 		/** 	ID of the users who were removed from the thread */
-		removed_member_ids?: Snowflake[]
+		removedMemberIds?: Snowflake[]
 	}
 	/** Sent when a message is pinned or unpinned in a text channel. This is not sent when a pinned message is deleted. */
 	export type ChannelPinsUpdate = {
 		/** ID of the guild */
-		guild_id?: Snowflake
+		guildId?: Snowflake
 		/** ID of the channel */
-		channel_id: Snowflake
+		channelId: Snowflake
 		/** 	Time at which the most recent pinned message was pinned */
-		last_pin_timestamp?: string | null
+		lastPinTimestamp?: string | null
 	}
 	/** Sent when initially connecting, when a guild becomes available, or when the user joins a guild */
 	export type GuildCreate =
 		| ({
 				/** When this guild was joined at */
-				joined_at: string
+				joinedAt: string
 				/** true if this is considered a large guild */
 				large: boolean
 				/** true if this guild is unavailable due to an outage */
 				unavailable?: boolean
 				/** Total number of members in this guild */
-				member_count: number
-				/** States of members currently in voice channels; lacks the guild_id key */
-				voice_states: Partial<VoiceState>
+				memberCount: number
+				/** States of members currently in voice channels; lacks the guildId key */
+				voiceStates: Partial<VoiceState>
 				/** Users in the guild */
 				members: GuildMember[]
 				/** Channels in the guild */
@@ -134,9 +134,9 @@ namespace Events {
 				/** Presences of the members in the guild, will only include non-offline members if the size is greater than large threshold */
 				presences: Partial<Presence>[]
 				/** Stage instances in the guild */
-				stage_instances: StageInstance[]
+				stageInstances: StageInstance[]
 				/** Scheduled events in the guild */
-				guild_scheduled_events: GuildScheduledEvent[]
+				guildScheduledEvents: GuildScheduledEvent[]
 		  } & Guild)
 		| UnavailableGuild
 	/** Sent when a guild is updated. */
@@ -147,51 +147,51 @@ namespace Events {
 	export type AuditlogEntryCreate = AuditLogEntry
 	/** Sent when a user is banned from a guild. */
 	export type BanAdd = {
-		guild_id: Snowflake
+		guildId: Snowflake
 		user: User
 	}
 	/** Sent when a user is unbanned from a guild. */
 	export type BanRemove = {
 		/** ID of the guild */
-		guild_id: Snowflake
+		guildId: Snowflake
 		/** User who was unbanned */
 		user: User
 	}
 	/** Sent when a guild's emojis have been updated. */
 	export type EmojisUpdate = {
 		/** ID of the guild */
-		guild_id: Snowflake
+		guildId: Snowflake
 		/** Array of emojis */
 		emojis: Emoji[]
 	}
 	/** Sent when a guild's stickers have been updated. */
 	export type StickersUpdate = {
 		/** ID of the guild */
-		guild_id: Snowflake
+		guildId: Snowflake
 		/** Array of stickers */
 		stickers: Sticker[]
 	}
 	/** Sent when a guild integration is updated. */
 	export type IntegrationsUpdate = {
 		/** ID of the guild whose integrations were updated */
-		guild_id: Snowflake
+		guildId: Snowflake
 	}
 	/** Sent when a new user joins a guild. */
 	export type MemberAdd = {
 		/** ID of the guild */
-		guild_id: Snowflake
+		guildId: Snowflake
 	} & GuildMember
 	/** Sent when a user is removed from a guild (leave/kick/ban). */
 	export type MemberRemove = {
 		/** ID of the guild */
-		guild_id: Snowflake
+		guildId: Snowflake
 		/** User who was removed */
 		user: User
 	}
 	/** Sent when a guild member is updated. */
 	export type MemberUpdate = {
 		/** ID of the guild */
-		guild_id: Snowflake
+		guildId: Snowflake
 		/** User role ids */
 		roles: Snowflake[]
 		/** User */
@@ -201,9 +201,9 @@ namespace Events {
 		/** Member's guild avatar hash */
 		avatar: string | null
 		/** When the user joined the guild */
-		joined_at: string | null
+		joinedAt: string | null
 		/** When the user starting boosting the guild */
-		premium_since?: string | null
+		premiumSince?: string | null
 		/** Whether the user is deafened in voice channels */
 		deaf?: boolean
 		/** Whether the user is muted in voice channels */
@@ -211,20 +211,20 @@ namespace Events {
 		/** Whether the user has not yet passed the guild's Membership Screening requirements */
 		pending?: boolean
 		/** When the user's timeout will expire and the user will be able to communicate in the guild again, null or a time in the past if the user is not timed out */
-		communication_disabled_until?: string | null
+		communicationDisabledUntil?: string | null
 	}
 	/** Sent in response to Guild Request Members. */
 	export type MembersChunk = {
 		/** ID of the guild */
-		guild_id: Snowflake
+		guildId: Snowflake
 		/** Set of guild members */
 		members: GuildMember[]
-		/** Chunk index in the expected chunks for this response (0 <= chunk_index < chunk_count) */
-		chunk_index: number
+		/** Chunk index in the expected chunks for this response (0 <= chunkIndex < chunkCount) */
+		chunkIndex: number
 		/** Total number of expected chunks for this response */
-		chunk_count: number
+		chunkCount: number
 		/** When passing an invalid ID to `REQUEST_GUILD_MEMBERS`, it will be returned here */
-		not_found?: any[]
+		notFound?: any[]
 		/** When passing `true` to `REQUEST_GUILD_MEMBERS`, presences of the returned members will be here */
 		presences?: Presence[]
 		/** Nonce used in the Guild Members Request */
@@ -233,23 +233,23 @@ namespace Events {
 	/** Sent when a guild role is created. */
 	export type RoleCreate = {
 		/** ID of the guild */
-		guild_id: Snowflake
+		guildId: Snowflake
 		/** Role that was created */
 		role: Role
 	}
 	/** Sent when a guild role is updated. */
 	export type GuildRole = {
 		/** ID of the guild */
-		guild_id: Snowflake
+		guildId: Snowflake
 		/** Role that was updated */
 		role: Role
 	}
 	/** Sent when a guild role is deleted. */
 	export type RoleDelete = {
 		/** ID of the guild */
-		guild_id: Snowflake
+		guildId: Snowflake
 		/** ID of the role */
-		role_id: Snowflake
+		roleId: Snowflake
 	}
 	/** Sent when a guild scheduled event is created. */
 	export type ScheduledeventCreate = GuildScheduledEvent
@@ -260,62 +260,62 @@ namespace Events {
 	/** Sent when a user has subscribed to a guild scheduled event. */
 	export type ScheduledeventUserAdd = {
 		/** ID of the guild scheduled event */
-		guild_scheduled_event_id: Snowflake
+		guildScheduledEventId: Snowflake
 		/** ID of the user */
-		user_id: Snowflake
+		userId: Snowflake
 		/** ID of the guild */
-		guild_id: Snowflake
+		guildId: Snowflake
 	}
 	/** Sent when a user has unsubscribed to a guild scheduled event. */
 	export type ScheduledeventUserRemove = {
 		/** ID of the guild scheduled event */
-		guild_scheduled_event_id: Snowflake
+		guildScheduledEventId: Snowflake
 		/** ID of the user */
-		user_id: Snowflake
+		userId: Snowflake
 		/** ID of the guild */
-		guild_id: Snowflake
+		guildId: Snowflake
 	}
 	/** Sent when an integration is created. */
 	export type IntegrationCreate = {
 		/** ID of the guild */
-		guild_id: Snowflake
+		guildId: Snowflake
 	} & Integration
 	/** Sent when an integration is updated. */
 	export type IntegrationUpdate = {
 		/** ID of the guild */
-		guild_id: Snowflake
+		guildId: Snowflake
 	} & Integration
 	/** Sent when an integration is deleted. */
 	export type IntegrationDelete = {
 		/** Integration ID */
 		id: Snowflake
 		/** ID of the guild */
-		guild_id: Snowflake
+		guildId: Snowflake
 		/** ID of the bot/OAuth2 application for this discord integration */
-		application_id?: Snowflake
+		applicationId?: Snowflake
 	} & Integration
 	/** Sent when a new invite to a channel is created. */
 	export type InviteCreate = {
 		/** Channel the invite is for */
-		channel_id: Snowflake
+		channelId: Snowflake
 		/** Unique invite code */
 		code: string
 		/** Time at which the invite was created */
-		created_at: string
+		createdAt: string
 		/** Guild of the invite */
-		guild_id?: Snowflake
+		guildId?: Snowflake
 		/** User that created the invite */
 		inviter?: User
 		/** How long the invite is valid for (in seconds) */
-		max_age: number
+		maxAge: number
 		/** Maximum number of times the invite can be used */
-		max_uses: number
+		maxUses: number
 		/** Type of target for this voice channel invite */
-		target_type?: number
+		targetType?: number
 		/** User whose stream to display for this voice channel stream invite */
-		target_user?: User
+		targetUser?: User
 		/** Embedded application to open for this voice channel embedded application invite */
-		target_application: Partial<Application>
+		targetApplication: Partial<Application>
 		/** Whether or not the invite is temporary (invited users will be kicked on disconnect unless they're assigned a role) */
 		temporary: boolean
 		/** How many times the invite has been used (always will be 0) */
@@ -324,16 +324,16 @@ namespace Events {
 	/** Sent when an invite is deleted. */
 	export type InviteDelete = {
 		/** Channel of the invite */
-		channel_id: Snowflake
+		channelId: Snowflake
 		/** Guild of the invite */
-		guild_id?: Snowflake
+		guildId?: Snowflake
 		/** Unique invite code */
 		code: string
 	}
 	/** Sent when a message is created. */
 	export type MessageCreate = {
 		/** ID of the guild the message was sent in - unless it is an ephemeral message */
-		guild_id?: Snowflake
+		guildId?: Snowflake
 		/** Member properties for this message's author. Missing for ephemeral messages and messages from webhooks */
 		member?: Partial<GuildMember>
 		/** Users specifically mentioned in the message */
@@ -342,41 +342,41 @@ namespace Events {
 	/** Sent when a message is updated. */
 	export type MessageUpdate = {
 		/** ID of the guild the message was sent in - unless it is an ephemeral message */
-		guild_id?: Snowflake
+		guildId?: Snowflake
 		/** Member properties for this message's author. Missing for ephemeral messages and messages from webhooks */
 		member?: Partial<GuildMember>
 		/** Users specifically mentioned in the message */
 		mentions: (User & { member: Partial<GuildMember> })[]
-	} & Pick<Message, 'id' | 'channel_id'> &
+	} & Pick<Message, 'id' | 'channelId'> &
 		Partial<Message>
 	/** Sent when a message is deleted. */
 	export type MessageDelete = {
 		/** ID of the message */
 		id: Snowflake
 		/** ID of the channel */
-		channel_id: Snowflake
+		channelId: Snowflake
 		/** ID of the guild */
-		guild_id?: Snowflake
+		guildId?: Snowflake
 	}
 	/** Sent when multiple messages are deleted at once. */
 	export type MessageDeleteBulk = {
 		/** IDs of the messages */
 		ids: Snowflake[]
 		/** ID of the channel */
-		channel_id: Snowflake
+		channelId: Snowflake
 		/** ID of the guild */
-		guild_id?: Snowflake
+		guildId?: Snowflake
 	}
 	/** Sent when a user adds a reaction to a message. */
 	export type MessageReactionAdd = {
 		/** ID of the user */
-		user_id: Snowflake
+		userId: Snowflake
 		/** ID of the channel */
-		channel_id: Snowflake
+		channelId: Snowflake
 		/** ID of the message */
-		message_id: Snowflake
+		messageId: Snowflake
 		/** ID of the guild */
-		guild_id?: Snowflake
+		guildId?: Snowflake
 		/** Member who reacted if this happened in a guild */
 		member?: GuildMember
 		/** Emoji used to react */
@@ -385,13 +385,13 @@ namespace Events {
 	/** Sent when a user removes a reaction from a message. */
 	export type MessageReactionRemove = {
 		/** ID of the user */
-		user_id: Snowflake
+		userId: Snowflake
 		/** ID of the channel */
-		channel_id: Snowflake
+		channelId: Snowflake
 		/** ID of the message */
-		message_id: Snowflake
+		messageId: Snowflake
 		/** ID of the guild */
-		guild_id?: Snowflake
+		guildId?: Snowflake
 		/** Member who reacted if this happened in a guild */
 		member?: GuildMember
 		/** Emoji used to react */
@@ -400,20 +400,20 @@ namespace Events {
 	/** Sent when a user explicitly removes all reactions from a message. */
 	export type MessageReactionRemoveAll = {
 		/** ID of the channel */
-		channel_id: Snowflake
+		channelId: Snowflake
 		/** ID of the message */
-		message_id: Snowflake
+		messageId: Snowflake
 		/** ID of the guild */
-		guild_id?: Snowflake
+		guildId?: Snowflake
 	}
 	/** Sent when a bot removes all instances of a given emoji from the reactions of a message. */
 	export type MessageReactionRemoveEmoji = {
 		/** ID of the channel */
-		channel_id: Snowflake
+		channelId: Snowflake
 		/** ID of the guild */
-		guild_id?: Snowflake
+		guildId?: Snowflake
 		/** ID of the message */
-		message_id: Snowflake
+		messageId: Snowflake
 		/** Emoji that was removed */
 		emoji: Partial<Emoji>
 	}
@@ -423,13 +423,13 @@ namespace Events {
 		/** User whose presence is being updated */
 		user: User
 		/** ID of the guild */
-		guild_id: Snowflake
+		guildId: Snowflake
 		/** ID of the guild */
 		status: string
 		/** User's current activities */
 		activities: Activity[]
 		/** User's platform-dependent status */
-		client_status: ClientStatus
+		clientStatus: ClientStatus
 	}
 	type ClientStatus = {
 		/** User's status set for an active desktop (Windows, Linux, Mac) application session */
@@ -448,11 +448,11 @@ namespace Events {
 	/** Sent when a user starts typing in a channel. */
 	export type TypingStart = {
 		/** ID of the channel */
-		channel_id: Snowflake
+		channelId: Snowflake
 		/** ID of the guild */
-		guild_id?: Snowflake
+		guildId?: Snowflake
 		/** ID of the user */
-		user_id: Snowflake
+		userId: Snowflake
 		/** Unix time (in seconds) of when the user started typing */
 		timestamp: number
 		/** Member who started typing if this happened in a guild */
@@ -467,16 +467,16 @@ namespace Events {
 		/** Voice connection token */
 		token: string
 		/** Guild this voice server update is for */
-		guild_id: Snowflake
+		guildId: Snowflake
 		/** Voice server host */
 		endpoint: string | null
 	}
 	/** Sent when a guild channel's webhook is created, updated, or deleted. */
 	export type WebhooksUpdate = {
 		/** ID of the guild */
-		guild_id: Snowflake
+		guildId: Snowflake
 		/** ID of the channel */
-		channel_id: Snowflake
+		channelId: Snowflake
 	}
 	/** Sent when a user uses an Application Command or Message Component. */
 	export type InteractionCreate = Interaction

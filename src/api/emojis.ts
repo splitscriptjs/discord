@@ -1,23 +1,33 @@
 import request from '../utils/request.js'
 import { Emoji as RawEmoji, Snowflake, User } from '../types.js'
+import toCamelCase from '../utils/toCamelCase.js'
 
 class Emoji {
-	id: Snowflake
-	name: string | null
+	/** emoji id */
+	id!: Snowflake
+	/** emoji name */
+	name!: string | null
+	/** roles allowed to use this emoji */
 	roles?: string[]
+	/** user that created this emoji */
 	user?: User
-	require_colons?: boolean
+	/** whether this emoji must be wrapped in colons */
+	requireColons?: boolean
+	/** whether this emoji is managed */
 	managed?: boolean
+	/** whether this emoji is animated */
 	animated?: boolean
+	/** whether this emoji can be used, may be false due to loss of Server Boosts */
 	available?: boolean
-	guild_id: Snowflake
+	/** id of guild this emoji is in */
+	guildId: Snowflake
 
 	/** Gets this emoji
 	 *
 	 * Also updates this class instance
 	 */
 	async get() {
-		const emoji = await get(this.guild_id, this.id)
+		const emoji = await get(this.guildId, this.id)
 		Object.assign(this, emoji)
 		return emoji
 	}
@@ -26,24 +36,17 @@ class Emoji {
 	 * Also updates this class instance
 	 */
 	async edit(newEmoji: EditParams) {
-		const emoji = await edit(this.guild_id, this.id, newEmoji)
+		const emoji = await edit(this.guildId, this.id, newEmoji)
 		Object.assign(this, emoji)
 		return emoji
 	}
 	/** Deletes this emoji */
 	async delete() {
-		return await _delete(this.guild_id, this.id)
+		return await _delete(this.guildId, this.id)
 	}
-	constructor(data: RawEmoji & { id: Snowflake }, guild_id: Snowflake) {
-		this.id = data.id
-		this.name = data.name
-		this.roles = data.roles
-		this.user = data.user
-		this.require_colons = data.require_colons
-		this.managed = data.managed
-		this.animated = data.animated
-		this.available = data.available
-		this.guild_id = guild_id
+	constructor(data: RawEmoji & { id: Snowflake }, guildId: Snowflake) {
+		Object.assign(this, toCamelCase(data))
+		this.guildId = guildId
 	}
 }
 /** Returns list of emojis in guild */
@@ -53,7 +56,7 @@ async function list(guildId: Snowflake): Promise<Emoji[]> {
 	)) as unknown as (RawEmoji & { id: Snowflake })[]
 	return emojis.map((emoji) => new Emoji(emoji, guildId))
 }
-/** Return emoji object for give guild and emoji ids */
+/** Return emoji object for given guild and emoji ids */
 async function get(guildId: Snowflake, emojiId: Snowflake): Promise<Emoji> {
 	return new Emoji(
 		(await request.get(
@@ -70,7 +73,7 @@ type CreateParams = {
 	/** roles allowed to use this emoji */
 	roles: Snowflake[]
 }
-/** Create new emoji for guild */
+/** Create new emoji for a guild */
 async function create(guildId: Snowflake, emoji: CreateParams): Promise<Emoji> {
 	return new Emoji(
 		(await request.post(
@@ -83,9 +86,9 @@ async function create(guildId: Snowflake, emoji: CreateParams): Promise<Emoji> {
 
 type EditParams = {
 	/** name of the emoji */
-	name: string
+	name?: string
 	/** roles allowed to use this emoji */
-	roles: Snowflake[] | null
+	roles?: Snowflake[] | null
 }
 /** Edit given emoji */
 async function edit(

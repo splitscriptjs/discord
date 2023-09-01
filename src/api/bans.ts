@@ -8,19 +8,19 @@ class Ban<isCreate extends boolean> {
 	/** The user object that is banned (just contains `id` if this ban is from the `create` function) */
 	user: isCreate extends true ? { id: Snowflake } : User
 	/** The guild id that the user is banned in */
-	guild_id: Snowflake
+	guildId: Snowflake
 	/** Gets this ban
 	 *
 	 * Also updates this class instance
 	 */
 	async get() {
-		const rule = await get(this.guild_id, this.user.id)
+		const rule = await get(this.guildId, this.user.id)
 		Object.assign(this, rule)
 		return rule
 	}
 	/** Removes this ban */
 	async remove() {
-		return await remove(this.guild_id, this.user.id)
+		return await remove(this.guildId, this.user.id)
 	}
 	constructor(
 		ban: {
@@ -29,7 +29,7 @@ class Ban<isCreate extends boolean> {
 		},
 		guild_id: Snowflake
 	) {
-		this.guild_id = guild_id
+		this.guildId = guild_id
 		this.reason = ban.reason
 		this.user = ban.user
 	}

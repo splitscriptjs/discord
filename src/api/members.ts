@@ -1,41 +1,42 @@
 import request from '../utils/request.js'
 import { GuildMember as RawMember, Snowflake } from '../types'
 import { User } from '../types'
+import toCamelCase from '../utils/toCamelCase.js'
 
-class GuildMember implements RawMember {
+class GuildMember {
 	/** user this guild member represents */
-	user: User
+	user!: User
 	/** user's guild nickname */
 	nick?: string
 	/** user's guild avatar hash */
 	avatar?: string
 	/** array of role object ids */
-	roles: string[]
+	roles!: string[]
 	/** when user joined guild */
-	joined_at: string
+	joinedAt!: string
 	/** when user started boosting guild */
-	premium_since?: string | null
+	premiumSince?: string | null
 	/** whether user is deafened in voice channels */
-	deaf: boolean
+	deaf!: boolean
 	/** whether user is muted in voice channels */
-	mute: boolean
+	mute!: boolean
 	/** guild member flags as bit set */
-	flags: number
+	flags!: number
 	/** whether user has passed guild's membership screening requirements */
 	pending?: boolean
 	/** total permissions of member in channel */
 	permissions?: string
 	/** when user's timeout will expire */
-	communication_disable_until?: string | null
+	communicationDisableUntil?: string | null
 
-	guild_id: Snowflake
+	guildId: Snowflake
 
 	/** Gets this member
 	 *
 	 * Also updates this class instance
 	 */
 	async get() {
-		const result = await get(this.guild_id, this.user.id)
+		const result = await get(this.guildId, this.user.id)
 		Object.assign(this, result)
 		return result
 	}
@@ -49,47 +50,36 @@ class GuildMember implements RawMember {
 
 	/** Removes the member from its guild */
 	async remove() {
-		return await remove(this.guild_id, this.user.id)
+		return await remove(this.guildId, this.user.id)
 	}
 
 	/** Updates attributes of this member */
 	async edit(newMember: EditParams) {
-		const result = await edit(this.guild_id, this.user.id, newMember)
+		const result = await edit(this.guildId, this.user.id, newMember)
 		Object.assign(this, result)
 		return result
 	}
 
 	/** Updates the voice state of this member */
 	async updateVoice(newState: EditVoiceOptions) {
-		return await voice.update(this.guild_id, this.user.id, newState)
+		return await voice.update(this.guildId, this.user.id, newState)
 	}
 
 	role = {
 		/** Adds a role to this user */
 		add: async (roleId: Snowflake) => {
-			return await roles.add(this.guild_id, this.user.id, roleId)
+			return await roles.add(this.guildId, this.user.id, roleId)
 		},
 		/** Removes a role from this user */
 		remove: async (roleId: Snowflake) => {
-			return await roles.remove(this.guild_id, this.user.id, roleId)
+			return await roles.remove(this.guildId, this.user.id, roleId)
 		}
 	}
 
-	constructor(data: RawMember & { user: User }, guild_id: Snowflake) {
-		this.user = data.user
-		this.nick = data.nick
-		this.avatar = data.avatar
-		this.roles = data.roles
-		this.joined_at = data.joined_at
-		this.premium_since = data.premium_since
-		this.deaf = data.deaf
-		this.mute = data.mute
-		this.flags = data.flags
-		this.pending = data.pending
-		this.permissions = data.permissions
-		this.communication_disable_until = data.communication_disable_until
+	constructor(data: RawMember & { user: User }, guildId: Snowflake) {
+		Object.assign(this, toCamelCase(data))
 
-		this.guild_id = guild_id
+		this.guildId = guildId
 	}
 }
 
@@ -198,7 +188,7 @@ async function edit(
 		(await request.patch(
 			`guilds/${guildId}/members/${userId}`,
 			member
-		)) as unknown as GuildMember,
+		)) as unknown as RawMember & { user: User },
 		guildId
 	)
 }

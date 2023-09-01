@@ -1,27 +1,28 @@
 import request from '../utils/request.js'
 import { Snowflake, Role as RawRole, RoleTags } from '../types'
+import toCamelCase from '../utils/toCamelCase.js'
 
 class Role implements RawRole {
 	/** role id */
-	id: Snowflake
+	id!: Snowflake
 	/** role name */
-	name: string
+	name!: string
 	/** integer representation of hex color code */
-	color: number
+	color!: number
 	/** if role is pinned in user listing */
-	hoist: boolean
+	hoist!: boolean
 	/** role icon hash */
 	icon?: string
 	/** role unicode emoji */
-	unicode_emoji?: string | null
+	unicodeEmoji?: string | null
 	/** position of role */
-	position: number
+	position!: number
 	/** permission bit set */
-	permissions: string
+	permissions!: string
 	/** whether role is managed by an integration */
-	managed: boolean
+	managed!: boolean
 	/** whether role is mentionable */
-	mentionable: boolean
+	mentionable!: boolean
 	/** tags role has */
 	tags?: RoleTags
 
@@ -43,18 +44,7 @@ class Role implements RawRole {
 	}
 
 	constructor(role: RawRole, guildId: Snowflake) {
-		this.id = role.id
-		this.name = role.name
-		this.color = role.color
-		this.hoist = role.hoist
-		this.icon = role.icon
-		this.unicode_emoji = role.unicode_emoji
-		this.position = role.position
-		this.permissions = role.permissions
-		this.managed = role.managed
-		this.mentionable = role.mentionable
-		this.tags = role.tags
-
+		Object.assign(this, toCamelCase(role))
 		this.guildId = guildId
 	}
 }

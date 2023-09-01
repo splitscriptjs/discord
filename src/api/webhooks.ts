@@ -20,19 +20,20 @@ import {
 	Sticker,
 	RoleSubscriptionData
 } from '../types.js'
+import toCamelCase from '../utils/toCamelCase.js'
 
-class Webhook implements RawWebhook {
-	id: Snowflake
-	type: 1 | 2 | 3
-	guild_id?: Snowflake | null
-	channel_id: Snowflake | null
+class Webhook {
+	id!: Snowflake
+	type!: 1 | 2 | 3
+	guildId?: Snowflake | null
+	channelId!: Snowflake | null
 	user?: User
-	name: string | null
-	avatar: string | null
+	name!: string | null
+	avatar!: string | null
 	token?: string
-	application_id: Snowflake | null
-	source_guild?: Partial<Guild>
-	source_channel?: Partial<Channel>
+	applicationId!: Snowflake | null
+	sourceGuild?: Partial<Guild>
+	sourceChannel?: Partial<Channel>
 	url?: string
 
 	withToken: boolean
@@ -80,19 +81,8 @@ class Webhook implements RawWebhook {
 		return await execute(this.id, token ?? this.token, message, options)
 	}
 
-	constructor(data: RawWebhook, withToken = false) {
-		this.id = data.id
-		this.type = data.type
-		this.guild_id = data.guild_id
-		this.channel_id = data.channel_id
-		this.user = data.user
-		this.name = data.name
-		this.avatar = data.avatar
-		this.token = data.token
-		this.application_id = data.application_id
-		this.source_guild = data.source_guild
-		this.source_channel = data.source_channel
-		this.url = data.url
+	constructor(data: { [key: string]: any }, withToken = false) {
+		Object.assign(this, toCamelCase(data))
 
 		this.withToken = withToken
 	}
@@ -175,43 +165,13 @@ class WebhookMessage<Wait extends boolean> {
 		return await message.delete(this.webhookId, this.webhookToken, this.id)
 	}
 	constructor(
-		rawMessage: RawWebhookMessage<Wait> | null,
+		rawMessage: { [key: string]: any },
 		webhookId: Snowflake,
 		webhookToken: string,
 		threadId?: Snowflake
 	) {
 		if (rawMessage) {
-			this.id = rawMessage.id
-			this.channel_id = rawMessage.channel_id
-			this.author = rawMessage.author
-			this.content = rawMessage.content
-			this.timestamp = rawMessage.timestamp
-			this.edited_timestamp = rawMessage.edited_timestamp
-			this.tts = rawMessage.tts
-			this.mention_everyone = rawMessage.mention_everyone
-			this.mentions = rawMessage.mentions
-			this.mention_roles = rawMessage.mention_roles
-			this.mention_channels = rawMessage.mention_channels
-			this.attachments = rawMessage.attachments
-			this.embeds = rawMessage.embeds
-			this.reactions = rawMessage.reactions
-			this.nonce = rawMessage.nonce
-			this.pinned = rawMessage.pinned
-			this.webhook_id = rawMessage.webhook_id
-			this.type = rawMessage.type
-			this.activity = rawMessage.activity
-			this.application = rawMessage.application
-			this.application_id = rawMessage.application_id
-			this.message_reference = rawMessage.message_reference
-			this.flags = rawMessage.flags
-			this.referenced_message = rawMessage.referenced_message
-			this.interaction = rawMessage.interaction
-			this.thread = rawMessage.thread
-			this.components = rawMessage.components
-			this.sticker_items = rawMessage.sticker_items
-			this.stickers = rawMessage.stickers
-			this.position = rawMessage.position
-			this.role_subscription_data = rawMessage.role_subscription_data
+			Object.assign(this, toCamelCase(rawMessage))
 		}
 
 		this.webhookId = webhookId
@@ -310,7 +270,7 @@ const withToken = {
 			(await request.patch(
 				`webhooks/${webhookId}/${webhookToken}`,
 				webhook
-			)) as unknown as Omit<Webhook, 'user'>
+			)) as { [key: string]: any }
 		)
 	},
 	/** Delete a webhook permanently, doesn't require being logged in, by the webhook token */
@@ -404,7 +364,7 @@ async function execute<Wait extends boolean>(
 			`webhooks/${webhookId}/${webhookToken}`,
 			data,
 			options
-		)) as unknown as Wait extends true ? RawWebhookMessage<boolean> : null,
+		)) as { [key: string]: any },
 		webhookId,
 		webhookToken
 	)

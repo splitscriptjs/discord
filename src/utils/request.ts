@@ -2,6 +2,7 @@ import https from '@splitscript.js/https'
 import httpTypes from 'node:http'
 
 import variable from './variable.js'
+import toSnakeCase from './toSnakeCase.js'
 
 const url = `https://discord.com/api/v10/`
 
@@ -37,7 +38,7 @@ export async function post(path: string, body?: any, params?: any) {
 		path = path.replace('{APP_ID}', APP_ID)
 	}
 	const { res, data } = await https.post(url + path, {
-		body: body,
+		body: toSnakeCase(body),
 		params: params,
 		headers: {
 			Authorization: `Bot ${variable.get('token')}`,
@@ -54,7 +55,7 @@ export async function patch(path: string, body?: any, params?: any) {
 		path = path.replace('{APP_ID}', APP_ID)
 	}
 	const { res, data } = await https.patch(url + path, {
-		body: body,
+		body: toSnakeCase(body),
 		params: params,
 		headers: {
 			Authorization: `Bot ${variable.get('token')}`,
@@ -71,7 +72,7 @@ export async function put(path: string, body?: any) {
 		path = path.replace('{APP_ID}', APP_ID)
 	}
 	const { res, data } = await https.put(url + path, {
-		body: body,
+		body: toSnakeCase(body),
 		headers: {
 			Authorization: `Bot ${variable.get('token')}`,
 			'Content-Type': 'application/json'
@@ -87,7 +88,7 @@ async function _delete(path: string, body?: any, params?: any) {
 		path = path.replace('{APP_ID}', APP_ID)
 	}
 	const { res, data } = await https.delete(url + path, {
-		body: body,
+		body: toSnakeCase(body),
 		params: params,
 		headers: {
 			Authorization: `Bot ${variable.get('token')}`,

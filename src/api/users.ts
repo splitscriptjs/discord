@@ -1,21 +1,22 @@
 import request from '../utils/request.js'
 import { Channel, Snowflake, User as RawUser } from '../types'
+import toCamelCase from '../utils/toCamelCase.js'
 
 class User<isMe extends boolean> implements RawUser {
-	id: Snowflake
-	username: string
-	discriminator: string
-	avatar: string | null
+	id!: Snowflake
+	username!: string
+	discriminator!: string
+	avatar!: string | null
 	bot?: boolean
 	system?: boolean
-	mfa_enabled?: boolean | null | undefined
-	accent_color?: number | null | undefined
+	mfaEnabled?: boolean | null | undefined
+	accentColor?: number | null | undefined
 	locale?: string
 	verified?: boolean
 	email?: string | null
 	flags?: number
-	premium_type?: number
-	public_flags?: number
+	premiumType?: number
+	publicFlags?: number
 	isMe: boolean
 
 	/** Gets this user
@@ -44,20 +45,7 @@ class User<isMe extends boolean> implements RawUser {
 		: never
 
 	constructor(data: RawUser, isMe: boolean = false) {
-		this.id = data.id
-		this.username = data.username
-		this.discriminator = data.discriminator
-		this.avatar = data.avatar
-		this.bot = data.bot
-		this.system = data.system
-		this.mfa_enabled = data.mfa_enabled
-		this.accent_color = data.accent_color
-		this.locale = data.locale
-		this.verified = data.verified
-		this.email = data.email
-		this.flags = data.flags
-		this.premium_type = data.premium_type
-		this.public_flags = data.public_flags
+		Object.assign(this, toCamelCase(data))
 
 		this.isMe = isMe
 		if (isMe) {

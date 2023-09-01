@@ -7,26 +7,27 @@ import {
 	LocaleObject,
 	Snowflake
 } from '../types'
+import toCamelCase from '../utils/toCamelCase.js'
 
 class Command {
-	id: Snowflake
+	id!: Snowflake
 	type?: number
-	application_id: Snowflake
-	guild_id?: Snowflake
-	name: string
-	name_localizations: object | null | undefined
-	description: string
-	description_localizations?: object | null | undefined
+	applicationId!: Snowflake
+	guildId?: Snowflake
+	name!: string
+	nameLocalizations: object | null | undefined
+	description!: string
+	descriptionLocalizations?: object | null | undefined
 	options?: CommandOption[]
-	default_member_permissions: string | null
-	dm_permission?: boolean
-	default_permission?: boolean | null | undefined
+	defaultMemberPermissions!: string | null
+	dmPermission?: boolean
+	defaultPermission?: boolean | null | undefined
 	nsfw?: boolean
-	version: string
+	version!: string
 
 	/** Deletes this channel */
 	async delete() {
-		return await _delete(this.id, this.guild_id)
+		return await _delete(this.id, this.guildId)
 	}
 	/** Updates this channel
 	 *
@@ -42,7 +43,7 @@ class Command {
 	 * Also updates this class instance
 	 */
 	async get() {
-		const result = await get(this.id, this.guild_id)
+		const result = await get(this.id, this.guildId)
 		Object.assign(this, result)
 		return result
 	}
@@ -51,32 +52,15 @@ class Command {
 	async getPermissions(guildId?: Snowflake): Promise<CommandPermission> {
 		if (guildId) {
 			return await permissions.get(this.id, guildId)
-		} else if (!this.guild_id) {
+		} else if (!this.guildId) {
 			throw new Error('This is not a guild command, must have `guildId`')
 		} else {
-			return await permissions.get(this.id, this.guild_id)
+			return await permissions.get(this.id, this.guildId)
 		}
 	}
 	constructor(command: RawCommand) {
-		this.id = command.id
-		this.type = command.type
-		this.application_id = command.application_id
-		this.guild_id = command.guild_id
-		this.name = command.name
-		this.name_localizations = command.name_localizations
-		this.description = command.description
-		this.description_localizations = command.description_localizations
-		this.options = command.options
-		this.default_member_permissions = command.default_member_permissions
-		this.dm_permission = command.dm_permission
-		this.default_permission = command.default_permission
-		this.nsfw = command.nsfw
-		this.version = command.version
+		Object.assign(this, toCamelCase(command))
 	}
-}
-async function a() {
-	const command = await get('1')
-	const perms = await command.getPermissions()
 }
 
 async function create(

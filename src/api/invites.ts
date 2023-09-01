@@ -6,33 +6,34 @@ import { User } from '../types.js'
 import { InviteStageInstance } from '../types.js'
 import { Application } from '../types.js'
 import { GuildScheduledEvent } from '../types.js'
+import toCamelCase from '../utils/toCamelCase.js'
 
 type NeverIfFalse<B extends boolean, T> = B extends true ? T : never
 
 class Invite<hasMetadata extends boolean> implements RawInvite {
-	code: string
+	code!: string
 	guild?: Guild
 	channel: Channel | null | undefined
 	inviter?: User
-	target_type?: number
-	target_user?: User
-	target_application?: Partial<Application>
-	approximate_presence_count?: number
-	approximate_member_count?: number
-	expires_at?: string | null
-	stage_instance?: InviteStageInstance
-	guild_scheduled_event?: GuildScheduledEvent
+	targetType?: number
+	targetUser?: User
+	targetApplication?: Partial<Application>
+	approximatePresenceCount?: number
+	approximateMemberCount?: number
+	expiresAt?: string | null
+	stageInstance?: InviteStageInstance
+	guildScheduledEvent?: GuildScheduledEvent
 
 	/** number of times this invite has been used */
 	uses?: NeverIfFalse<hasMetadata, number>
 	/** max number of times this invite can be used */
-	max_uses?: NeverIfFalse<hasMetadata, number>
+	maxUses?: NeverIfFalse<hasMetadata, number>
 	/** duration (in seconds) after which the invite expires */
-	max_age?: NeverIfFalse<hasMetadata, number>
+	maxAge?: NeverIfFalse<hasMetadata, number>
 	/** whether this invite only grants temporary membership */
 	temporary?: NeverIfFalse<hasMetadata, number>
 	/** when this invite was created */
-	created_at?: NeverIfFalse<hasMetadata, number>
+	createdAt?: NeverIfFalse<hasMetadata, number>
 
 	/** Gets this invite
 	 *
@@ -57,24 +58,7 @@ class Invite<hasMetadata extends boolean> implements RawInvite {
 			created_at?: NeverIfFalse<hasMetadata, number>
 		}
 	) {
-		this.code = data.code
-		this.guild = data.guild
-		this.channel = data.channel
-		this.inviter = data.inviter
-		this.target_type = data.target_type
-		this.target_user = data.target_user
-		this.target_application = data.target_application
-		this.approximate_presence_count = data.approximate_presence_count
-		this.approximate_member_count = data.approximate_member_count
-		this.expires_at = data.expires_at
-		this.stage_instance = data.stage_instance
-		this.guild_scheduled_event = data.guild_scheduled_event
-
-		this.uses = data.uses
-		this.max_uses = data.max_uses
-		this.max_age = data.max_age
-		this.temporary = data.temporary
-		this.created_at = data.created_at
+		Object.assign(this, toCamelCase(data))
 	}
 }
 

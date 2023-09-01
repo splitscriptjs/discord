@@ -7,14 +7,15 @@ import {
 	Channel,
 	User
 } from '../types.js'
+import toCamelCase from '../utils/toCamelCase.js'
 
-class Widget implements RawWidget {
-	id: Snowflake
-	name: string
-	instant_invite: string | null
-	channels: Partial<Channel>[]
-	members: Partial<User>[]
-	presence_count: number
+class Widget {
+	id!: Snowflake
+	name!: string
+	instantInvite!: string | null
+	channels!: Partial<Channel>[]
+	members!: Partial<User>[]
+	presenceCount!: number
 
 	/** Gets this widget settings */
 	async settings() {
@@ -44,12 +45,7 @@ class Widget implements RawWidget {
 	}
 
 	constructor(data: RawWidget) {
-		this.id = data.id
-		this.name = data.name
-		this.instant_invite = data.instant_invite
-		this.channels = data.channels
-		this.members = data.members
-		this.presence_count = data.presence_count
+		Object.assign(this, toCamelCase(data))
 	}
 }
 

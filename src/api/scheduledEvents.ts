@@ -9,24 +9,25 @@ import {
 	Snowflake,
 	User
 } from '../types'
+import toCamelCase from '../utils/toCamelCase.js'
 
-class ScheduledEvent implements GuildScheduledEvent {
+class ScheduledEvent {
 	//#region
-	id: Snowflake
-	guild_id: Snowflake
-	channel_id: Snowflake | null
-	creator_id?: Snowflake | null
-	name: string
+	id!: Snowflake
+	guildId!: Snowflake
+	channelId!: Snowflake | null
+	creatorId?: Snowflake | null
+	name!: string
 	description?: string | null
-	scheduled_start_time: string
-	scheduled_end_time: string | null
-	privacy_level: number
-	status: number
-	entity_type: number
-	entity_id: Snowflake | null
-	entity_metadata: EntityMetadata | null | undefined
+	scheduledStartTime!: string
+	scheduledEndTime!: string | null
+	privacyLevel!: number
+	status!: number
+	entityType!: number
+	entityId!: Snowflake | null
+	entityMetadata: EntityMetadata | null | undefined
 	creator?: User
-	user_count?: number
+	userCount?: number
 	image?: string
 	//#endregion
 
@@ -35,14 +36,14 @@ class ScheduledEvent implements GuildScheduledEvent {
 	 * Also updates this class instance
 	 */
 	async get(withUserCount?: boolean): Promise<ScheduledEvent> {
-		const result = await get(this.guild_id, this.id, withUserCount)
+		const result = await get(this.guildId, this.id, withUserCount)
 		Object.assign(this, result)
 		return result
 	}
 
 	/** Gets a list of users subscribed to this scheduled event */
 	async getUsers(options?: GetUserOptions) {
-		return await getUsers(this.guild_id, this.id, options)
+		return await getUsers(this.guildId, this.id, options)
 	}
 
 	/** Updates this scheduled event
@@ -50,32 +51,18 @@ class ScheduledEvent implements GuildScheduledEvent {
 	 * Also updates this class instance
 	 */
 	async edit(scheduledEvent: EditParams): Promise<ScheduledEvent> {
-		const result = await edit(this.guild_id, this.id, scheduledEvent)
+		const result = await edit(this.guildId, this.id, scheduledEvent)
 		Object.assign(this, result)
 		return result
 	}
 
 	/** Deletes this scheduled event */
 	async delete() {
-		return await _delete(this.guild_id, this.id)
+		return await _delete(this.guildId, this.id)
 	}
 
 	constructor(data: GuildScheduledEvent) {
-		this.id = data.id
-		this.guild_id = data.guild_id
-		this.channel_id = data.guild_id
-		this.creator_id = data.creator_id
-		this.name = data.name
-		this.scheduled_start_time = data.scheduled_start_time
-		this.scheduled_end_time = data.scheduled_end_time
-		this.privacy_level = data.privacy_level
-		this.status = data.status
-		this.entity_type = data.entity_type
-		this.entity_id = data.entity_id
-		this.entity_metadata = data.entity_metadata
-		this.creator = data.creator
-		this.user_count = data.user_count
-		this.image = data.image
+		Object.assign(this, toCamelCase(data))
 	}
 }
 

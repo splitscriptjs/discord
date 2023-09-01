@@ -1,19 +1,20 @@
 import request from '../utils/request.js'
 import { Guild, Snowflake, Template as RawTemplate, User } from '../types'
+import toCamelCase from '../utils/toCamelCase.js'
 
-class Template implements RawTemplate {
+class Template {
 	//#region
-	code: string
-	name: string
-	description: string | null
-	usage_count: number
-	creator_id: Snowflake
-	creator: User
-	created_at: string
-	updated_at: string
-	source_guild_id: Snowflake
-	serialized_source_guild: Partial<Guild>
-	is_dirty: boolean | null
+	code!: string
+	name!: string
+	description!: string | null
+	usageCount!: number
+	creatorId!: Snowflake
+	creator!: User
+	createdAt!: string
+	updatedAt!: string
+	sourceGuildId!: Snowflake
+	serializedSourceGuild!: Partial<Guild>
+	isDirty!: boolean | null
 	//#endregion
 
 	/** Gets this template
@@ -36,7 +37,7 @@ class Template implements RawTemplate {
 	 * Also updates this class instance
 	 */
 	async sync() {
-		const result = await sync(this.source_guild_id, this.code)
+		const result = await sync(this.sourceGuildId, this.code)
 		Object.assign(this, result)
 		return result
 	}
@@ -46,28 +47,18 @@ class Template implements RawTemplate {
 	 * Also updates this class instance
 	 */
 	async edit(template: EditParams) {
-		const result = await edit(this.source_guild_id, this.code, template)
+		const result = await edit(this.sourceGuildId, this.code, template)
 		Object.assign(this, result)
 		return result
 	}
 
 	/** Deletes this template */
 	async delete() {
-		return await _delete(this.source_guild_id, this.code)
+		return await _delete(this.sourceGuildId, this.code)
 	}
 
 	constructor(data: RawTemplate) {
-		this.code = data.code
-		this.name = data.name
-		this.description = data.description
-		this.usage_count = data.usage_count
-		this.creator_id = data.creator_id
-		this.creator = data.creator
-		this.created_at = data.created_at
-		this.updated_at = data.updated_at
-		this.source_guild_id = data.source_guild_id
-		this.serialized_source_guild = data.serialized_source_guild
-		this.is_dirty = data.is_dirty
+		Object.assign(this, toCamelCase(data))
 	}
 }
 
@@ -142,7 +133,7 @@ async function edit(
 		(await request.patch(
 			`guilds/${guildId}/templates/${code}`,
 			template
-		)) as unknown as Template
+		)) as unknown as RawTemplate
 	)
 }
 /** Deletes the template */

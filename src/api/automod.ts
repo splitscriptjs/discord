@@ -5,45 +5,36 @@ import {
 	Snowflake,
 	AutomodRule
 } from '../types'
+import toCamelCase from '../utils/toCamelCase.js'
 
-class Rule implements AutomodRule {
-	id: Snowflake
-	guild_id: Snowflake
-	name: string
-	creator_id: Snowflake
-	event_type: 1
-	trigger_type: 1 | 3 | 4 | 5
-	trigger_metadata: object
-	actions: AutomodAction[]
-	enabled: boolean
-	exempt_roles: Snowflake[]
-	exempt_channels: Snowflake[]
+class Rule {
+	id!: Snowflake
+	guildId!: Snowflake
+	name!: string
+	creatorId!: Snowflake
+	eventType!: 1
+	triggerType!: 1 | 3 | 4 | 5
+	triggerMetadata!: object
+	actions!: AutomodAction[]
+	enabled!: boolean
+	exemptRoles!: Snowflake[]
+	exemptChannels!: Snowflake[]
 
 	async get() {
-		const rule = await get(this.guild_id, this.id)
+		const rule = await get(this.guildId, this.id)
 		Object.assign(this, rule)
 		return rule
 	}
 	async edit(updatedRule: Partial<EditParams>) {
-		const modified = await edit(this.guild_id, this.id, updatedRule)
+		const modified = await edit(this.guildId, this.id, updatedRule)
 		Object.assign(this, modified)
 		return modified
 	}
 	async delete() {
-		return await _delete(this.guild_id, this.id)
+		return await _delete(this.guildId, this.id)
 	}
 	constructor(rule: AutomodRule) {
-		this.id = rule.id
-		this.guild_id = rule.guild_id
-		this.name = rule.name
-		this.creator_id = rule.creator_id
-		this.event_type = rule.event_type
-		this.trigger_type = rule.trigger_type
-		this.trigger_metadata = rule.trigger_metadata
-		this.actions = rule.actions
-		this.enabled = rule.enabled
-		this.exempt_roles = rule.exempt_roles
-		this.exempt_channels = rule.exempt_channels
+		Object.assign(this, toCamelCase(rule))
 	}
 }
 /** Get a list of all rules currently configured for the guild */
@@ -65,19 +56,19 @@ type CreateParams = {
 	/** the rule name */
 	name: string
 	/** the event type */
-	event_type: number
+	eventType: number
 	/** the trigger type */
-	trigger_type: 1 | 3 | 4 | 5
+	triggerType: 1 | 3 | 4 | 5
 	/** the trigger metadata */
-	trigger_metadata?: TriggerMetadata
+	triggerMetadata?: TriggerMetadata
 	/** the actions which will execute when the rule is triggered */
 	actions: AutomodAction[]
 	/** whether the rule is enabled (`false` by default) */
 	enabled?: boolean
 	/** the role ids that should not be affected by the rule (Maximum of 20) */
-	exempt_roles?: Snowflake[]
+	exemptRoles?: Snowflake[]
 	/** the channel ids that should not be affected by the rule (Maximum of 50) */
-	exempt_channels?: Snowflake[]
+	exemptChannels?: Snowflake[]
 }
 /** Create a new rule */
 async function create(guildId: Snowflake, rule: CreateParams): Promise<Rule> {
@@ -87,7 +78,7 @@ async function create(guildId: Snowflake, rule: CreateParams): Promise<Rule> {
 	)) as unknown as AutomodRule
 	return new Rule(newRule)
 }
-type EditParams = Omit<CreateParams, 'trigger_type'>
+type EditParams = Omit<CreateParams, 'triggerType'>
 /** Edit an existing rule */
 async function edit(
 	guildId: Snowflake,
