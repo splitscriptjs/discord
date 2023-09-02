@@ -6,7 +6,7 @@ import toSnakeCase from './toSnakeCase.js'
 
 const url = `https://discord.com/api/v10/`
 
-function handeErr(res: httpTypes.IncomingMessage, data: any) {
+function handeErr(res: httpTypes.IncomingMessage, data: string | object) {
 	if (res.statusCode && res.statusCode >= 400) {
 		throw new Error(
 			`${res.statusCode ? res.statusCode : ''} ${
@@ -22,7 +22,7 @@ export async function get(path: string, params?: object) {
 		path = path.replace('{APP_ID}', APP_ID)
 	}
 	const { res, data } = await https.get(url + path, {
-		params: params,
+		params: toSnakeCase(params),
 		headers: {
 			Authorization: `Bot ${variable.get('token')}`,
 			'Content-Type': 'application/json'
@@ -31,7 +31,11 @@ export async function get(path: string, params?: object) {
 	handeErr(res, data)
 	return data
 }
-export async function post(path: string, body?: any, params?: any) {
+export async function post(
+	path: string,
+	body?: { [key: string]: unknown } | { [key: string]: unknown }[],
+	params?: { [key: string]: unknown }
+) {
 	if (path.includes('{APP_ID}')) {
 		const APP_ID = variable.get('app_id')
 		if (!APP_ID) throw new Error('Not logged in')
@@ -39,7 +43,7 @@ export async function post(path: string, body?: any, params?: any) {
 	}
 	const { res, data } = await https.post(url + path, {
 		body: toSnakeCase(body),
-		params: params,
+		params: toSnakeCase(params),
 		headers: {
 			Authorization: `Bot ${variable.get('token')}`,
 			'Content-Type': 'application/json'
@@ -48,7 +52,11 @@ export async function post(path: string, body?: any, params?: any) {
 	handeErr(res, data)
 	return data
 }
-export async function patch(path: string, body?: any, params?: any) {
+export async function patch(
+	path: string,
+	body?: { [key: string]: unknown } | { [key: string]: unknown }[],
+	params?: { [key: string]: unknown }
+) {
 	if (path.includes('{APP_ID}')) {
 		const APP_ID = variable.get('app_id')
 		if (!APP_ID) throw new Error('Not logged in')
@@ -56,7 +64,7 @@ export async function patch(path: string, body?: any, params?: any) {
 	}
 	const { res, data } = await https.patch(url + path, {
 		body: toSnakeCase(body),
-		params: params,
+		params: toSnakeCase(params),
 		headers: {
 			Authorization: `Bot ${variable.get('token')}`,
 			'Content-Type': 'application/json'
@@ -65,7 +73,10 @@ export async function patch(path: string, body?: any, params?: any) {
 	handeErr(res, data)
 	return data
 }
-export async function put(path: string, body?: any) {
+export async function put(
+	path: string,
+	body?: { [key: string]: unknown } | { [key: string]: unknown }[]
+) {
 	if (path.includes('{APP_ID}')) {
 		const APP_ID = variable.get('app_id')
 		if (!APP_ID) throw new Error('Not logged in')
@@ -81,7 +92,11 @@ export async function put(path: string, body?: any) {
 	handeErr(res, data)
 	return data
 }
-async function _delete(path: string, body?: any, params?: any) {
+async function _delete(
+	path: string,
+	body?: { [key: string]: unknown } | { [key: string]: unknown }[],
+	params?: { [key: string]: unknown }
+) {
 	if (path.includes('{APP_ID}')) {
 		const APP_ID = variable.get('app_id')
 		if (!APP_ID) throw new Error('Not logged in')
@@ -89,7 +104,7 @@ async function _delete(path: string, body?: any, params?: any) {
 	}
 	const { res, data } = await https.delete(url + path, {
 		body: toSnakeCase(body),
-		params: params,
+		params: toSnakeCase(params),
 		headers: {
 			Authorization: `Bot ${variable.get('token')}`,
 			'Content-Type': 'application/json'

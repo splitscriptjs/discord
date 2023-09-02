@@ -131,7 +131,7 @@ async function search(
 }
 type AddOptions = {
 	/** an oauth2 access token granted with the `guilds.join` to the bot's application for the user you want to add to the guild */
-	access_token: string
+	accessToken: string
 	/** value to set user's nickname to */
 	nick?: string
 	/** array of role ids the member is assigned */
@@ -172,9 +172,9 @@ type EditParams = {
 	/** whether the user is deafened in voice channels. Will throw a 400 error if the user is not in a voice channel */
 	deaf: boolean
 	/** id of channel to move user to (if they are connected to voice) */
-	channel_id: Snowflake
+	channelId: Snowflake
 	/** when the user's timeout will expire and the user will be able to communicate in the guild again (up to 28 days in the future), set to null to remove timeout. Will throw a 403 error if the user has the ADMINISTRATOR permission or is the owner of the guild */
-	communication_disabled_until: string
+	communicationDisabledUntil: string
 	/** guild member flags */
 	flags: number
 }
@@ -194,7 +194,7 @@ async function edit(
 }
 type EditVoiceOptions = {
 	/** the id of the channel the user is currently in */
-	channel_id: Snowflake
+	channelId: Snowflake
 	/** toggles the user's suppress state */
 	suppress?: boolean
 }
@@ -204,11 +204,11 @@ const voice = {
 		guildId: Snowflake,
 		options: {
 			/** the id of the channel the user is currently in */
-			channel_id?: Snowflake
+			channelId?: Snowflake
 			/** toggles the user's suppress state */
 			suppress?: boolean
 			/** sets the user's request to speak */
-			request_to_speak_timestamp?: string | null
+			requestToSpeakTimestamp?: string | null
 		}
 	): Promise<void> {
 		return request.patch(

@@ -1,25 +1,25 @@
-import request from '../utils/request.js'
 import {
 	AllowedMentions,
+	Application,
 	Attachment,
-	Component,
-	Embed,
-	Message,
-	Snowflake,
-	Webhook as RawWebhook,
-	User,
-	Guild,
 	Channel,
 	ChannelMention,
-	Reaction,
+	Component,
+	Embed,
+	Guild,
+	Message,
 	MessageActivity,
-	Application,
-	MessageReference,
 	MessageInteraction,
-	StickerItem,
+	MessageReference,
+	Webhook as RawWebhook,
+	Reaction,
+	RoleSubscriptionData,
+	Snowflake,
 	Sticker,
-	RoleSubscriptionData
+	StickerItem,
+	User
 } from '../types.js'
+import request from '../utils/request.js'
 import toCamelCase from '../utils/toCamelCase.js'
 
 class Webhook {
@@ -81,49 +81,46 @@ class Webhook {
 		return await execute(this.id, token ?? this.token, message, options)
 	}
 
-	constructor(data: { [key: string]: any }, withToken = false) {
+	constructor(data: { [key: string]: unknown }, withToken = false) {
 		Object.assign(this, toCamelCase(data))
 
 		this.withToken = withToken
 	}
 }
 type NeverIfFalse<B extends boolean | false, T> = B extends true ? T : never
-type RawWebhookMessage<Wait extends boolean> = {
-	[K in keyof Message]: NeverIfFalse<Wait, NonNullable<Message[K]>>
-}
+
 class WebhookMessage<Wait extends boolean> {
 	//#region
 	id!: NeverIfFalse<Wait, Snowflake>
-	channel_id!: NeverIfFalse<Wait, Snowflake>
+	channelId!: NeverIfFalse<Wait, Snowflake>
 	author!: NeverIfFalse<Wait, User>
 	content!: NeverIfFalse<Wait, string>
 	timestamp!: NeverIfFalse<Wait, string>
-	edited_timestamp!: NeverIfFalse<Wait, string | null>
+	editedTimestamp!: NeverIfFalse<Wait, string | null>
 	tts!: NeverIfFalse<Wait, boolean>
-	mention_everyone!: NeverIfFalse<Wait, boolean>
+	mentionEveryone!: NeverIfFalse<Wait, boolean>
 	mentions!: NeverIfFalse<Wait, User[]>
-	mention_roles!: NeverIfFalse<Wait, string[]>
-	mention_channels?: NeverIfFalse<Wait, ChannelMention[]>
+	mentionRoles!: NeverIfFalse<Wait, string[]>
+	mentionChannels?: NeverIfFalse<Wait, ChannelMention[]>
 	attachments!: NeverIfFalse<Wait, Attachment[]>
 	embeds!: NeverIfFalse<Wait, Embed[]>
 	reactions!: NeverIfFalse<Wait, Reaction[]>
 	nonce?: NeverIfFalse<Wait, number | string>
 	pinned!: NeverIfFalse<Wait, boolean>
-	webhook_id?: NeverIfFalse<Wait, Snowflake>
 	type!: NeverIfFalse<Wait, number>
 	activity?: NeverIfFalse<Wait, MessageActivity>
 	application?: NeverIfFalse<Wait, Partial<Application>>
-	application_id?: NeverIfFalse<Wait, Snowflake>
-	message_reference?: MessageReference
+	applicationId?: NeverIfFalse<Wait, Snowflake>
+	messageReference?: MessageReference
 	flags?: NeverIfFalse<Wait, number>
-	referenced_message?: NeverIfFalse<Wait, Message | null>
+	referencedMessage?: NeverIfFalse<Wait, Message | null>
 	interaction?: NeverIfFalse<Wait, MessageInteraction>
 	thread?: NeverIfFalse<Wait, Channel>
 	components?: NeverIfFalse<Wait, Component[]>
-	sticker_items?: NeverIfFalse<Wait, StickerItem[]>
+	stickerItems?: NeverIfFalse<Wait, StickerItem[]>
 	stickers?: NeverIfFalse<Wait, Sticker[]>
 	position?: NeverIfFalse<Wait, number>
-	role_subscription_data?: NeverIfFalse<Wait, RoleSubscriptionData>
+	roleSubscriptionData?: NeverIfFalse<Wait, RoleSubscriptionData>
 	//#endregion
 
 	webhookId: Snowflake
@@ -165,7 +162,7 @@ class WebhookMessage<Wait extends boolean> {
 		return await message.delete(this.webhookId, this.webhookToken, this.id)
 	}
 	constructor(
-		rawMessage: { [key: string]: any },
+		rawMessage: { [key: string]: unknown },
 		webhookId: Snowflake,
 		webhookToken: string,
 		threadId?: Snowflake
@@ -225,7 +222,7 @@ type EditParams = {
 	/** image for the default webhook avatar */
 	avatar?: string | null
 	/** the new channel id this webhook should be moved to */
-	channel_id?: Snowflake
+	channelId?: Snowflake
 }
 /** Edit a webhook */
 async function edit(
@@ -270,7 +267,7 @@ const withToken = {
 			(await request.patch(
 				`webhooks/${webhookId}/${webhookToken}`,
 				webhook
-			)) as { [key: string]: any }
+			)) as { [key: string]: unknown }
 		)
 	},
 	/** Delete a webhook permanently, doesn't require being logged in, by the webhook token */
@@ -278,23 +275,6 @@ const withToken = {
 		return request.delete(
 			`webhooks/${webhookId}/${webhookToken}`
 		) as unknown as void
-	}
-}
-async function g() {
-	const wToken = await withToken.get('124', '')
-	wToken.edit({})
-	const msg = await wToken.execute(
-		{
-			content: ''
-		},
-		{
-			wait: true
-		}
-	)
-	if (wToken.token) {
-		await execute(wToken.id, wToken.token, {
-			content: ''
-		})
 	}
 }
 type ExecuteParams = {
@@ -305,7 +285,7 @@ type ExecuteParams = {
 	/** Up to 10 `rich` embeds (up to 6000 characters) */
 	embeds?: Embed[]
 	/** Allowed mentions for the message */
-	allowed_mentions?: AllowedMentions
+	allowedMentions?: AllowedMentions
 	/** Components to include with the message */
 	components?: Component[]
 	/** 	Contents of the file being sent. */
@@ -315,7 +295,7 @@ type ExecuteParams = {
 	/** Message flags combined as a bitfield (only `SUPPRESS_EMBEDS` can be set) */
 	flags?: number
 	/** name of thread to create (requires the webhook channel to be a forum channel) */
-	thread_name?: string
+	threadName?: string
 } & (
 	| {
 			content: string
@@ -346,7 +326,7 @@ type ExecuteOptions<Wait extends boolean> = {
 	/** 	waits for server confirmation of message send before response, and returns the created message body (defaults to `false`; when `false` a message that is not saved does not return an error) */
 	wait?: Wait
 	/** Send a message to the specified thread within a webhook's channel. The thread will automatically be unarchived. */
-	thread_id?: Snowflake
+	threadId?: Snowflake
 }
 /**
  * Sends a message to a webhook
@@ -364,7 +344,7 @@ async function execute<Wait extends boolean>(
 			`webhooks/${webhookId}/${webhookToken}`,
 			data,
 			options
-		)) as { [key: string]: any },
+		)) as { [key: string]: unknown },
 		webhookId,
 		webhookToken
 	)
@@ -375,7 +355,7 @@ type EditMessageParams = {
 	/** embedded `rich` content */
 	embeds?: Embed[] | null
 	/** allowed mentions for the message */
-	allowed_mentions?: AllowedMentions[] | null
+	allowedMentions?: AllowedMentions[] | null
 	/** the components to include with the message */
 	components?: Component[] | null
 	/** the contents of the file being sent/edited */
@@ -407,7 +387,7 @@ const message = {
 		return request.patch(
 			`webhooks/${webhookId}/${webhookToken}/messages/${messageId}`,
 			message,
-			threadId ? { threadId } : null
+			threadId ? { threadId } : undefined
 		) as unknown as Message
 	},
 	/** Deletes a message that was created by the webhook */
@@ -419,8 +399,8 @@ const message = {
 	): Promise<void> {
 		return request.delete(
 			`webhooks/${webhookId}/${webhookToken}/messages/${messageId}`,
-			null,
-			threadId ? { threadId } : null
+			undefined,
+			threadId ? { threadId } : undefined
 		) as unknown as void
 	}
 }

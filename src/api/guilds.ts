@@ -133,23 +133,23 @@ type CreateParams = {
 	/** base64 128x128 image for the guild icon */
 	icon?: string
 	/** verification level */
-	verification_level?: 0 | 1 | 2 | 3 | 4
+	verificationLevel?: 0 | 1 | 2 | 3 | 4
 	/** default message notification level */
-	default_message_notifications?: 0 | 1
+	defaultMessageNotifications?: 0 | 1
 	/** explicit content filter level */
-	explicit_content_filter?: 0 | 1 | 2
+	explicitContentFilter?: 0 | 1 | 2
 	/** new guild roles */
 	roles: Role[]
 	/** new guild's channels */
 	channels?: Partial<Channel>[]
 	/** id for afk channel */
-	afk_channel_id?: Snowflake
+	afkChannelId?: Snowflake
 	/** afk timeout in seconds, can be set to: 60, 300, 900, 1800, 3600 */
-	afk_timeout?: 60 | 300 | 900 | 1800 | 3600
+	afkTimeout?: 60 | 300 | 900 | 1800 | 3600
 	/** the id of the channel where guild notices such as welcome messages and boost events are posted */
-	system_channel_id?: Snowflake
+	systemChannelId?: Snowflake
 	/** system channel flags */
-	system_channel_flags?: number
+	systemChannelFlags?: number
 }
 /** Create a new guild.  */
 async function create(guild: CreateParams): Promise<Guild<false>> {
@@ -159,7 +159,7 @@ async function create(guild: CreateParams): Promise<Guild<false>> {
 async function get(id: Snowflake, withCounts?: boolean): Promise<Guild<false>> {
 	return new Guild(
 		(await request.get(`guilds/${id}`, {
-			with_counts: withCounts
+			withCounts
 		})) as unknown as RawGuild
 	)
 }
@@ -174,15 +174,8 @@ type ListParams = {
 /** Get a list of guilds the user is in */
 async function list(options?: ListParams): Promise<Guild<true>[]> {
 	return (
-		(
-			(await request.get(
-				`users/@me/guilds`,
-				options
-			)) as unknown as Partial<RawGuild>[]
-		)
-			//@ts-ignore
-			.map((guild) => new Guild(guild))
-	)
+		(await request.get(`users/@me/guilds`, options)) as unknown as RawGuild[]
+	).map((guild) => new Guild<true>(guild))
 }
 
 /** Returns the guild preview object for the given id. If the user is not in the guild, then the guild must be lurkable. */
@@ -195,9 +188,9 @@ async function vanity(id: Snowflake): Promise<Partial<Invite>> {
 }
 type GetAuditLogOptions = {
 	/** Entries from a specific user ID */
-	user_id?: Snowflake
+	userId?: Snowflake
 	/** Entries for a specific audit log event */
-	action_type?: number
+	actionType?: number
 	/** Entries with ID less than a specific audit log entry ID */
 	before?: Snowflake
 	/** Entries with ID greater than a specific audit log entry ID */
@@ -221,43 +214,43 @@ type EditParams = {
 	/** guild voice region id - **deprecated** */
 	region: string | null
 	/** verification level */
-	verification_level: 0 | 1 | 2 | 3 | 4 | null
+	verificationLevel: 0 | 1 | 2 | 3 | 4 | null
 	/** default message notification level */
-	default_message_notifications: 0 | 1 | null
+	defaultMessageNotifications: 0 | 1 | null
 	/** explicit content filter level */
-	explicit_content_filter: 0 | 1 | 2 | null
+	explicitContentFilter: 0 | 1 | 2 | null
 	/** id for afk channel */
-	afk_channel_id: Snowflake | null
+	afkChannelId: Snowflake | null
 	/** 	afk timeout in seconds, can be set to: 60, 300, 900, 1800, 3600 */
-	afk_timeout: 60 | 300 | 900 | 1800 | 3600 | null
+	afkTimeout: 60 | 300 | 900 | 1800 | 3600 | null
 	/** base64 1024x1024 png/jpeg/gif image for the guild icon (can be animated gif when the server has the `ANIMATED_ICON` feature) */
 	icon: string | null
 	/** user id to transfer guild ownership to (must be owner) */
-	owner_id: Snowflake
+	ownerId: Snowflake
 	/** base64 16:9 png/jpeg image for the guild splash (when the server has the `INVITE_SPLASH` feature) */
 	splash: string | null
 	/** base64 16:9 png/jpeg image for the guild discovery splash (when the server has the `DISCOVERABLE` feature) */
-	discovery_splash: string | null
+	discoverySplash: string | null
 	/** base64 16:9 png/jpeg image for the guild banner (when the server has the `BANNER` feature; can be animated gif when the server has the `ANIMATED_BANNER` feature) */
 	banner: string | null
 	/** the id of the channel where guild notices such as welcome messages and boost events are posted */
-	system_channel_id: Snowflake | null
+	systemChannelId: Snowflake | null
 	/** system channel flags */
-	system_channel_flags: number
+	systemChannelFlags: number
 	/** the id of the channel where Community guilds display rules and/or guidelines */
-	rules_channel_id: Snowflake | null
+	rulesChannelId: Snowflake | null
 	/** the id of the channel where admins and moderators of Community guilds receive notices from Discord */
-	public_updates_channel_id: Snowflake | null
+	publicUpdatesChannelId: Snowflake | null
 	/** the preferred locale of a Community guild used in server discovery and notices from Discord; defaults to "en-US" */
-	preferred_locale: string | null
+	preferredLocale: string | null
 	/** enabled guild features */
 	features: MutableGuildFeature
 	/** the description for the guild */
 	description: string | null
 	/** whether the guild's boost progress bar should be enabled */
-	premium_progress_bar_enabled: boolean
+	premiumProgressBarEnabled: boolean
 	/** the id of the channel where admins and moderators of Community guilds receive safety alerts from Discord */
-	safety_alerts_channel_id: Snowflake | null
+	safetyAlertsChannelId: Snowflake | null
 }
 /** Edit a guild's settings */
 async function edit(
@@ -280,7 +273,7 @@ type EditWelcomeScreenParams = {
 	/** whether the welcome screen is enabled */
 	enabled: boolean
 	/** channels linked in the welcome screen and their display options */
-	welcome_channels: WelcomeSreenChannel[]
+	welcomeChannels: WelcomeSreenChannel[]
 	/** the server description to show in the welcome screen */
 	description: string
 }
@@ -294,11 +287,11 @@ const welcomeScreen = {
 	/** Edit the guild's Welcome Screen. */
 	async edit(
 		guildId: Snowflake,
-		welcome_screen: Partial<EditWelcomeScreenParams>
+		welcomeScreen: Partial<EditWelcomeScreenParams>
 	): Promise<WelcomeScreen> {
 		return request.patch(
 			`guilds/${guildId}/welcome-screen`,
-			welcome_screen
+			welcomeScreen
 		) as unknown as WelcomeScreen
 	}
 }
@@ -306,15 +299,15 @@ type GetPruneCountOptions = {
 	/** number of days to count prune for (1-30) */
 	days?: number
 	/** role(s) to include */
-	include_roles?: string
+	includeRoles?: string
 }
 type BeginPruneOptions = {
 	/** number of days to count prune for (1-30) */
 	days?: number
 	/** whether **pruned** is returned, discouraged for large guilds */
-	compute_prune_count?: boolean
+	computePruneCount?: boolean
 	/** role(s) to include */
-	include_roles?: string
+	includeRoles?: string
 }
 const prune = {
 	/** Returns an object with one pruned key indicating the number of members that would be removed in a prune operation. */

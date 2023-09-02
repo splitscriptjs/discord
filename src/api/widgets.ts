@@ -49,35 +49,33 @@ class Widget {
 	}
 }
 
-async function settings(guild_id: Snowflake): Promise<WidgetSettings> {
-	return request.get(`guilds/${guild_id}/widget`) as unknown as WidgetSettings
+async function settings(guildId: Snowflake): Promise<WidgetSettings> {
+	return request.get(`guilds/${guildId}/widget`) as unknown as WidgetSettings
 }
 /** Edit the widget settings for the guild */
 async function edit(
-	guild_id: Snowflake,
+	guildId: Snowflake,
 	settings: Partial<WidgetSettings>
 ): Promise<Widget> {
 	return new Widget(
 		(await request.patch(
-			`guilds/${guild_id}/widget`,
+			`guilds/${guildId}/widget`,
 			settings
 		)) as unknown as RawWidget
 	)
 }
 /** Returns the widget for the guild. */
-async function get(guild_id: Snowflake): Promise<Widget> {
+async function get(guildId: Snowflake): Promise<Widget> {
 	return new Widget(
-		(await request.get(
-			`guilds/${guild_id}/widget.json`
-		)) as unknown as RawWidget
+		(await request.get(`guilds/${guildId}/widget.json`)) as unknown as RawWidget
 	)
 }
 /** Returns a PNG image widget for the guild. */
 async function image(
-	guild_id: Snowflake,
+	guildId: Snowflake,
 	style?: WidgetImageStyle
 ): Promise<string> {
-	return (await request.get(`guilds/${guild_id}/widget.png`, {
+	return (await request.get(`guilds/${guildId}/widget.png`, {
 		style
 	})) as unknown as string
 }

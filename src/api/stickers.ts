@@ -3,13 +3,13 @@ import { Snowflake, Sticker, StickerPack, User } from '../types'
 import toCamelCase from '../utils/toCamelCase.js'
 
 /** Returns a sticker object for the given **Non Guild** sticker ID */
-async function get(sticker_id: Snowflake): Promise<Sticker> {
-	return request.get(`stickers/${sticker_id}`) as unknown as Sticker
+async function get(stickerId: Snowflake): Promise<Sticker> {
+	return request.get(`stickers/${stickerId}`) as unknown as Sticker
 }
 /** Returns the list of sticker packs available to Nitro subscribers */
-async function listPacks(): Promise<{ sticker_packs: StickerPack[] }> {
+async function listPacks(): Promise<{ stickerPacks: StickerPack[] }> {
 	return request.get(`sticker-packs`) as unknown as {
-		sticker_packs: StickerPack[]
+		stickerPacks: StickerPack[]
 	}
 }
 
@@ -67,22 +67,22 @@ type EditParams = {
 }
 const guild = {
 	/** Returns an array of sticker objects for the given guild */
-	async list(guild_id: Snowflake): Promise<GuildSticker[]> {
+	async list(guildId: Snowflake): Promise<GuildSticker[]> {
 		return (
-			(await request.get(`guilds/${guild_id}/stickers`)) as unknown as Sticker[]
+			(await request.get(`guilds/${guildId}/stickers`)) as unknown as Sticker[]
 		).map((v) => new GuildSticker(v))
 	},
 	/** Returns a sticker object for the given guild and sticker IDs */
-	async get(guild_id: Snowflake, sticker_id: Snowflake): Promise<GuildSticker> {
+	async get(guildId: Snowflake, stickerId: Snowflake): Promise<GuildSticker> {
 		return new GuildSticker(
 			(await request.get(
-				`guilds/${guild_id}/stickers/${sticker_id}`
+				`guilds/${guildId}/stickers/${stickerId}`
 			)) as unknown as Sticker
 		)
 	},
 	/** Create a new sticker for the guild */
 	async create(
-		guild_id: Snowflake,
+		guildId: Snowflake,
 		sticker: {
 			/** name of the sticker (2-30 characters) */
 			name: string
@@ -96,28 +96,28 @@ const guild = {
 	): Promise<GuildSticker> {
 		return new GuildSticker(
 			(await request.post(
-				`guilds/${guild_id}/stickers`,
+				`guilds/${guildId}/stickers`,
 				sticker
 			)) as unknown as Sticker
 		)
 	},
 	/** Edit the given sticker */
 	async edit(
-		guild_id: Snowflake,
-		sticker_id: Snowflake,
+		guildId: Snowflake,
+		stickerId: Snowflake,
 		sticker: EditParams
 	): Promise<GuildSticker> {
 		return new GuildSticker(
 			(await request.patch(
-				`guilds/${guild_id}/stickers/${sticker_id}`,
+				`guilds/${guildId}/stickers/${stickerId}`,
 				sticker
 			)) as unknown as Sticker
 		)
 	},
 	/** Delete the given sticker */
-	async delete(guild_id: Snowflake, sticker_id: Snowflake): Promise<void> {
+	async delete(guildId: Snowflake, stickerId: Snowflake): Promise<void> {
 		return (await request.delete(
-			`guilds/${guild_id}/stickers/${sticker_id}`
+			`guilds/${guildId}/stickers/${stickerId}`
 		)) as unknown as void
 	}
 }

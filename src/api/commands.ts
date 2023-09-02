@@ -68,17 +68,17 @@ async function create(
 		/** Name of command, 1-32 characters */
 		name: string
 		/** Localization dictionary for the `name` field. Values follow the same restrictions as `name` */
-		name_localizations?: LocaleObject | null
+		nameLocalizations?: LocaleObject | null
 		/** 1-100 character description */
 		description?: string
 		/** Localization dictionary for the `description` field. Values follow the same restrictions as `description` */
-		description_localizations?: LocaleObject | null
+		descriptionLocalizations?: LocaleObject | null
 		/** Parameters for the command */
 		options?: CommandOption[]
 		/** Set of permissions represented as a bit set */
-		default_member_permissions?: string | null
-		/** Replaced by `default_member_permissions` and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. Defaults to `true` */
-		default_permission?: boolean
+		defaultMemberPermissions?: string | null
+		/** Replaced by `defaultMemberPermissions` and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. Defaults to `true` */
+		defaultPermission?: boolean
 		/** Type of command, defaults `1` if not set */
 		type?: CommandType
 		/** Indicates whether the command is age-restricted */
@@ -106,17 +106,17 @@ type EditParams = {
 	/** Name of command, 1-32 characters */
 	name?: string
 	/** Localization dictionary for the `name` field. Values follow the same restrictions as `name` */
-	name_localizations?: LocaleObject | null
+	nameLocalizations?: LocaleObject | null
 	/** 1-100 character description */
 	description?: string
 	/** Localization dictionary for the `description` field. Values follow the same restrictions as `description` */
-	description_localizations?: LocaleObject | null
+	descriptionLocalizations?: LocaleObject | null
 	/** Parameters for the command */
 	options?: CommandOption[]
 	/** Set of permissions represented as a bit set */
-	default_member_permissions?: string | null
-	/** Replaced by `default_member_permissions` and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. Defaults to `true` */
-	default_permission?: boolean
+	defaultMemberPermissions?: string | null
+	/** Replaced by `defaultMemberPermissions` and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. Defaults to `true` */
+	defaultPermission?: boolean
 	/** Indicates whether the command is age-restricted */
 	nsfw?: boolean
 }
@@ -133,13 +133,13 @@ async function edit(
 }
 async function list(
 	guildId?: Snowflake | null,
-	with_localizations?: boolean
+	withLocalizations?: boolean
 ): Promise<Command[]> {
 	const URL = guildId
 		? `applications/{APP_ID}/guilds/${guildId}/commands`
 		: `applications/{APP_ID}/commands`
 	const commands = (await request.get(URL, {
-		with_localizations: with_localizations
+		with_localizations: withLocalizations
 	})) as unknown as RawCommand[]
 	return commands.map((command) => new Command(command))
 }
@@ -150,19 +150,19 @@ async function bulkOverwrite(
 		/** Name of command, 1-32 characters */
 		name: string
 		/** Localization dictionary for the `name` field. Values follow the same restrictions as `name` */
-		name_localizations?: LocaleObject | null
+		nameLocalizations?: LocaleObject | null
 		/** 1-100 character description */
 		description: string
 		/** Localization dictionary for the `description` field. Values follow the same restrictions as `description` */
-		description_localizations?: LocaleObject | null
+		descriptionLocalizations?: LocaleObject | null
 		/** Parameters for the command */
 		options?: CommandOption[]
 		/** Set of permissions represented as a bit set */
-		default_member_permissions?: string | null
+		defaultMemberPermissions?: string | null
 		/** Indicates whether the command is available in DMs with the app, only for globally-scoped commands. By default, commands are visible. */
-		dm_permission?: boolean | null
-		/** Replaced by `default_member_permissions` and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. Defaults to `true` */
-		default_permission?: boolean
+		dmPermission?: boolean | null
+		/** Replaced by `defaultMemberPermissions` and will be deprecated in the future. Indicates whether the command is enabled by default when the app is added to a guild. Defaults to `true` */
+		defaultPermission?: boolean
 		/** Type of command, defaults `1` if not set */
 		type?: CommandType
 		/** Indicates whether the command is age-restricted */

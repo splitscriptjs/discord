@@ -27,9 +27,9 @@ class Ban<isCreate extends boolean> {
 			reason?: isCreate extends true ? never : string | null
 			user: isCreate extends true ? { id: Snowflake } : User
 		},
-		guild_id: Snowflake
+		guildId: Snowflake
 	) {
-		this.guildId = guild_id
+		this.guildId = guildId
 		this.reason = ban.reason
 		this.user = ban.user
 	}
@@ -65,9 +65,9 @@ async function create(
 	userId: Snowflake,
 	options?: {
 		/** number of days to delete messages for (0-7) - **deprecated** */
-		delete_message_days?: number
+		deleteMessageDays?: number
 		/** number of seconds to delete messages for, between 0 and 604800 (7 days) */
-		delete_message_seconds?: number
+		deleteMessageSeconds?: number
 	}
 ): Promise<Ban<true>> {
 	await request.put(`guilds/${guildId}/bans/${userId}`, options ?? {})

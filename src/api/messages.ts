@@ -97,13 +97,13 @@ async function create(
 		/** Up to 10 `rich` embeds (up to 6000 characters) */
 		embeds?: Embed[]
 		/** Allowed mentions for the message */
-		allowed_mentions?: AllowedMentions
+		allowedMentions?: AllowedMentions
 		/** Include to make your message a reply */
-		message_reference?: MessageReference
+		messageReference?: MessageReference
 		/** Components to include with the message */
 		components?: Component[]
 		/** IDs of up to 3 stickers in the server to send in the message */
-		sticker_ids?: Snowflake[]
+		stickerIds?: Snowflake[]
 		/** 	Contents of the file being sent. */
 		files?: string[]
 		/** 	Attachment objects with filename and description. */
@@ -112,35 +112,35 @@ async function create(
 		flags?: number
 	} & (
 		| {
-				sticker_ids?: Snowflake[]
+				stickerIds?: Snowflake[]
 				content: string
 				files?: string[]
 				embeds?: Embed[]
 				components?: Component[]
 		  }
 		| {
-				sticker_ids?: Snowflake[]
+				stickerIds?: Snowflake[]
 				content?: string
 				files: string[]
 				embeds?: Embed[]
 				components?: Component[]
 		  }
 		| {
-				sticker_ids?: Snowflake[]
+				stickerIds?: Snowflake[]
 				content?: string
 				files?: string[]
 				embeds: Embed[]
 				components?: Component[]
 		  }
 		| {
-				sticker_ids: Snowflake[]
+				stickerIds: Snowflake[]
 				content?: string
 				files?: string[]
 				embeds?: Embed[]
 				components?: Component[]
 		  }
 		| {
-				sticker_ids?: Snowflake[]
+				stickerIds?: Snowflake[]
 				content?: string
 				files?: string[]
 				embeds?: Embed[]
@@ -163,7 +163,7 @@ type EditParams = {
 	/** Edit the flags of a message (only `SUPPRESS_EMBEDS` can currently be set/unset) */
 	flags?: number | null
 	/** Allowed mentions for the message */
-	allowed_mentions?: AllowedMentions | null
+	allowedMentions?: AllowedMentions | null
 	/** Components to include with the message */
 	components?: Component[] | null
 	/** Contents of the file being sent/edited.  */

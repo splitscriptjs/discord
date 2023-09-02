@@ -49,7 +49,7 @@ class User<isMe extends boolean> implements RawUser {
 
 		this.isMe = isMe
 		if (isMe) {
-			//@ts-expect-error
+			//@ts-expect-error type error
 			this.edit = async (settings: EditParams) => {
 				const result = await me.edit(settings)
 				Object.assign(this, result)
@@ -91,7 +91,7 @@ const dm = {
 	/** Create a new DM channel with a user */
 	async create(recipientId: Snowflake): Promise<Channel> {
 		return request.post(`users/@me/channels`, {
-			recipient_id: recipientId
+			recipientId
 		}) as unknown as Channel
 	},
 	/** Create a new group DM channel with multiple users */
@@ -104,8 +104,8 @@ const dm = {
 		}
 	): Promise<Channel> {
 		return request.post(`users/@me/channels`, {
-			access_tokens: accessTokens,
-			nicks: nicks
+			accessTokens,
+			nicks
 		}) as unknown as Channel
 	}
 }

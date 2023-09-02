@@ -1,6 +1,21 @@
-# 1.0.0
+#  3.1.0
 
-First version - all APIs added
+- added typesafety for `toCamelCase` and to `toSnakeCase`
+- change api options to camelCase
+- better types
+- add eslint
+
+# 3.0.0
+
+convert events and api responses to camelCase
+
+# 2.0.2
+
+Fixed `reactions.create` (wrong `https` method)
+
+# 2.0.1
+
+Upgrade to latest `@splitscript.js/core` version
 
 # 2.0.0
 
@@ -36,10 +51,6 @@ Functions with the name **modifyX** are now called **updateX**
 
 e.g `guilds.modifyMFA` is now `guilds.updateMfa`
 
-# 2.0.1
+# 1.0.0
 
-Upgrade to latest `@splitscript.js/core` version
-
-# 2.0.2
-
-Fixed `reactions.create` (wrong `https` method)
+First version - all APIs added

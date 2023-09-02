@@ -30,12 +30,12 @@ class Response {
 }
 
 async function create(
-	interaction_id: Snowflake,
+	interactionId: Snowflake,
 	token: string,
 	response: InteractionResponse
 ): Promise<Response> {
 	await request.post(
-		`interactions/${interaction_id}/${token}/callback`,
+		`interactions/${interactionId}/${token}/callback`,
 		response
 	)
 	return new Response(token)
@@ -51,7 +51,7 @@ type EditParams = {
 	/** embedded `rich` content */
 	embeds?: Embed[]
 	/** allowed mentions for the message */
-	allowed_mentions?: AllowedMentions
+	allowedMentions?: AllowedMentions
 	/** the components to include with the message */
 	components?: Component[]
 	/** the contents of the file being sent/edited */

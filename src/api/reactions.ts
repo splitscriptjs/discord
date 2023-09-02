@@ -84,12 +84,12 @@ const _delete = {
 		channelId: Snowflake,
 		messageId: Snowflake,
 		emoji: string,
-		user_id: Snowflake
+		userId: Snowflake
 	) {
 		return request.delete(
 			`channels/${channelId}/messages/${messageId}/reactions/${
 				emoji ? encodeURIComponent(emoji) : ''
-			} `
+			}/${userId}`
 		) as unknown as void
 	}
 }

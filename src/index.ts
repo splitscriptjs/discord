@@ -80,5 +80,5 @@ export default {
 	widgets
 }
 
-import { Events } from './Events.js'
+import * as Events from './Events.js'
 export type { Events }

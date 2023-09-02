@@ -3,7 +3,7 @@ export type Channel = {
 	/** id of channel */
 	id: Snowflake
 	/** type of channel */
-	type: number
+	type: ChannelType
 	/** id of guild */
 	guildId?: Snowflake
 	/** position of channel */
@@ -51,7 +51,7 @@ export type Channel = {
 	/** thread member object for current user */
 	member?: ThreadMember
 	/** default duration of threads before archiving */
-	defaultAutoArchiveDuration?: number
+	defaultAutoArchiveDuration?: Duration
 	/** computed permissions for bot in channel (with overwrites) */
 	permissions?: string
 	/** channel flags as bitfield */
@@ -118,7 +118,7 @@ export type ThreadMetadata = {
 	/** whether thread is archived */
 	archived: boolean
 	/** duration of thread before archiving */
-	autoArchiveDuration: number
+	autoArchiveDuration: Duration
 	/** timestamp when thread's archive status was last changed */
 	archiveTimestamp: string
 	/** whether thread is locked */
@@ -319,11 +319,11 @@ export type Guild = {
 	/** channel id that widget will generate an invite to, or `null` if set to no invite */
 	widgetChannelId?: Snowflake | null
 	/** verification level required for guild */
-	verificationLevel: number
+	verificationLevel: VerificationLevel
 	/** default message notifications level */
-	defaultMessageNotifications: number
+	defaultMessageNotifications: DefaultMessageNotifications
 	/** explicit content filter level */
-	explicitContentFilter: number
+	explicitContentFilter: ExplicitContentFilter
 	/** roles in guild */
 	roles: Role[]
 	/** custom guild emojis */
@@ -331,7 +331,7 @@ export type Guild = {
 	/** enabled guild features */
 	features: string[]
 	/** required MFA level for guild */
-	mfaLevel: number
+	mfaLevel: MfaLevel
 	/** application id of guild creator if bot-created */
 	applicationId: Snowflake | null
 	/** id of channel where guild notices (e.g welcome messages and boost events) */
@@ -1094,7 +1094,7 @@ export type AutomodRule = {
 	/** the rule event type */
 	eventType: 1
 	/** the rule trigger type */
-	triggerType: 1 | 3 | 4 | 5
+	triggerType: TriggerType
 	/** the rule trigger metadata */
 	triggerMetadata: TriggerMetadata
 	/** the actions which will execute when the rule is triggered */
@@ -1199,21 +1199,91 @@ export type AuditLogEntry = {
 	/** Reason for the change (1-512 characters) */
 	reason?: string
 }
-export type AuditLogChange = {
-	/** New value of the key */
-	newValue?: any
-	/** Old value of the key */
-	oldValue?: any
-	/** Name of the changed entity, with a few exceptions */
-	key: string
-}
+export type AuditLogChange = 
+   { key: 'name', newValue?: string, oldValue?: string } |
+   { key: 'description', newValue?: string, oldValue?: string } |
+   { key: 'icon_hash', newValue?: string, oldValue?: string } |
+   { key: 'image_hash', newValue?: string, oldValue?: string } |
+   { key: 'splash_hash', newValue?: string, oldValue?: string } |
+   { key: 'discovery_splash_hash', newValue?: string, oldValue?: string } |
+   { key: 'banner_hash', newValue?: string, oldValue?: string } |
+   { key: 'owner_id', newValue?: Snowflake, oldValue?: Snowflake } |
+   { key: 'region', newValue?: string, oldValue?: string } |
+   { key: 'preferred_locale', newValue?: string, oldValue?: string } |
+   { key: 'afk_channel_id', newValue?: Snowflake, oldValue?: Snowflake } |
+   { key: 'afk_timeout', newValue?: number, oldValue?: number } |
+   { key: 'rules_channel_id', newValue?: Snowflake, oldValue?: Snowflake } |
+   { key: 'public_updates_channel_id', newValue?: Snowflake, oldValue?: Snowflake } |
+   { key: 'mfa_level', newValue?: MfaLevel, oldValue?: MfaLevel } |
+   { key: 'verification_level', newValue?: VerificationLevel, oldValue?: VerificationLevel } |
+   { key: 'explicit_content_filter', newValue?: ExplicitContentFilter, oldValue?: ExplicitContentFilter } |
+   { key: 'default_message_notifications', newValue?: DefaultMessageNotifications, oldValue?: DefaultMessageNotifications } |
+   { key: 'vanity_url_code', newValue?: string, oldValue?: string } |
+   { key: '$add', newValue?: Role[], oldValue?: Role[] } |
+   { key: '$remove', newValue?: Role[], oldValue?: Role[] } |
+   { key: 'prune_delete_days', newValue?: number, oldValue?: number } |
+   { key: 'widget_enabled', newValue?: boolean, oldValue?: boolean } |
+   { key: 'widget_channel_id', newValue?: Snowflake, oldValue?: Snowflake } |
+   { key: 'system_channel_id', newValue?: Snowflake, oldValue?: Snowflake } |
+   { key: 'position', newValue?: number, oldValue?: number } |
+   { key: 'topic', newValue?: string, oldValue?: string } |
+   { key: 'bitrate', newValue?: number, oldValue?: number } |
+   { key: 'permission_overwrites', newValue?: Overwrite[], oldValue?: Overwrite[] } |
+   { key: 'nsfw', newValue?: boolean, oldValue?: boolean } |
+   { key: 'application_id', newValue?: Snowflake, oldValue?: Snowflake } |
+   { key: 'rate_limit_per_user', newValue?: number, oldValue?: number } |
+   { key: 'permissions', newValue?: string, oldValue?: string } |
+   { key: 'color', newValue?: number, oldValue?: number } |
+   { key: 'hoist', newValue?: boolean, oldValue?: boolean } |
+   { key: 'mentionable', newValue?: boolean, oldValue?: boolean } |
+   { key: 'allow', newValue?: string, oldValue?: string } |
+   { key: 'deny', newValue?: string, oldValue?: string } |
+   { key: 'code', newValue?: string, oldValue?: string } |
+   { key: 'channel_id', newValue?: Snowflake, oldValue?: Snowflake } |
+   { key: 'inviter_id', newValue?: Snowflake, oldValue?: Snowflake } |
+   { key: 'max_uses', newValue?: number, oldValue?: number } |
+   { key: 'uses', newValue?: number, oldValue?: number } |
+   { key: 'max_age', newValue?: number, oldValue?: number } |
+   { key: 'temporary', newValue?: boolean, oldValue?: boolean } |
+   { key: 'deaf', newValue?: boolean, oldValue?: boolean } |
+   { key: 'mute', newValue?: boolean, oldValue?: boolean } |
+   { key: 'nick', newValue?: string, oldValue?: string } |
+   { key: 'avatar_hash', newValue?: string, oldValue?: string } |
+   { key: 'id', newValue?: Snowflake, oldValue?: Snowflake } |
+   { key: 'type', newValue?: number | string, oldValue?: number | string } |
+   { key: 'enable_emoticons', newValue?: boolean, oldValue?: boolean } |
+   { key: 'expire_behavior', newValue?: IntegrationExpireBehavior, oldValue?: IntegrationExpireBehavior } |
+   { key: 'expire_grace_period', newValue?: number, oldValue?: number } |
+   { key: 'user_limit', newValue?: number, oldValue?: number } |
+   { key: 'privacy_level', newValue?: StageInstancePrivacyLevel, oldValue?: StageInstancePrivacyLevel } |
+   { key: 'tags', newValue?: string, oldValue?: string } |
+   { key: 'format_type', newValue?: Sticker, oldValue?: StickerFormatType } |
+   { key: 'asset', newValue?: '', oldValue?: '' } |
+   { key: 'available', newValue?: boolean, oldValue?: boolean } |
+   { key: 'guild_id', newValue?: Snowflake, oldValue?: Snowflake } |
+   { key: 'archived', newValue?: boolean, oldValue?: boolean } |
+   { key: 'locked', newValue?: boolean, oldValue?: boolean } |
+   { key: 'auto_archive_duration', newValue?: number, oldValue?: number } |
+   { key: 'default_auto_archive_duration', newValue?: number, oldValue?: number } |
+   { key: 'entity_type', newValue?: GuildScheduledEventEntityType, oldValue?: GuildScheduledEventEntityType } |
+   { key: 'status', newValue?: GuildScheduledEventStatus, oldValue?: GuildScheduledEventStatus } |
+   { key: 'location', newValue?: string, oldValue?: string } |
+   { key: 'communication_disabled_until', newValue?: string, oldValue?: string } |
+   { key: 'trigger_type', newValue?: TriggerType, oldValue?: TriggerType } |
+   { key: 'event_type', newValue?: EventType, oldValue?: EventType } |
+   { key: 'trigger_metadata', newValue?: TriggerMetadata, oldValue?: TriggerMetadata } |
+   { key: 'actions', newValue?: AutomodAction[], oldValue?: AutomodAction[] } |
+   { key: 'enabled', newValue?: boolean, oldValue?: boolean } |
+   { key: 'exempt_roles', newValue?: Snowflake[], oldValue?: Snowflake[] } |
+   { key: 'exempt_channels', newValue?: Snowflake[], oldValue?: Snowflake[] };
+
 export type OptionalAuditEntryInfo = {
 	/** ID of the app whose permissions were targeted */
 	applicationId: Snowflake
 	/** Name of the Auto Moderation rule that was triggered */
 	autoModerationRuleName: string
 	/** Trigger type of the Auto Moderation rule that was triggered */
-	autoModerationRuleTriggerType: string
+	autoModerationRuleTriggerType: TriggerType
 	/** Channel in which the entities were targeted */
 	channelId: Snowflake
 	/** Number of entities that were targeted */
@@ -1575,6 +1645,38 @@ export type InteractionResponse =
 			type: 9
 			data: InteractionCallbackDataModal
 	  }
+/**
+ * 0 - guild has no MFA/2FA requirement for moderation actions
+ * 
+ * 1 - guild has a 2FA requirement for moderation actions
+ */
+export type MfaLevel = 0 | 1
+/**
+ * 0 - unrestricted
+ * 
+ * 1 - must have verified email on account
+ * 
+ * 2 - must be registered on Discord for longer than 5 minutes
+ * 
+ * 3 - must be a member of the server for longer than 10 minutes
+ * 
+ * 4 - must have a verified phone number
+ */
+export type VerificationLevel = 0 | 1 | 2 | 3 | 4
+/**
+ * media content will not be scanned
+ * 
+ * media content sent by members without roles will be scanned
+ * 
+ * media content sent by all members will be scanned
+ */
+export type ExplicitContentFilter = 0 | 1 | 2
+/**
+ * 0 - members will receive notifications for all messages by default
+ * 
+ * 1 - members will receive notifications only for messages that @mention them by default
+ */
+export type DefaultMessageNotifications = 0 | 1
 export type Template = {
 	/** the template code (unique ID) */
 	code: string
@@ -1616,3 +1718,41 @@ export type StickerPack = {
 	/** id of the sticker pack's banner image */
 	bannerAssetId?: Snowflake
 }
+
+/**
+ * 0 - Remove role
+ * 
+ * 1 - Kick
+ */
+export type IntegrationExpireBehavior = 0 | 1
+/**
+ * 1 - PNG
+ * 
+ * 2 - APNG
+ * 
+ * 3 - LOTTIE
+ * 
+ * 4 - GIF
+ */
+export type StickerFormatType = 1 | 2 | 3 | 4
+/**
+ * 1 - check if content contains words from a user defined list of keywords	(max 6)
+ * 
+ * 3 - check if content represents generic spam	 (max 1)
+ * 
+ * 4 - check if content contains words from internal pre-defined wordsets (max 1)
+ * 
+ * 5 - check if content contains more unique mentions than allowed (max 1)
+ */
+export type TriggerType = 1 | 3 | 4 | 5
+/**
+ * 1 - when a member sends or edits a message in the guild
+ */
+export type EventType = 1
+/**
+ * Channel type
+ * 
+ * See [discord.dev](https://discord.com/developers/docs/resources/channel#channel-object-channel-types)
+ */
+export type ChannelType = 0 | 1 | 2 | 3 | 4 | 5 | 10 | 11 | 12 |13 | 14 | 15 | 16
+export type Duration = 60 | 1440 | 4320 | 10800

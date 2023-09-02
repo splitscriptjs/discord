@@ -69,11 +69,11 @@ class ScheduledEvent {
 /** Returns a list of scheduled events for the given guild. */
 async function list(
 	guildId: Snowflake,
-	with_user_count?: Boolean
+	withUserCount?: boolean
 ): Promise<ScheduledEvent[]> {
 	return (
 		(await request.get(`guilds/${guildId}/scheduled-events`, {
-			with_user_count
+			withUserCount
 		})) as unknown as GuildScheduledEvent[]
 	).map((v) => new ScheduledEvent(v))
 }
@@ -82,32 +82,32 @@ async function create(
 	guildId: Snowflake,
 	scheduledEvent: {
 		/** the channel id of the scheduled event. */
-		channel_id?: Snowflake
+		channelId?: Snowflake
 		/** the entity metadata of the scheduled event */
-		entity_metadata?: EntityMetadata
+		entityMetadata?: EntityMetadata
 		/** the name of the scheduled event */
 		name: string
 		/** the privacy level of the scheduled event */
-		privacy_level: GuildScheduledEventPrivacyLevel
+		privacyLevel: GuildScheduledEventPrivacyLevel
 		/** the time to schedule the scheduled event */
-		scheduled_start_time: string
+		scheduledStartTime: string
 		/** the time when the scheduled event is scheduled to end */
-		scheduled_end_time?: string
+		scheduledEndTime?: string
 		/** the description of the scheduled event */
 		description?: string
 		/** the entity type of the scheduled event */
-		entity_type: GuildScheduledEventEntityType
+		entityType: GuildScheduledEventEntityType
 		/** the cover image of the scheduled event */
 		image?: string
 	} & (
 		| {
-				entity_type: 3
-				entity_metadata: EntityMetadata
-				scheduled_end_time: string
+				entityType: 3
+				entityMetadata: EntityMetadata
+				scheduledEndTime: string
 		  }
 		| {
-				entity_type: 1 | 2
-				channel_id: Snowflake
+				entityType: 1 | 2
+				channelId: Snowflake
 		  }
 	)
 ): Promise<ScheduledEvent> {
@@ -128,28 +128,28 @@ async function get(
 		(await request.get(
 			`guilds/${guildId}/scheduled-events/${scheduledEventId}`,
 			{
-				with_user_count: withUserCount
+				withUserCount
 			}
 		)) as unknown as GuildScheduledEvent
 	)
 }
 type EditParams = {
 	/** the channel id of the scheduled event, set to `null` if changing entity type to `EXTERNAL` */
-	channel_id?: Snowflake | null
+	channelId?: Snowflake | null
 	/** the entity metadata of the scheduled event */
-	entity_metadata?: EntityMetadata | null
+	entityMetadata?: EntityMetadata | null
 	/** the name of the scheduled event */
 	name?: string
 	/** the privacy level of the scheduled event */
-	privacy_level?: GuildScheduledEventPrivacyLevel
+	privacyLevel?: GuildScheduledEventPrivacyLevel
 	/** the time to schedule the scheduled event */
-	scheduled_start_time?: string
+	scheduledStartTime?: string
 	/** the time when the scheduled event is scheduled to end */
-	scheduled_end_time?: string
+	scheduledEndTime?: string
 	/** the description of the scheduled event */
 	description?: string | null
 	/** the entity type of the scheduled event */
-	entity_type?: GuildScheduledEventEntityType
+	entityType?: GuildScheduledEventEntityType
 	/** the status of the scheduled event */
 	status?: GuildScheduledEventStatus
 	/** the cover image of the scheduled event */
@@ -181,7 +181,7 @@ type GetUserOptions = {
 	/** number of users to return (up to maximum 100) */
 	limit?: number
 	/** include guild member data if it exists */
-	with_member?: boolean
+	withMember?: boolean
 	/** consider only users before given user id */
 	before?: Snowflake
 	/** consider only users after given user id */

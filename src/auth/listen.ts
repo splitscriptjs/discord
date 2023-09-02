@@ -40,7 +40,7 @@ type Identify = {
 	presence?: Presence
 	intents?: IntentFlag[] | number
 }
-let resumeData: {
+const resumeData: {
 	session_id?: Snowflake
 	sequence?: number
 	resumeUrl?: string
@@ -61,8 +61,6 @@ function connect(
 			ws.send(JSON.stringify({ op: 1, d: null }))
 		}, ms) as unknown as number
 	}
-	let interval = 0
-
 	if (Array.isArray(options.intents)) {
 		const flags: { [key: string]: number } = {
 			guilds: 1 << 0,
@@ -104,7 +102,7 @@ function connect(
 		}
 		let generatedIntents = 0
 
-		for (let intent of options.intents ?? []) {
+		for (const intent of options.intents ?? []) {
 			generatedIntents += flags[intent.toLowerCase()]
 		}
 
@@ -114,7 +112,7 @@ function connect(
 			`intents must be an array or integer. got ${typeof options.intents}`
 		)
 	}
-	let payload = {
+	const payload = {
 		op: 2,
 		d: {
 			token: token,
@@ -132,9 +130,9 @@ function connect(
 		ws.send(JSON.stringify(payload))
 	})
 	ws.on('message', (data) => {
-		let payload = JSON.parse(data.toString('utf-8'))
+		const payload = JSON.parse(data.toString('utf-8'))
 
-		let { t, op, d, s } = payload
+		const { t, op, d, s } = payload
 
 		switch (op) {
 			case 0 && !t:
@@ -156,7 +154,7 @@ function connect(
 				)
 				break
 			case 10:
-				interval = heartbeat(d.heartbeat_interval)
+				heartbeat(d.heartbeat_interval)
 				break
 		}
 

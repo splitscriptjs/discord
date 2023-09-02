@@ -46,13 +46,13 @@ class StageInstance {
 /** Creates a new Stage instance associated to a Stage channel. */
 async function create(instance: {
 	/** The id of the Stage channel */
-	channel_id: Snowflake
+	channelId: Snowflake
 	/** The topic of the Stage instance (1-120 characters) */
 	topic: string
-	/** The privacy level of the Stage instance (default GUILD_ONLY) */
-	privacy_level: StageInstancePrivacyLevel
+	/** The privacy level of the Stage instance (default) */
+	privacyLevel: StageInstancePrivacyLevel
 	/** Notify @everyone that a Stage instance has started */
-	send_start_notification?: boolean
+	sendStartNotification?: boolean
 }): Promise<StageInstance> {
 	return new StageInstance(
 		(await request.post(
@@ -62,10 +62,10 @@ async function create(instance: {
 	)
 }
 /** Gets the stage instance associated with the Stage channel, if it exists. */
-async function get(channel_id: Snowflake): Promise<StageInstance> {
+async function get(channelId: Snowflake): Promise<StageInstance> {
 	return new StageInstance(
 		(await request.get(
-			`stage-instances/${channel_id}`
+			`stage-instances/${channelId}`
 		)) as unknown as RawStageInstance
 	)
 }
@@ -73,22 +73,22 @@ type EditParams = {
 	/** The topic of the Stage instance (1-120 characters) */
 	topic?: string
 	/** The privacy level of the Stage instance */
-	privacy_level?: StageInstancePrivacyLevel
+	privacyLevel?: StageInstancePrivacyLevel
 }
 /** Edit an existing Stage instance. */
 async function edit(
-	channel_id: Snowflake,
+	channelId: Snowflake,
 	instance: EditParams
 ): Promise<StageInstance> {
 	return new StageInstance(
 		(await request.patch(
-			`stage-instances/${channel_id}`,
+			`stage-instances/${channelId}`,
 			instance
 		)) as unknown as RawStageInstance
 	)
 }
 /** Deletes the Stage instance.  */
-async function _delete(channel_id: Snowflake): Promise<void> {
-	return request.delete(`stage-instances/${channel_id}`) as unknown as void
+async function _delete(channelId: Snowflake): Promise<void> {
+	return request.delete(`stage-instances/${channelId}`) as unknown as void
 }
 export default { create, get, edit, delete: _delete }

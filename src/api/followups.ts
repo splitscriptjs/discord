@@ -36,7 +36,7 @@ class FollowupMessage {
 	/** whether this was a TTS message */
 	tts!: boolean
 	/** whether this message mentions everyone */
-	mention_everyone!: boolean
+	mentionEveryone!: boolean
 	/** users specifically mentioned in the message */
 	mentions!: User[]
 	/** roles specifically mentioned in this message */
@@ -67,7 +67,7 @@ class FollowupMessage {
 	messageReference?: MessageReference
 	/** message flags combined as a bitfield */
 	flags?: number
-	/** the message associated with the message_reference */
+	/** the message associated with the messageReference */
 	referencedMessage?: Message | null
 	/** sent if the message is a response to an Interaction */
 	interaction?: MessageInteraction
@@ -79,7 +79,7 @@ class FollowupMessage {
 	stickerItems?: StickerItem[]
 	/** the stickers sent with the message **(deprecated)** */
 	stickers?: Sticker[]
-	/** A generally increasing integer (there may be gaps or duplicates) that represents the approximate position of the message in a thread, it can be used to estimate the relative position of the message in a thread in company with total_message_sent on parent thread */
+	/** A generally increasing integer (there may be gaps or duplicates) that represents the approximate position of the message in a thread, it can be used to estimate the relative position of the message in a thread in company with totalMessageSent on parent thread */
 	position?: number
 	/** data of the role subscription purchase or renewal that prompted this ROLE_SUBSCRIPTION_PURCHASE message */
 	roleSubscriptionData?: RoleSubscriptionData
@@ -128,7 +128,7 @@ async function create(
 		/** embedded rich content */
 		embeds?: Embed[]
 		/** allowed mentions for the message */
-		allowed_mentions?: AllowedMentions
+		allowedMentions?: AllowedMentions
 		/** the components to include with the message */
 		components?: Component[]
 		/** the contents of the file being sent */
@@ -138,7 +138,7 @@ async function create(
 		/** message flags combined as a bitfield (only SUPPRESS_EMBEDS can be set) */
 		flags?: number
 		/** name of thread to create (requires the webhook channel to be a forum channel) */
-		thread_name?: string
+		threadName?: string
 	} & (
 		| { content: string; files?: string[]; embeds?: Embed[] }
 		| { content?: string; files: string[]; embeds?: Embed[] }
@@ -171,7 +171,7 @@ type EditParams = {
 	/** embedded `rich` content */
 	embeds?: Embed[]
 	/** allowed mentions for the message */
-	allowed_mentions?: AllowedMentions
+	allowedMentions?: AllowedMentions
 	/** the components to include with the message */
 	components?: Component[]
 	/** the contents of the file being sent/edited */
