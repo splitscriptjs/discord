@@ -1,4 +1,8 @@
-#  3.1.0
+# 3.1.2
+
+Do not explicitly set patch version for `@splitscript.js/core`
+
+# 3.1.0
 
 - added typesafety for `toCamelCase` and to `toSnakeCase`
 - change api options to camelCase
