@@ -50,7 +50,7 @@
 		"typescript": "^5.2.2"
 	},
 	"dependencies": {
-		"@splitscript.js/core": "^1.1.0",
+		"@splitscript.js/core": "^2.0.4",
 		"@splitscript.js/https": "^1.0.4",
 		"ws": "^8.13.0"
 	}
