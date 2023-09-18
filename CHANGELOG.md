@@ -1,3 +1,7 @@
+# 3.1.3
+
+Default intents to 0
+
 # 3.1.2
 
 Do not explicitly set patch version for `@splitscript.js/core`

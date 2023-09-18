@@ -47,7 +47,7 @@ const resumeData: {
 } = {}
 function connect(
 	token: string,
-	options: Identify = {},
+	options: Identify = { intents: 0 },
 	emitter: EventEmitter<string[]>
 ) {
 	if (!token) throw new Error('token must be provided')
@@ -61,6 +61,7 @@ function connect(
 			ws.send(JSON.stringify({ op: 1, d: null }))
 		}, ms) as unknown as number
 	}
+	options.intents ??= 0
 	if (Array.isArray(options.intents)) {
 		const flags: { [key: string]: number } = {
 			guilds: 1 << 0,
