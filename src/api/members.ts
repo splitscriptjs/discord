@@ -1,7 +1,8 @@
 import request from '../utils/request.js'
-import { GuildMember as RawMember, Snowflake } from '../types'
-import { User } from '../types'
 import toCamelCase from '../utils/toCamelCase.js'
+
+import type { Snowflake } from '../types'
+import type { User } from './users'
 
 class GuildMember {
 	/** user this guild member represents */
@@ -76,7 +77,7 @@ class GuildMember {
 		}
 	}
 
-	constructor(data: RawMember & { user: User }, guildId: Snowflake) {
+	constructor(data: unknown, guildId: Snowflake) {
 		Object.assign(this, toCamelCase(data))
 
 		this.guildId = guildId
@@ -89,9 +90,7 @@ async function get(
 	userId: Snowflake
 ): Promise<GuildMember> {
 	return new GuildMember(
-		(await request.get(
-			`guilds/${guildId}/members/${userId}`
-		)) as unknown as RawMember & { user: User },
+		(await request.get(`guilds/${guildId}/members/${userId}`)) as unknown[],
 		guildId
 	)
 }
@@ -106,10 +105,7 @@ async function list(
 	}
 ): Promise<GuildMember[]> {
 	return (
-		(await request.get(
-			`guilds/${guildId}/members`,
-			options
-		)) as unknown as (RawMember & { user: User })[]
+		(await request.get(`guilds/${guildId}/members`, options)) as unknown[]
 	).map((v) => new GuildMember(v, guildId))
 }
 /** Returns a list of guild member objects whose username or nickname starts with a provided string. */
@@ -126,7 +122,7 @@ async function search(
 		(await request.get(
 			`guilds/${guildId}/members/search`,
 			options
-		)) as unknown as (RawMember & { user: User })[]
+		)) as unknown[]
 	).map((v) => new GuildMember(v, guildId))
 }
 type AddOptions = {
@@ -148,18 +144,13 @@ async function add(
 	options: AddOptions
 ): Promise<GuildMember> {
 	return new GuildMember(
-		(await request.put(
-			`guilds/${guildId}/members/${userId}`,
-			options
-		)) as unknown as RawMember & { user: User },
+		await request.put(`guilds/${guildId}/members/${userId}`, options),
 		guildId
 	)
 }
 /** Remove a member from a guild */
 async function remove(guildId: Snowflake, userId: Snowflake): Promise<void> {
-	return (await request.delete(
-		`guilds/${guildId}/members/${userId}`
-	)) as unknown as void
+	await request.delete(`guilds/${guildId}/members/${userId}`)
 }
 
 type EditParams = {
@@ -185,10 +176,7 @@ async function edit(
 	member: EditParams
 ): Promise<GuildMember> {
 	return new GuildMember(
-		(await request.patch(
-			`guilds/${guildId}/members/${userId}`,
-			member
-		)) as unknown as RawMember & { user: User },
+		await request.patch(`guilds/${guildId}/members/${userId}`, member),
 		guildId
 	)
 }
@@ -211,10 +199,7 @@ const voice = {
 			requestToSpeakTimestamp?: string | null
 		}
 	): Promise<void> {
-		return request.patch(
-			`guilds/${guildId}/voice-states/@me`,
-			options
-		) as unknown as void
+		await request.patch(`guilds/${guildId}/voice-states/@me`, options)
 	},
 	/** Updates another user's voice state. */
 	async update(
@@ -222,10 +207,7 @@ const voice = {
 		userId: Snowflake,
 		options: EditVoiceOptions
 	): Promise<void> {
-		return request.patch(
-			`guilds/${guildId}/voice-states/${userId}`,
-			options
-		) as unknown as void
+		await request.patch(`guilds/${guildId}/voice-states/${userId}`, options)
 	}
 }
 const roles = {
@@ -235,9 +217,7 @@ const roles = {
 		userId: Snowflake,
 		roleId: Snowflake
 	): Promise<void> {
-		return request.put(
-			`guilds/${guildId}/members/${userId}/roles/${roleId}`
-		) as unknown as void
+		await request.put(`guilds/${guildId}/members/${userId}/roles/${roleId}`)
 	},
 	/** Removes a role to a guild member.  */
 	async remove(
@@ -245,9 +225,39 @@ const roles = {
 		userId: Snowflake,
 		roleId: Snowflake
 	): Promise<void> {
-		return request.delete(
-			`guilds/${guildId}/members/${userId}/roles/${roleId}`
-		) as unknown as void
+		await request.delete(`guilds/${guildId}/members/${userId}/roles/${roleId}`)
 	}
 }
+export { get, list, search, add, remove, edit, voice, roles }
 export default { get, list, search, add, remove, edit, voice, roles }
+
+//#region
+/** Guild Member Object */
+type _GuildMember = {
+	/** user this guild member represents */
+	user?: User
+	/** user's guild nickname */
+	nick?: string
+	/** user's guild avatar hash */
+	avatar?: string
+	/** array of role object ids */
+	roles: string[]
+	/** when user joined guild */
+	joinedAt: string
+	/** when user started boosting guild */
+	premiumSince?: string | null
+	/** whether user is deafened in voice channels */
+	deaf: boolean
+	/** whether user is muted in voice channels */
+	mute: boolean
+	/** guild member flags as bit set */
+	flags: number
+	/** whether user has passed guild's membership screening requirements */
+	pending?: boolean
+	/** total permissions of member in channel */
+	permissions?: string
+	/** when user's timeout will expire */
+	communicationDisableUntil?: string | null
+}
+//#endregion
+export type { _GuildMember as GuildMember }

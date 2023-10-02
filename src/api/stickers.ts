@@ -1,14 +1,14 @@
 import request from '../utils/request.js'
-import { Snowflake, Sticker, StickerPack, User } from '../types'
 import toCamelCase from '../utils/toCamelCase.js'
-
+import type { Snowflake } from '../types'
+import type { User } from './users.js'
 /** Returns a sticker object for the given **Non Guild** sticker ID */
 async function get(stickerId: Snowflake): Promise<Sticker> {
-	return request.get(`stickers/${stickerId}`) as unknown as Sticker
+	return (await request.get(`stickers/${stickerId}`)) as unknown as Sticker
 }
 /** Returns the list of sticker packs available to Nitro subscribers */
 async function listPacks(): Promise<{ stickerPacks: StickerPack[] }> {
-	return request.get(`sticker-packs`) as unknown as {
+	return (await request.get(`sticker-packs`)) as unknown as {
 		stickerPacks: StickerPack[]
 	}
 }
@@ -20,8 +20,8 @@ class GuildSticker {
 	description!: string | null
 	tags!: string
 	asset?: string
-	type!: number
-	formatType!: number
+	type!: StickerType.Guild
+	formatType!: FormatType
 	available?: boolean
 	guildId!: `${bigint}`
 	user!: User
@@ -52,7 +52,7 @@ class GuildSticker {
 		return await guild.delete(this.guildId, this.id)
 	}
 
-	constructor(data: Sticker) {
+	constructor(data: unknown) {
 		Object.assign(this, toCamelCase(data))
 	}
 }
@@ -68,16 +68,14 @@ type EditParams = {
 const guild = {
 	/** Returns an array of sticker objects for the given guild */
 	async list(guildId: Snowflake): Promise<GuildSticker[]> {
-		return (
-			(await request.get(`guilds/${guildId}/stickers`)) as unknown as Sticker[]
-		).map((v) => new GuildSticker(v))
+		return ((await request.get(`guilds/${guildId}/stickers`)) as unknown[]).map(
+			(v) => new GuildSticker(v)
+		)
 	},
 	/** Returns a sticker object for the given guild and sticker IDs */
 	async get(guildId: Snowflake, stickerId: Snowflake): Promise<GuildSticker> {
 		return new GuildSticker(
-			(await request.get(
-				`guilds/${guildId}/stickers/${stickerId}`
-			)) as unknown as Sticker
+			await request.get(`guilds/${guildId}/stickers/${stickerId}`)
 		)
 	},
 	/** Create a new sticker for the guild */
@@ -95,10 +93,7 @@ const guild = {
 		}
 	): Promise<GuildSticker> {
 		return new GuildSticker(
-			(await request.post(
-				`guilds/${guildId}/stickers`,
-				sticker
-			)) as unknown as Sticker
+			await request.post(`guilds/${guildId}/stickers`, sticker)
 		)
 	},
 	/** Edit the given sticker */
@@ -108,18 +103,78 @@ const guild = {
 		sticker: EditParams
 	): Promise<GuildSticker> {
 		return new GuildSticker(
-			(await request.patch(
-				`guilds/${guildId}/stickers/${stickerId}`,
-				sticker
-			)) as unknown as Sticker
+			await request.patch(`guilds/${guildId}/stickers/${stickerId}`, sticker)
 		)
 	},
 	/** Delete the given sticker */
 	async delete(guildId: Snowflake, stickerId: Snowflake): Promise<void> {
-		return (await request.delete(
-			`guilds/${guildId}/stickers/${stickerId}`
-		)) as unknown as void
+		await request.delete(`guilds/${guildId}/stickers/${stickerId}`)
 	}
 }
-
+export enum FormatType {
+	PNG = 1,
+	APNG,
+	LOTTIE,
+	GIF
+}
+export enum StickerType {
+	/** an official sticker in a pack */
+	Standard = 1,
+	/** a sticker uploaded to a guild for the guild's members*/
+	Guild
+}
+export { get, listPacks, guild }
 export default { get, listPacks, guild }
+
+type Sticker = {
+	/** id of sticker */
+	id: Snowflake
+	/** id of pack the sticker is from */
+	packId?: Snowflake
+	/** name of sticker */
+	name: string
+	/** description of sticker */
+	description: string | null
+	/** autocomplete/suggestion tags for sticker */
+	tags: string
+	/** **deprecated** - previously sticker asset hash, now empty string */
+	asset?: string
+	/** type of sticker */
+	type: StickerType
+	/** type of sticker format */
+	formatType: FormatType
+	/** whether guild sticker can be used */
+	available?: boolean
+	/** id of guild that owns this sticker */
+	guildId?: Snowflake
+	/** user that uploaded guild sticker */
+	user: User
+	/** standard sticker's sort order within its pack */
+	sortValue?: number
+}
+/** Represents a pack of standard stickers */
+type StickerPack = {
+	/** id of the sticker pack */
+	id: Snowflake
+	/** the stickers in the pack */
+	stickers: Sticker[]
+	/** name of the sticker pack */
+	name: string
+	/** id of the pack's SKU */
+	skuId: Snowflake
+	/** id of a sticker in the pack which is shown as the pack's icon */
+	coverStickerId?: Snowflake
+	/** description of the sticker pack */
+	description: string
+	/** id of the sticker pack's banner image */
+	bannerAssetId?: Snowflake
+}
+type StickerItem = {
+	/** id of the sticker */
+	id: Snowflake
+	/** name of the sticker */
+	name: string
+	/** type of sticker format (`1`: PNG, `2`: APNG, `3`: LOTTIE, `4`: GIF)*/
+	formatType: FormatType
+}
+export type { Sticker, StickerPack, StickerItem }

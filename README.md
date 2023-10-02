@@ -66,6 +66,6 @@ For a full list of APIs, go to [the docs](https://splitscript.js.org/discord)
 
 <div align="center">
 
-<sub><code>v3.1.3</code> | by [ultraviolet](https://github.com/ultravioletasdf)</sub>
+<sub><code>v3.2.0</code> | by [ultraviolet](https://github.com/ultravioletasdf)</sub>
 
 </div>

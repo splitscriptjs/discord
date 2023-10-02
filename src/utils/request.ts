@@ -33,8 +33,8 @@ export async function get(path: string, params?: object) {
 }
 export async function post(
 	path: string,
-	body?: { [key: string]: unknown } | { [key: string]: unknown }[],
-	params?: { [key: string]: unknown }
+	body?: Record<string, unknown> | Record<string, unknown>[],
+	params?: Record<string, unknown>
 ) {
 	if (path.includes('{APP_ID}')) {
 		const APP_ID = variable.get('app_id')
@@ -54,8 +54,8 @@ export async function post(
 }
 export async function patch(
 	path: string,
-	body?: { [key: string]: unknown } | { [key: string]: unknown }[],
-	params?: { [key: string]: unknown }
+	body?: Record<string, unknown> | Record<string, unknown>[],
+	params?: Record<string, unknown>
 ) {
 	if (path.includes('{APP_ID}')) {
 		const APP_ID = variable.get('app_id')
@@ -75,7 +75,7 @@ export async function patch(
 }
 export async function put(
 	path: string,
-	body?: { [key: string]: unknown } | { [key: string]: unknown }[]
+	body?: Record<string, unknown> | Record<string, unknown>[]
 ) {
 	if (path.includes('{APP_ID}')) {
 		const APP_ID = variable.get('app_id')
@@ -94,8 +94,8 @@ export async function put(
 }
 async function _delete(
 	path: string,
-	body?: { [key: string]: unknown } | { [key: string]: unknown }[],
-	params?: { [key: string]: unknown }
+	body?: Record<string, unknown> | Record<string, unknown>[],
+	params?: Record<string, unknown>
 ) {
 	if (path.includes('{APP_ID}')) {
 		const APP_ID = variable.get('app_id')

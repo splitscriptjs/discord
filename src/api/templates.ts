@@ -1,6 +1,9 @@
 import request from '../utils/request.js'
-import { Guild, Snowflake, Template as RawTemplate, User } from '../types'
 import toCamelCase from '../utils/toCamelCase.js'
+
+import type { Snowflake } from '../types'
+import type { User } from './users'
+import type { Guild } from './guilds'
 
 class Template {
 	//#region
@@ -57,16 +60,14 @@ class Template {
 		return await _delete(this.sourceGuildId, this.code)
 	}
 
-	constructor(data: RawTemplate) {
+	constructor(data: unknown) {
 		Object.assign(this, toCamelCase(data))
 	}
 }
 
 /** Returns a guild template object for the given code */
 async function get(code: string): Promise<Template> {
-	return new Template(
-		(await request.get(`guilds/templates/${code}`)) as unknown as RawTemplate
-	)
+	return new Template(await request.get(`guilds/templates/${code}`))
 }
 type CreateGuildParams = {
 	/** name of the guild (2-100 characters) */
@@ -86,11 +87,9 @@ async function createGuild(
 }
 /** Returns an array of guild template objects */
 async function list(guildId: Snowflake): Promise<Template[]> {
-	return (
-		(await request.get(
-			`guilds/${guildId}/templates`
-		)) as unknown as RawTemplate[]
-	).map((v) => new Template(v))
+	return ((await request.get(`guilds/${guildId}/templates`)) as unknown[]).map(
+		(v) => new Template(v)
+	)
 }
 /** Creates a template for the guild */
 async function create(
@@ -103,19 +102,12 @@ async function create(
 	}
 ): Promise<Template> {
 	return new Template(
-		(await request.post(
-			`guilds/${guildId}/templates`,
-			template
-		)) as unknown as RawTemplate
+		await request.post(`guilds/${guildId}/templates`, template)
 	)
 }
 /** Syncs the template to the guild's current state */
 async function sync(guildId: Snowflake, code: string): Promise<Template> {
-	return new Template(
-		(await request.put(
-			`guilds/${guildId}/templates/${code}`
-		)) as unknown as RawTemplate
-	)
+	return new Template(await request.put(`guilds/${guildId}/templates/${code}`))
 }
 type EditParams = {
 	/** name of the template (1-100 characters) */
@@ -130,16 +122,38 @@ async function edit(
 	template: EditParams
 ): Promise<Template> {
 	return new Template(
-		(await request.patch(
-			`guilds/${guildId}/templates/${code}`,
-			template
-		)) as unknown as RawTemplate
+		await request.patch(`guilds/${guildId}/templates/${code}`, template)
 	)
 }
 /** Deletes the template */
 async function _delete(guildId: Snowflake, code: string): Promise<void> {
-	return (await request.delete(
-		`guilds/${guildId}/templates/${code}`
-	)) as unknown as void
+	await request.delete(`guilds/${guildId}/templates/${code}`)
 }
+export { get, createGuild, list, create, sync, edit, _delete as delete }
 export default { get, createGuild, list, create, sync, edit, delete: _delete }
+
+type _Template = {
+	/** the template code (unique ID) */
+	code: string
+	/** template name */
+	name: string
+	/** the description for the template */
+	description: string | null
+	/** number of times this template has been used */
+	usageCount: number
+	/** the ID of the user who created the template */
+	creatorId: Snowflake
+	/** the user who created the template */
+	creator: User
+	/** when this template was created */
+	createdAt: string
+	/** when this template was last synced to the source guild */
+	updatedAt: string
+	/** the ID of the guild this template is based on */
+	sourceGuildId: Snowflake
+	/** the guild snapshot this template contains */
+	serializedSourceGuild: Partial<Guild>
+	/** whether the template has unsynced changes */
+	isDirty: boolean | null
+}
+export type { _Template as Template }

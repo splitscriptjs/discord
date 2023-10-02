@@ -1,23 +1,17 @@
 import request from '../utils/request.js'
-import {
-	Command as RawCommand,
-	CommandOption,
-	CommandPermission,
-	CommandType,
-	LocaleObject,
-	Snowflake
-} from '../types'
+import { Snowflake } from '../types'
 import toCamelCase from '../utils/toCamelCase.js'
+import { ChannelType } from './channels.js'
 
 class Command {
 	id!: Snowflake
-	type?: number
+	type?: CommandType
 	applicationId!: Snowflake
 	guildId?: Snowflake
 	name!: string
-	nameLocalizations: object | null | undefined
+	nameLocalizations: LocaleObject | null | undefined
 	description!: string
-	descriptionLocalizations?: object | null | undefined
+	descriptionLocalizations?: LocaleObject | null | undefined
 	options?: CommandOption[]
 	defaultMemberPermissions!: string | null
 	dmPermission?: boolean
@@ -58,7 +52,7 @@ class Command {
 			return await permissions.get(this.id, this.guildId)
 		}
 	}
-	constructor(command: RawCommand) {
+	constructor(command: unknown) {
 		Object.assign(this, toCamelCase(command))
 	}
 }
@@ -89,7 +83,7 @@ async function create(
 	const URL = guildId
 		? `applications/{APP_ID}/guilds/${guildId}/commands`
 		: `applications/{APP_ID}/commands`
-	const _command = request.post(URL, command) as unknown as RawCommand
+	const _command = await request.post(URL, command)
 	return new Command(_command)
 }
 async function _delete(
@@ -99,7 +93,7 @@ async function _delete(
 	const URL = guildId
 		? `applications/{APP_ID}/guilds/${guildId}/commands/${commandId}`
 		: `applications/{APP_ID}/commands/${commandId}`
-	return request.delete(URL) as unknown as void
+	await request.delete(URL)
 }
 
 type EditParams = {
@@ -128,7 +122,7 @@ async function edit(
 	const URL = guildId
 		? `applications/{APP_ID}/guilds/${guildId}/commands/${commandId}`
 		: `applications/{APP_ID}/commands/${commandId}`
-	const _command = (await request.patch(URL, command)) as unknown as RawCommand
+	const _command = await request.patch(URL, command)
 	return new Command(_command)
 }
 async function list(
@@ -140,7 +134,7 @@ async function list(
 		: `applications/{APP_ID}/commands`
 	const commands = (await request.get(URL, {
 		with_localizations: withLocalizations
-	})) as unknown as RawCommand[]
+	})) as unknown[]
 	return commands.map((command) => new Command(command))
 }
 async function bulkOverwrite(
@@ -174,7 +168,7 @@ async function bulkOverwrite(
 		? `applications/{APP_ID}/guilds/${guildId}/commands`
 		: `applications/{APP_ID}/commands`
 
-	return request.post(URL, commands) as unknown as void
+	await request.post(URL, commands)
 }
 async function get(
 	commandId: Snowflake,
@@ -184,7 +178,7 @@ async function get(
 		? `applications/{APP_ID}/guilds/${guildId}/commands/${commandId}`
 		: `applications/{APP_ID}/commands/${commandId}`
 
-	const command = request.get(URL) as unknown as RawCommand
+	const command = await request.get(URL)
 	return new Command(command)
 }
 const permissions = {
@@ -202,6 +196,41 @@ const permissions = {
 		)) as unknown as CommandPermission
 	}
 }
+export enum CommandType {
+	/** Slash commands; a text-based command that shows up when a user types / */
+	ChatInput = 1,
+	/** A UI-based command that shows up when you right click or tap on a user */
+	User = 2,
+	/** A UI-based command that shows up when you right click or tap on a message */
+	Message = 3
+}
+export enum OptionType {
+	Subcommand = 1,
+	SubcommandGroup = 2,
+	String = 3,
+	Integer = 4,
+	Boolean = 5,
+	User = 6,
+	Channel = 7,
+	Role = 8,
+	Mentionable = 9,
+	Number = 10,
+	Attachment = 11
+}
+export enum PermissionType {
+	Role = 1,
+	User = 2,
+	Channel = 3
+}
+export {
+	create,
+	edit,
+	list,
+	bulkOverwrite,
+	get,
+	permissions,
+	_delete as delete
+}
 export default {
 	create,
 	delete: _delete,
@@ -211,3 +240,155 @@ export default {
 	get,
 	permissions
 }
+
+type _Command = {
+	/** snowflake id of command */
+	id: Snowflake
+	/** type of command */
+	type?: CommandType
+	/** id of parent application */
+	applicationId: Snowflake
+	/** guild id of command, if not global */
+	guildId?: Snowflake
+	/** name of command */
+	name: string
+	/** localization dictionary for `name` field */
+	nameLocalizations: object | null | undefined
+	/** description for `chatInput` commands, empty string for `user` and `message` commands */
+	description: string
+	/** localization dictionary for `description` field */
+	descriptionLocalizations?: object | null | undefined
+	/** params for `chatInput` command, max 25 */
+	options?: CommandOption[]
+	/**  set of permissions represent as bit set */
+	defaultMemberPermissions: string | null
+	/** whether command is available in dms */
+	dmPermission?: boolean
+	/** **soon deprecated** - whether command is enabled by default */
+	defaultPermission?: boolean | null | undefined
+	/** whether command is age-restricted */
+	nsfw?: boolean
+	/** autoincrementing version id update during substantial record changes */
+	version: string
+}
+export type CommandOption = {
+	/** type of option */
+	type: OptionType
+	/** name of option */
+	name: string
+	/** localization dictionary for `name` */
+	nameLocalizations?: object | null | undefined
+	/** description of option */
+	description: string
+	/** localization dictionary `description` */
+	descriptionLocalizations?: object | null | undefined
+	/** if param is required or optional */
+	required?: boolean
+	/** choices for `string`, `integer` and `number` types for user to pick from, max 25 */
+	choices?: CommandOptionChoice[]
+	/** if option is subcommand or subcommand group type, nested options will be params */
+	options?: CommandOption[]
+	/** if option is channel type, channels shown will be restricted to these types */
+	channelTypes?: ChannelType[]
+	/** if option is `integer` or `number`, min value permitted */
+	minValue?: number
+	/** if option is `integer` or `number`, max value permitted */
+	maxValue?: number
+	/** if option is `string`, min allowed length */
+	minLength?: number
+	/** if option is `string`, max allowed length */
+	maxLength?: number
+	/** if autocomplete interactions are enabled for `string`, `integer`, or `number` type option */
+	autocomplete?: boolean
+}
+export type CommandOptionChoice = {
+	/** command option choice name */
+	name: string
+	/** localization dictionary for `name` */
+	nameLocalizations?: object | null | undefined
+	/** value for choice */
+	value: string | number
+}
+export type GuildCommandPermission = {
+	/** id of command or application id */
+	id: Snowflake
+	/** id of application command belongs to */
+	applicationId: Snowflake
+	/** id of guild */
+	guildId: Snowflake
+	/** permissions for command in guild */
+	permissions: CommandPermission[]
+}
+export type CommandPermission = {
+	/** id of role, user, or channel */
+	id: Snowflake
+	/** role (`1`), user (`2`), or channel (`3`) */
+	type: PermissionType
+	/** `true` to allow, `false` to disallow */
+	permission: boolean
+}
+export type LocaleObject = {
+	/** Indonesian, Bahasa Indonesia */
+	id?: string
+	/** Danish, Dansk */
+	da?: string
+	/** German, Deutsch */
+	de?: string
+	/** English (UK) */
+	'en-GB'?: string
+	/** English (US) */
+	'en-US'?: string
+	/** Spanish, Español */
+	'es-ES'?: string
+	/** French, Français */
+	fr?: string
+	/** Croatian, Hrvatski */
+	hr?: string
+	/** Italian, Italiano */
+	it?: string
+	/** Lithuanian, Lietuviškai */
+	lt?: string
+	/** Hungarian, Magyar */
+	hu?: string
+	/** Dutch, Nederlands */
+	nl?: string
+	/** Norwegian, Norsk */
+	no?: string
+	/** Polish, Polski */
+	pl?: string
+	/** Portuguese (Brazilian), Português do Brasil */
+	'pt-BR'?: string
+	/** Romanian (Romania), Română */
+	ro?: string
+	/** Finnish, Suomi */
+	fi?: string
+	/** Swedish, Svenska */
+	'sv-SE'?: string
+	/** Vietnamese, Tiếng Việt */
+	vi?: string
+	/** Turkish, Türkçe */
+	tr?: string
+	/** Czech, Čeština */
+	cs?: string
+	/** Greek, Ελληνικά */
+	el?: string
+	/** Bulgarian, български */
+	bg?: string
+	/** Russian, Pусский */
+	ru?: string
+	/** Ukrainian, Українська */
+	uk?: string
+	/** Hindi, हिन्दी */
+	hi?: string
+	/** Thai, ไทย */
+	th?: string
+	/** Chinese (China), 中文 */
+	'zh-CN'?: string
+	/** Japanese, 日本語 */
+	ja?: string
+	/** Chinese (Taiwan), 繁體中文 */
+	'zh-TW'?: string
+	/** Korean, 한국어 */
+	ko?: string
+}
+export type { _Command as Command }

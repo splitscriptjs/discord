@@ -1,5 +1,6 @@
 import request from '../utils/request.js'
-import { Snowflake, Ban as BanObject, User } from '../types'
+import { Snowflake } from '../types'
+import type { User } from './users'
 
 /** Represents a ban */
 class Ban<isCreate extends boolean> {
@@ -50,14 +51,14 @@ async function list(
 	const bans = (await request.get(
 		`guilds/${guildId}/bans`,
 		params
-	)) as unknown as BanObject[]
+	)) as unknown as _Ban[]
 	return bans.map((ban) => new Ban(ban, guildId))
 }
 /** Returns a ban object for the given user or errors if the ban cannot be found */
 async function get(guildId: Snowflake, userId: Snowflake): Promise<Ban<false>> {
-	return request.get(
+	return (await request.get(
 		`guilds/${guildId}/bans/${userId}`
-	) as unknown as Ban<false>
+	)) as unknown as Ban<false>
 }
 /** Create a guild ban, and optionally delete previous messages sent by the banned user */
 async function create(
@@ -65,7 +66,7 @@ async function create(
 	userId: Snowflake,
 	options?: {
 		/** number of days to delete messages for (0-7) - **deprecated** */
-		deleteMessageDays?: number
+		deleteMessageDays?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
 		/** number of seconds to delete messages for, between 0 and 604800 (7 days) */
 		deleteMessageSeconds?: number
 	}
@@ -82,7 +83,13 @@ async function create(
 }
 /** Remove the ban for a user */
 async function remove(guildId: Snowflake, userId: Snowflake): Promise<void> {
-	return request.delete(`guilds/${guildId}/bans/${userId}`) as unknown as void
+	await request.delete(`guilds/${guildId}/bans/${userId}`)
 }
 
+type _Ban = {
+	reason: string | null
+	/** the banned user */
+	user: User
+}
+export { list, get, create, remove }
 export default { list, get, create, remove }

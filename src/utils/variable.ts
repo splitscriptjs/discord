@@ -1,6 +1,6 @@
 import EventEmitter from 'node:events'
 
-export const variable: { [key: string]: string | undefined } = {}
+export const variable: Record<string, string | undefined> = {}
 export const emitter = new EventEmitter()
 export function set(key: string, value: string) {
 	variable[key] = value

@@ -1,8 +1,10 @@
 import request from '../utils/request.js'
-import { Channel, Snowflake, User as RawUser } from '../types'
 import toCamelCase from '../utils/toCamelCase.js'
 
-class User<isMe extends boolean> implements RawUser {
+import type { Snowflake } from '../types'
+import type { Channel } from './channels'
+
+class User<isMe extends boolean> implements _User {
 	id!: Snowflake
 	username!: string
 	discriminator!: string
@@ -15,7 +17,7 @@ class User<isMe extends boolean> implements RawUser {
 	verified?: boolean
 	email?: string | null
 	flags?: number
-	premiumType?: number
+	premiumType?: PremiumType
 	publicFlags?: number
 	isMe: boolean
 
@@ -44,7 +46,7 @@ class User<isMe extends boolean> implements RawUser {
 		? (settings: EditParams) => Promise<User<true>>
 		: never
 
-	constructor(data: RawUser, isMe: boolean = false) {
+	constructor(data: unknown, isMe = false) {
 		Object.assign(this, toCamelCase(data))
 
 		this.isMe = isMe
@@ -69,44 +71,76 @@ type EditParams = {
 const me = {
 	/** Returns the user object of the requester's account */
 	async get(): Promise<User<true>> {
-		return new User(
-			(await request.get(`users/@me`)) as unknown as RawUser,
-			true
-		)
+		return new User(await request.get(`users/@me`), true)
 	},
 	/** Edit the requester's user account settings */
 	async edit(settings: EditParams): Promise<User<true>> {
-		return new User(
-			(await request.patch(`users/@me`, settings)) as unknown as RawUser,
-			true
-		)
+		return new User(await request.patch(`users/@me`, settings), true)
 	}
 }
 
 /** Returns a user object for a given user ID */
 async function get(id: Snowflake): Promise<User<false>> {
-	return new User((await request.get(`users/${id}`)) as unknown as RawUser)
+	return new User(await request.get(`users/${id}`))
 }
 const dm = {
 	/** Create a new DM channel with a user */
 	async create(recipientId: Snowflake): Promise<Channel> {
-		return request.post(`users/@me/channels`, {
+		return (await request.post(`users/@me/channels`, {
 			recipientId
-		}) as unknown as Channel
+		})) as unknown as Channel
 	},
 	/** Create a new group DM channel with multiple users */
 	async createGroup(
 		/** access tokens of users that have granted your app the `gdm.join` scope */
 		accessTokens: string[],
 		/** a dictionary of user ids to their respective nicknames */
-		nicks: {
-			[key: Snowflake]: string
-		}
+		nicks: Record<Snowflake, string>
 	): Promise<Channel> {
-		return request.post(`users/@me/channels`, {
+		return (await request.post(`users/@me/channels`, {
 			accessTokens,
 			nicks
-		}) as unknown as Channel
+		})) as unknown as Channel
 	}
 }
+export enum PremiumType {
+	None,
+	NitroClassic,
+	Nitro,
+	NitroBasic
+}
+export { me, get, dm }
 export default { me, get, dm }
+
+/** User Object */
+type _User = {
+	/** user's id */
+	id: Snowflake
+	/** user's username */
+	username: string
+	/** user's 4-digit tag */
+	discriminator: string
+	/** user's avatar hash */
+	avatar: string | null
+	/** whether user is a bot */
+	bot?: boolean
+	/** whether user is Offical Discord System user */
+	system?: boolean
+	/** whether user has 2fa enabled */
+	mfaEnabled?: boolean | null | undefined
+	/** user's banner color as integer representation of hex color */
+	accentColor?: number | null | undefined
+	/** user's chosen language option */
+	locale?: string
+	/** whether user's email has been verified */
+	verified?: boolean
+	/** user's email */
+	email?: string | null
+	/** user's flags */
+	flags?: number
+	/** type of user's nitro subscription */
+	premiumType?: PremiumType
+	/** user's public flags */
+	publicFlags?: number
+}
+export type { _User as User }

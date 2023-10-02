@@ -1,14 +1,88 @@
 {
 	"name": "@splitscript.js/discord",
-	"version": "3.1.3",
+	"version": "3.2.0",
 	"description": "Interact with the discord API in SplitScript.js",
 	"types": "./dist/types/index.d.ts",
+	"typings": "./dist/types/index.d.ts",
+	"typesVersions": {
+		"*": {
+			"automod": [
+				"./dist/types/api/automod.d.ts"
+			],
+			"bans": [
+				"./dist/types/api/bans.d.ts"
+			],
+			"channels": [
+				"./dist/types/api/channels.d.ts"
+			],
+			"commands": [
+				"./dist/types/api/commands.d.ts"
+			],
+			"emojis": [
+				"./dist/types/api/emojis.d.ts"
+			],
+			"followups": [
+				"./dist/types/api/followups.d.ts"
+			],
+			"guilds": [
+				"./dist/types/api/guilds.d.ts"
+			],
+			"integrations": [
+				"./dist/types/api/integrations.d.ts"
+			],
+			"invites": [
+				"./dist/types/api/invites.d.ts"
+			],
+			"members": [
+				"./dist/types/api/members.d.ts"
+			],
+			"messages": [
+				"./dist/types/api/messages.d.ts"
+			],
+			"reactions": [
+				"./dist/types/api/reactions.d.ts"
+			],
+			"responses": [
+				"./dist/types/api/responses.d.ts"
+			],
+			"roles": [
+				"./dist/types/api/roles.d.ts"
+			],
+			"scheduledEvents": [
+				"./dist/types/api/scheduledEvents.d.ts"
+			],
+			"stageInstances": [
+				"./dist/types/api/stageInstances.d.ts"
+			],
+			"stickers": [
+				"./dist/types/api/stickers.d.ts"
+			],
+			"templates": [
+				"./dist/types/api/templates.d.ts"
+			],
+			"users": [
+				"./dist/types/api/users.d.ts"
+			],
+			"webhooks": [
+				"./dist/types/api/webhooks.d.ts"
+			],
+			"widgets": [
+				"./dist/types/api/widgets.d.ts"
+			]
+		}
+	},
 	"exports": {
 		".": {
 			"import": "./dist/esm/index.js",
 			"require": "./dist/cjs/index.js",
 			"types": "./dist/types/index.d.ts",
 			"default": "./dist/esm/index.js"
+		},
+		"./*": {
+			"import": "./dist/esm/api/*.js",
+			"require": "./dist/cjs/api/*.js",
+			"types": "./dist/types/api/*.d.ts",
+			"default": "./dist/esm/api/*.js"
 		}
 	},
 	"files": [
@@ -20,8 +94,10 @@
 	"scripts": {
 		"build": "rm -fr dist/* && tsc && esbuild `find src -type f -name \"*.ts\"` --platform='node' --ignore-annotations --format='cjs' --outdir='dist/cjs' && esbuild `find src -type f -name \"*.ts\"` --platform='node' --ignore-annotations --format='esm' --outdir='dist/esm' && cp src/esmpackage.json dist/esm/package.json",
 		"test": "cd test && node . && cd ../",
+		"test:cjs": "cd test/cjs && node . && cd ../../",
 		"lint": "eslint src",
-		"lint:fix": "eslint src --fix"
+		"lint:fix": "eslint src --fix",
+		"knip": "knip"
 	},
 	"repository": {
 		"type": "git",
@@ -50,8 +126,42 @@
 		"typescript": "^5.2.2"
 	},
 	"dependencies": {
-		"@splitscript.js/core": "^2.0",
-		"@splitscript.js/https": "^1.0.4",
+		"@splitscript.js/core": "2.1",
+		"@splitscript.js/https": "1.0",
 		"ws": "^8.13.0"
+	},
+	"eslintConfig": {
+		"extends": [
+			"eslint:recommended",
+			"plugin:@typescript-eslint/recommended-type-checked",
+			"plugin:@typescript-eslint/stylistic-type-checked"
+		],
+		"parser": "@typescript-eslint/parser",
+		"plugins": [
+			"@typescript-eslint"
+		],
+		"env": {
+			"node": true
+		},
+		"root": true,
+		"rules": {
+			"no-mixed-spaces-and-tabs": "off",
+			"no-await-in-loop": "error",
+			"no-constant-binary-expression": "error",
+			"@typescript-eslint/consistent-type-definitions": "off",
+			"@typescript-eslint/consistent-type-exports": "error",
+			"@typescript-eslint/no-redundant-type-constituents": "off"
+		},
+		"parserOptions": {
+			"project": true
+		}
+	},
+	"prettier": {
+		"semi": false,
+		"singleQuote": true,
+		"useTabs": true,
+		"bracketSpacing": true,
+		"arrowParens": "always",
+		"trailingComma": "none"
 	}
 }

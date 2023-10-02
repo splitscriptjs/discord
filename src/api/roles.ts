@@ -1,8 +1,8 @@
 import request from '../utils/request.js'
-import { Snowflake, Role as RawRole, RoleTags } from '../types'
+import { Snowflake } from '../types'
 import toCamelCase from '../utils/toCamelCase.js'
 
-class Role implements RawRole {
+class Role implements _Role {
 	/** role id */
 	id!: Snowflake
 	/** role name */
@@ -43,7 +43,7 @@ class Role implements RawRole {
 		return await _delete(this.guildId, this.id)
 	}
 
-	constructor(role: RawRole, guildId: Snowflake) {
+	constructor(role: unknown, guildId: Snowflake) {
 		Object.assign(this, toCamelCase(role))
 		this.guildId = guildId
 	}
@@ -51,9 +51,9 @@ class Role implements RawRole {
 
 /** Returns a list of role objects for the guild. */
 async function list(guildId: Snowflake): Promise<Role[]> {
-	return (
-		(await request.get(`guilds/${guildId}/roles`)) as unknown as RawRole[]
-	).map((r) => new Role(r, guildId))
+	return ((await request.get(`guilds/${guildId}/roles`)) as unknown[]).map(
+		(r) => new Role(r, guildId)
+	)
 }
 /** Create a new role for the guild. */
 async function create(
@@ -75,10 +75,7 @@ async function create(
 		mentionable?: boolean
 	}
 ): Promise<Role> {
-	return new Role(
-		(await request.post(`guilds/${guildId}/roles`, role)) as unknown as RawRole,
-		guildId
-	)
+	return new Role(await request.post(`guilds/${guildId}/roles`, role), guildId)
 }
 
 type EditParams = {
@@ -95,16 +92,62 @@ async function edit(
 	role: EditParams
 ): Promise<Role> {
 	return new Role(
-		(await request.patch(
-			`guilds/${guildId}/roles/${roleId}`,
-			role
-		)) as unknown as RawRole,
+		await request.patch(`guilds/${guildId}/roles/${roleId}`, role),
 		guildId
 	)
 }
 /** Delete a role.  */
 async function _delete(guildId: Snowflake, roleId: Snowflake): Promise<void> {
-	return request.delete(`guilds/${guildId}/roles/${roleId}`) as unknown as void
+	await request.delete(`guilds/${guildId}/roles/${roleId}`)
 }
 
+export { list, create, edit, _delete as delete }
 export default { list, create, edit, delete: _delete }
+
+//#region
+type _Role = {
+	/** role id */
+	id: Snowflake
+	/** role name */
+	name: string
+	/** integer representation of hex color code */
+	color: number
+	/** if role is pinned in user listing */
+	hoist: boolean
+	/** role icon hash */
+	icon?: string
+	/** role unicode emoji */
+	unicodeEmoji?: string | null
+	/** position of role */
+	position: number
+	/** permission bit set */
+	permissions: string
+	/** whether role is managed by an integration */
+	managed: boolean
+	/** whether role is mentionable */
+	mentionable: boolean
+	/** tags role has */
+	tags?: RoleTags
+}
+type RoleTags = {
+	/** id of the bot role belongs to */
+	botId?: Snowflake
+	/** id of the integration role belongs to */
+	integrationId?: Snowflake
+	/** whether this is guild's booster role
+	 *
+	 * `null` if "true", not present if "false" */
+	premiumSubscriber?: null
+	/** id of this role's subscription sku and listing */
+	subscriptionListingId?: Snowflake
+	/** whether role is available for purchase
+	 *
+	 * `null` if "true", not present if "false" */
+	availableForPurchase?: null
+	/** whether role is guild's linked role
+	 *
+	 * `null` if "true", not present if "false" */
+	guildConnections?: null
+}
+//#endregion
+export type { _Role as Role, RoleTags }

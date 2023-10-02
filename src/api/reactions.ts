@@ -1,5 +1,7 @@
 import request from '../utils/request.js'
-import { Snowflake, User } from '../types'
+import type { Snowflake } from '../types'
+import type { User } from './users'
+import { Emoji } from './emojis.js'
 
 class Reaction {
 	channelId: Snowflake
@@ -46,12 +48,12 @@ async function listUsers(
 	emoji: string,
 	options?: ListUsersOptions
 ): Promise<User[]> {
-	return request.get(
+	return (await request.get(
 		`channels/${channelId}/messages/${messageId}/reactions/${encodeURIComponent(
 			emoji
 		)}`,
 		options
-	) as unknown as User[]
+	)) as unknown as User[]
 }
 /** Add a reaction to a message */
 async function create(
@@ -73,11 +75,11 @@ const _delete = {
 		messageId: Snowflake,
 		emoji: string
 	): Promise<void> {
-		return request.delete(
+		await request.delete(
 			`channels/${channelId}/messages/${messageId}/reactions/${encodeURIComponent(
 				emoji
 			)}/@me`
-		) as unknown as void
+		)
 	},
 	/** Delete a users reaction */
 	async user(
@@ -86,11 +88,22 @@ const _delete = {
 		emoji: string,
 		userId: Snowflake
 	) {
-		return request.delete(
+		await request.delete(
 			`channels/${channelId}/messages/${messageId}/reactions/${
 				emoji ? encodeURIComponent(emoji) : ''
 			}/${userId}`
-		) as unknown as void
+		)
 	}
 }
-export default { listUsers, create, _delete }
+export { listUsers, create, _delete as delete }
+export default { listUsers, create, delete: _delete }
+
+type _Reaction = {
+	/** times this emoji has been used to react */
+	count: number
+	/** whether the current user reacted using this emoji */
+	me: boolean
+	/** emoji information */
+	emoji: Partial<Emoji>
+}
+export type { _Reaction as Reaction }

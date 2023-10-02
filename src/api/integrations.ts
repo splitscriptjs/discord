@@ -1,13 +1,7 @@
 import request from '../utils/request.js'
-import {
-	Account,
-	IntegrationApplication,
-	OAuth2Scope,
-	Integration as RawIntegration,
-	Snowflake,
-	User
-} from '../types.js'
+import { Snowflake } from '../types.js'
 import toCamelCase from '../utils/toCamelCase.js'
+import type { User } from './users'
 
 class Integration {
 	id!: Snowflake
@@ -17,7 +11,7 @@ class Integration {
 	syncing?: boolean
 	roleId?: Snowflake
 	enableEmoticons?: boolean
-	expireBehavior?: 0 | 1
+	expireBehavior?: ExpireBehaviour
 	expireGracePeriod?: number
 	user?: User
 	account!: Account
@@ -33,7 +27,7 @@ class Integration {
 	async delete() {
 		return await _delete(this.guildId, this.id)
 	}
-	constructor(data: RawIntegration, guildId: Snowflake) {
+	constructor(data: unknown, guildId: Snowflake) {
 		Object.assign(this, toCamelCase(data))
 
 		this.guildId = guildId
@@ -43,9 +37,7 @@ class Integration {
 /** Returns a list of integration objects for the guild. */
 async function list(guildId: Snowflake): Promise<Integration[]> {
 	return (
-		(await request.get(
-			`guilds/${guildId}/integrations`
-		)) as unknown as RawIntegration[]
+		(await request.get(`guilds/${guildId}/integrations`)) as unknown[]
 	).map((integration) => new Integration(integration, guildId))
 }
 /** Delete the attached integration object for the guild. */
@@ -53,8 +45,79 @@ async function _delete(
 	guildId: Snowflake,
 	integrationId: Snowflake
 ): Promise<void> {
-	return request.delete(
-		`guilds/${guildId}/integrations/${integrationId}`
-	) as unknown as void
+	await request.delete(`guilds/${guildId}/integrations/${integrationId}`)
 }
+export enum ExpireBehaviour {
+	RemoveRole = 0,
+	Kick = 1
+}
+type _Integration = {
+	id: Snowflake
+	name: string
+	type: string
+	enabled: boolean
+	syncing?: boolean
+	roleId?: Snowflake
+	enableEmoticons?: boolean
+	expireBehavior?: ExpireBehaviour
+	expireGracePeriod?: number
+	user?: User
+	account: Account
+	syncedAt?: string
+	subscriberCount?: number
+	revoked?: boolean
+	application?: IntegrationApplication
+	scopes?: OAuth2Scope[]
+}
+type IntegrationApplication = {
+	/** the id of the app */
+	id: Snowflake
+	/** the name of the app */
+	name: string
+	/** the icon hash of the app */
+	icon: string | null
+	/** the description of the app */
+	description: string
+	/** the bot associated with this application */
+	bot?: User
+}
+type Account = {
+	/** id of the account */
+	id: string
+	/** name of the account */
+	name: string
+}
+type OAuth2Scope =
+	//#region
+	| 'activities.read'
+	| 'activities.write'
+	| 'applications.builds.read'
+	| 'applications.builds.upload'
+	| 'applications.commands'
+	| 'applications.commands.update'
+	| 'applications.commands.permissions.update'
+	| 'applications.entitlements'
+	| 'applications.store.update'
+	| 'bot'
+	| 'connections'
+	| 'dm_channels.read'
+	| 'email'
+	| 'gdm.join'
+	| 'guilds'
+	| 'guilds.join'
+	| 'guilds.members.read'
+	| 'identify'
+	| 'messages.read'
+	| 'relationships.read'
+	| 'role_connections.write'
+	| 'rpc'
+	| 'rpc.activities.write'
+	| 'rpc.notifications.read'
+	| 'rpc.voice.read'
+	| 'rpc.voice.write'
+	| 'voice'
+	| 'webhook.incoming'
+//#endregion
+export type { _Integration as Integration }
+export { list, _delete as Delete }
 export default { list, delete: _delete }

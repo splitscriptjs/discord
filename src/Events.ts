@@ -1,27 +1,25 @@
-import {
+import type {
 	Application,
-	AutomodRule,
-	Channel,
-	CommandPermission,
 	Snowflake,
-	UnavailableGuild,
-	User,
-	ThreadMember,
-	Guild,
-	GuildMember,
 	Presence,
-	GuildScheduledEvent,
-	VoiceState,
-	StageInstance,
-	AuditLogEntry,
-	Emoji,
-	Sticker,
-	Role,
-	Integration,
-	Message,
 	Activity,
-	Interaction
+	Attachment
 } from './types'
+import type { AutomodRule } from './api/automod'
+import type { Channel, ThreadMember } from './api/channels'
+import type { User } from './api/users'
+import type { GuildMember } from './api/members'
+import type { AuditLogEntry, Guild, UnavailableGuild } from './api/guilds'
+import type { Role } from './api/roles'
+import type { Emoji } from './api/emojis'
+import type { Sticker } from './api/stickers'
+import type { Message } from './api/messages'
+import type { ScheduledEvent } from './api/scheduledEvents'
+import type { CommandPermission, CommandType, OptionType } from './api/commands'
+import type { Integration } from './api/integrations'
+import type { StageInstance } from './api/stageInstances'
+import { InteractionType } from './enums'
+import { TargetType } from './api/invites'
 /** Sent on connection to the websocket (discord.listen()). Defines the heartbeat interval that an app should heartbeat to. */
 export type Hello = {
 	/** Interval (in milliseconds) an app should heartbeat with */
@@ -135,7 +133,7 @@ export type GuildCreate =
 			/** Stage instances in the guild */
 			stageInstances: StageInstance[]
 			/** Scheduled events in the guild */
-			guildScheduledEvents: GuildScheduledEvent[]
+			guildScheduledEvents: ScheduledEvent[]
 	  } & Guild)
 	| UnavailableGuild
 /** Sent when a guild is updated. */
@@ -251,11 +249,11 @@ export type RoleDelete = {
 	roleId: Snowflake
 }
 /** Sent when a guild scheduled event is created. */
-export type ScheduledeventCreate = GuildScheduledEvent
+export type ScheduledeventCreate = ScheduledEvent
 /** Sent when a guild scheduled event is updated. */
-export type ScheduledeventUpdate = GuildScheduledEvent
+export type ScheduledeventUpdate = ScheduledEvent
 /** Sent when a guild scheduled event is deleted. */
-export type ScheduledeventDelete = GuildScheduledEvent
+export type ScheduledeventDelete = ScheduledEvent
 /** Sent when a user has subscribed to a guild scheduled event. */
 export type ScheduledeventUserAdd = {
 	/** ID of the guild scheduled event */
@@ -310,7 +308,7 @@ export type InviteCreate = {
 	/** Maximum number of times the invite can be used */
 	maxUses: number
 	/** Type of target for this voice channel invite */
-	targetType?: number
+	targetType?: TargetType
 	/** User whose stream to display for this voice channel stream invite */
 	targetUser?: User
 	/** Embedded application to open for this voice channel embedded application invite */
@@ -459,6 +457,35 @@ export type TypingStart = {
 }
 /** Sent when properties about the current bot's user change. */
 export type UserUpdate = User
+/** Used to represent a user's voice connection status. */
+type VoiceState = {
+	/** the guild id this voice state is for */
+	guildId?: Snowflake
+	/** the channel id this user is connected to */
+	channelId: Snowflake | null
+	/** the user id this voice state is for */
+	userId: Snowflake
+	/** the guild member this voice state is for */
+	member?: GuildMember
+	/** the session id for this voice state */
+	sessionId: string
+	/** whether this user is deafened by the server */
+	deaf: boolean
+	/** whether this user is muted by the server */
+	mute: boolean
+	/** whether this user is locally deafened */
+	selfDeaf: boolean
+	/** whether this user is locally muted */
+	selfMute: boolean
+	/** whether this user is streaming using "Go Live" */
+	selfStream?: boolean
+	/** whether this user's camera is enabled */
+	selfVideo: boolean
+	/** whether this user's permission to speak is denied */
+	supress: boolean
+	/** the time at which the user requested to speak */
+	requestToSpeakTimestamp: string | null
+}
 /** Sent when someone joins/leaves/moves voice channels. */
 export type VoiceStateUpdate = VoiceState
 /** Sent when a guild's voice server is updated. This is sent when initially connecting to voice, and when the current voice instance fails over to a new server. */
@@ -478,5 +505,78 @@ export type WebhooksUpdate = {
 	channelId: Snowflake
 }
 /** Sent when a user uses an Application Command or Message Component. */
-export type InteractionCreate = Interaction
+export type InteractionCreate = {
+	/** ID of the interaction */
+	id: Snowflake
+	/** ID of the application this interaction is for */
+	applicationId: Snowflake
+	/** Type of interaction */
+	type: InteractionType
+	/** Interaction data payload */
+	data?: InteractionData
+	/** Guild that the interaction was sent from */
+	guildId?: Snowflake
+	/** Channel that the interaction was sent from */
+	channel?: Partial<Channel>
+	/** Channel that the interaction was sent from */
+	channelId?: Snowflake
+	/** Guild member data for the invoking user, including permissions */
+	member?: GuildMember
+	/** User object for the invoking user, if invoked in a DM */
+	user?: User
+	/** Continuation token for responding to the interaction */
+	token: string
+	/** Read-only property, always `1` */
+	version: 1
+	/** For components, the message they were attached to */
+	message?: Message
+	/** Bitwise set of permissions the app or bot has within the channel the interaction was sent from */
+	appPermissions?: string
+	/** Selected language of the invoking user */
+	locale?: string
+	/** Guild's preferred locale, if invoked in a guild */
+	guildLocale?: string
+}
+type InteractionData = {
+	/** the ID of the invoked command */
+	id: Snowflake
+	/** the `name` of the invoked command */
+	name: string
+	/** the type of the invoked command */
+	type: CommandType
+	/** converted users + roles + channels + attachments */
+	resolved?: ResolvedData
+	/** the params + values from the user */
+	options?: CommandInteractionDataOption[]
+	/** the id of the guild the command is registered to */
+	guildId?: Snowflake
+	/** id of the user or message targeted by a user or message command */
+	targetId?: Snowflake
+}
+type CommandInteractionDataOption = {
+	/** Name of the parameter */
+	name: string
+	/** Value of application command option type */
+	type: OptionType
+	/** Value of the option resulting from user input */
+	value?: string | number | boolean
+	/** Present if this option is a group or subcommand */
+	options?: CommandInteractionDataOption[]
+	/** true if this option is the currently focused option for autocomplete */
+	focused?: boolean
+}
+type ResolvedData = {
+	/** the ids and User objects */
+	users?: Record<Snowflake, User>
+	/** the ids and partial Member objects */
+	members?: Record<Snowflake, Partial<GuildMember>>
+	/** the ids and Role objects */
+	roles?: Record<Snowflake, Role>
+	/** the ids and partial Channel objects */
+	channels?: Record<Snowflake, Partial<Channel>>
+	/** the ids and partial Message objects */
+	messages?: Record<Snowflake, Partial<Message>>
+	/** the ids and attachment objects */
+	attachments?: Record<Snowflake, Attachment>
+}
 // export { Events }

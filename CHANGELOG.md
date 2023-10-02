@@ -1,3 +1,12 @@
+# 3.2.0
+
+- Fixed bug where arrays with non object values would be converted to object
+- Restructure types (move most types in types.ts to relative files)
+- Add helper enums (e.g `ChannelType`)
+- allow imports like `@splitscript.js/discord/messages` and `@splitscript.js/discord/automod`
+- move configs to package.json
+- errors if gateway closes and reconnect is not allowed
+
 # 3.1.3
 
 Default intents to 0

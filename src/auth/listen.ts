@@ -23,18 +23,6 @@ type IntentFlag =
 	| 'guild_scheduled_events'
 	| 'auto_moderation_configuration'
 	| 'auto_moderation_execution'
-	| 'guild_invites'
-	| 'guild_presences'
-	| 'guild_messages'
-	| 'guild_messages_reactions'
-	| 'guild_message_typing'
-	| 'direct_messages'
-	| 'direct_message_reactions'
-	| 'direct_message_typings'
-	| 'message_content'
-	| 'guild_scheduled_events'
-	| 'auto_moderation_configuration'
-	| 'auto_moderation_execution'
 
 type Identify = {
 	presence?: Presence
@@ -45,6 +33,16 @@ const resumeData: {
 	sequence?: number
 	resumeUrl?: string
 } = {}
+const reconnectCodes: Record<number, boolean> = {
+	4000: true,
+	4001: true,
+	4002: true,
+	4003: true,
+	4005: true,
+	4007: true,
+	4008: true,
+	4009: true
+}
 function connect(
 	token: string,
 	options: Identify = { intents: 0 },
@@ -63,7 +61,9 @@ function connect(
 	}
 	options.intents ??= 0
 	if (Array.isArray(options.intents)) {
-		const flags: { [key: string]: number } = {
+		if (!options.intents.every((v) => typeof v === 'string'))
+			throw new TypeError('Invalid intents array')
+		const flags: Record<string, number> = {
 			guilds: 1 << 0,
 
 			guild_members: 1 << 1,
@@ -104,6 +104,7 @@ function connect(
 		let generatedIntents = 0
 
 		for (const intent of options.intents ?? []) {
+			if (!flags[intent]) throw new TypeError(`Invalid intent flag ${intent}`)
 			generatedIntents += flags[intent.toLowerCase()]
 		}
 
@@ -130,13 +131,17 @@ function connect(
 	ws.on('open', () => {
 		ws.send(JSON.stringify(payload))
 	})
-	ws.on('message', (data) => {
-		const payload = JSON.parse(data.toString('utf-8'))
+	ws.on('message', (data: Buffer) => {
+		const payload = JSON.parse(data.toString('utf-8')) as {
+			t: string
+			op: number
+			d: Record<string, unknown>
+			s: number
+		}
 
 		const { t, op, d, s } = payload
-
 		switch (op) {
-			case 0 && !t:
+			case 0:
 				resumeData.sequence = s
 				break
 			case 1:
@@ -155,7 +160,7 @@ function connect(
 				)
 				break
 			case 10:
-				heartbeat(d.heartbeat_interval)
+				heartbeat(d.heartbeat_interval as number)
 				break
 		}
 
@@ -164,8 +169,8 @@ function connect(
 		let event: string = t.toLowerCase()
 		switch (event) {
 			case 'ready':
-				resumeData.session_id = d.session_id
-				resumeData.resumeUrl = d.resume_gateway_url
+				resumeData.session_id = d.session_id as Snowflake
+				resumeData.resumeUrl = d.resume_gateway_url as string
 				break
 			case 'application_command_permissions_update':
 				event = 'command_permissions_update'
@@ -246,10 +251,11 @@ function connect(
 				event = 'stageinstance_delete'
 				break
 		}
-		emitter.send(event.split('_'), toCamelCase(d))
+		emitter.send(event.split('_'), toCamelCase(d)).catch((r) => console.log(r))
 	})
 
-	ws.on('close', () => {
+	ws.on('close', (code, reason) => {
+		if (reconnectCodes[code]) throw new Error(reason.toString('utf-8'))
 		setTimeout(() => {
 			connect(token, options, emitter)
 		}, 5000)

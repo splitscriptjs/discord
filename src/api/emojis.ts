@@ -1,6 +1,8 @@
 import request from '../utils/request.js'
-import { Emoji as RawEmoji, Snowflake, User } from '../types.js'
 import toCamelCase from '../utils/toCamelCase.js'
+
+import type { User } from './users'
+import type { Snowflake } from '../types'
 
 class Emoji {
 	/** emoji id */
@@ -44,24 +46,20 @@ class Emoji {
 	async delete() {
 		return await _delete(this.guildId, this.id)
 	}
-	constructor(data: RawEmoji & { id: Snowflake }, guildId: Snowflake) {
+	constructor(data: unknown, guildId: Snowflake) {
 		Object.assign(this, toCamelCase(data))
 		this.guildId = guildId
 	}
 }
 /** Returns list of emojis in guild */
 async function list(guildId: Snowflake): Promise<Emoji[]> {
-	const emojis = (await request.get(
-		`guilds/${guildId}/emojis`
-	)) as unknown as (RawEmoji & { id: Snowflake })[]
+	const emojis = (await request.get(`guilds/${guildId}/emojis`)) as unknown[]
 	return emojis.map((emoji) => new Emoji(emoji, guildId))
 }
 /** Return emoji object for given guild and emoji ids */
 async function get(guildId: Snowflake, emojiId: Snowflake): Promise<Emoji> {
 	return new Emoji(
-		(await request.get(
-			`guilds/${guildId}/emojis/${emojiId}`
-		)) as unknown as RawEmoji & { id: Snowflake },
+		await request.get(`guilds/${guildId}/emojis/${emojiId}`),
 		guildId
 	)
 }
@@ -76,10 +74,7 @@ type CreateParams = {
 /** Create new emoji for a guild */
 async function create(guildId: Snowflake, emoji: CreateParams): Promise<Emoji> {
 	return new Emoji(
-		(await request.post(
-			`guilds/${guildId}/emojis`,
-			emoji
-		)) as unknown as RawEmoji & { id: Snowflake },
+		await request.post(`guilds/${guildId}/emojis`, emoji),
 		guildId
 	)
 }
@@ -97,17 +92,35 @@ async function edit(
 	emoji: EditParams
 ): Promise<Emoji> {
 	return new Emoji(
-		(await request.patch(
-			`guilds/${guildId}/emojis/${emojiId}`,
-			emoji
-		)) as unknown as RawEmoji & { id: Snowflake },
+		await request.patch(`guilds/${guildId}/emojis/${emojiId}`, emoji),
 		guildId
 	)
 }
 /** Delete given emoji */
 async function _delete(guildId: Snowflake, emojiId: Snowflake): Promise<void> {
-	return request.delete(
-		`guilds/${guildId}/emojis/${emojiId}`
-	) as unknown as void
+	await request.delete(`guilds/${guildId}/emojis/${emojiId}`)
 }
+export { list, get, create, edit, _delete as delete }
 export default { list, get, create, edit, delete: _delete }
+
+//#region
+type _Emoji = {
+	/** emoji id */
+	id: Snowflake | null
+	/** emoji name */
+	name: string | null
+	/** roles allowed to use this emoji */
+	roles?: string[]
+	/** user that created this emoji */
+	user?: User
+	/** whether emoji must be wrapped in colons */
+	requireColons?: boolean
+	/** whether emoji is managed */
+	managed?: boolean
+	/** whether emoji is animated */
+	animated?: boolean
+	/** whether emojican be used */
+	available?: boolean
+}
+//#endregion
+export type { _Emoji as Emoji }

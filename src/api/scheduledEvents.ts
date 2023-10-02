@@ -1,15 +1,8 @@
 import request from '../utils/request.js'
-import {
-	EntityMetadata,
-	GuildScheduledEvent,
-	GuildScheduledEventEntityType,
-	GuildScheduledEventPrivacyLevel,
-	GuildScheduledEventStatus,
-	GuildScheduledEventUser,
-	Snowflake,
-	User
-} from '../types'
+import type { Snowflake } from '../types'
+import type { User } from './users'
 import toCamelCase from '../utils/toCamelCase.js'
+import { GuildMember } from './members.js'
 
 class ScheduledEvent {
 	//#region
@@ -21,9 +14,9 @@ class ScheduledEvent {
 	description?: string | null
 	scheduledStartTime!: string
 	scheduledEndTime!: string | null
-	privacyLevel!: number
-	status!: number
-	entityType!: number
+	privacyLevel!: PrivacyLevel
+	status!: EventStatus
+	entityType!: EntityType
 	entityId!: Snowflake | null
 	entityMetadata: EntityMetadata | null | undefined
 	creator?: User
@@ -61,7 +54,7 @@ class ScheduledEvent {
 		return await _delete(this.guildId, this.id)
 	}
 
-	constructor(data: GuildScheduledEvent) {
+	constructor(data: unknown) {
 		Object.assign(this, toCamelCase(data))
 	}
 }
@@ -74,7 +67,7 @@ async function list(
 	return (
 		(await request.get(`guilds/${guildId}/scheduled-events`, {
 			withUserCount
-		})) as unknown as GuildScheduledEvent[]
+		})) as unknown[]
 	).map((v) => new ScheduledEvent(v))
 }
 /** Create a scheduled event in the guild */
@@ -88,7 +81,7 @@ async function create(
 		/** the name of the scheduled event */
 		name: string
 		/** the privacy level of the scheduled event */
-		privacyLevel: GuildScheduledEventPrivacyLevel
+		privacyLevel: PrivacyLevel
 		/** the time to schedule the scheduled event */
 		scheduledStartTime: string
 		/** the time when the scheduled event is scheduled to end */
@@ -96,26 +89,23 @@ async function create(
 		/** the description of the scheduled event */
 		description?: string
 		/** the entity type of the scheduled event */
-		entityType: GuildScheduledEventEntityType
+		entityType: EntityType
 		/** the cover image of the scheduled event */
 		image?: string
 	} & (
 		| {
-				entityType: 3
+				entityType: EntityType.External
 				entityMetadata: EntityMetadata
 				scheduledEndTime: string
 		  }
 		| {
-				entityType: 1 | 2
+				entityType: EntityType.StageInstance | EntityType.Voice
 				channelId: Snowflake
 		  }
 	)
 ): Promise<ScheduledEvent> {
 	return new ScheduledEvent(
-		(await request.post(
-			`guilds/${guildId}/scheduled-events`,
-			scheduledEvent
-		)) as unknown as GuildScheduledEvent
+		await request.post(`guilds/${guildId}/scheduled-events`, scheduledEvent)
 	)
 }
 /** Get a scheduled event. */
@@ -125,12 +115,12 @@ async function get(
 	withUserCount?: boolean
 ): Promise<ScheduledEvent> {
 	return new ScheduledEvent(
-		(await request.get(
+		await request.get(
 			`guilds/${guildId}/scheduled-events/${scheduledEventId}`,
 			{
 				withUserCount
 			}
-		)) as unknown as GuildScheduledEvent
+		)
 	)
 }
 type EditParams = {
@@ -141,7 +131,7 @@ type EditParams = {
 	/** the name of the scheduled event */
 	name?: string
 	/** the privacy level of the scheduled event */
-	privacyLevel?: GuildScheduledEventPrivacyLevel
+	privacyLevel?: PrivacyLevel
 	/** the time to schedule the scheduled event */
 	scheduledStartTime?: string
 	/** the time when the scheduled event is scheduled to end */
@@ -149,9 +139,9 @@ type EditParams = {
 	/** the description of the scheduled event */
 	description?: string | null
 	/** the entity type of the scheduled event */
-	entityType?: GuildScheduledEventEntityType
+	entityType?: EntityType
 	/** the status of the scheduled event */
-	status?: GuildScheduledEventStatus
+	status?: EventStatus
 	/** the cover image of the scheduled event */
 	image?: string
 }
@@ -162,10 +152,10 @@ async function edit(
 	scheduledEvent: EditParams
 ): Promise<ScheduledEvent> {
 	return new ScheduledEvent(
-		(await request.get(
+		await request.get(
 			`guilds/${guildId}/scheduled-events/${scheduledEventId}`,
 			scheduledEvent
-		)) as unknown as GuildScheduledEvent
+		)
 	)
 }
 /** Delete a guild scheduled event */
@@ -173,9 +163,7 @@ async function _delete(
 	guildId: Snowflake,
 	scheduledEventId: Snowflake
 ): Promise<void> {
-	return (await request.delete(
-		`guilds/${guildId}/scheduled-events/${scheduledEventId}`
-	)) as unknown as void
+	await request.delete(`guilds/${guildId}/scheduled-events/${scheduledEventId}`)
 }
 type GetUserOptions = {
 	/** number of users to return (up to maximum 100) */
@@ -192,10 +180,95 @@ async function getUsers(
 	guildId: Snowflake,
 	scheduledEventId: Snowflake,
 	options?: GetUserOptions
-): Promise<GuildScheduledEventUser[]> {
+): Promise<ScheduledEventUser[]> {
 	return (await request.get(
 		`guilds/${guildId}/scheduled-events/${scheduledEventId}/users`,
 		options
-	)) as unknown as GuildScheduledEventUser[]
+	)) as unknown as ScheduledEventUser[]
 }
-export default { list, create, get, edit, delete: _delete, getUsers }
+
+enum EntityType {
+	StageInstance = 1,
+	Voice = 2,
+	External = 3
+}
+enum PrivacyLevel {
+	GuildOnly = 2
+}
+enum EventStatus {
+	Scheduled = 1,
+	Active = 2,
+	Completed = 3,
+	Canceled = 4
+}
+
+export {
+	list,
+	create,
+	get,
+	edit,
+	_delete as delete,
+	getUsers,
+	EntityType,
+	PrivacyLevel,
+	EventStatus
+}
+export default {
+	list,
+	create,
+	get,
+	edit,
+	delete: _delete,
+	getUsers,
+	EntityType,
+	PrivacyLevel,
+	EventStatus
+}
+
+type EntityMetadata = {
+	/** location of event */
+	location?: string
+}
+type _ScheduledEvent = {
+	/** id of scheduled event */
+	id: Snowflake
+	/** guild id that scheduled event belongs to */
+	guildId: Snowflake
+	/** channel id which scheduled event will be hosted, or `null` if schedule entity type is `EXTERNAL` */
+	channelId: Snowflake | null
+	/** id of user that created scheduled event */
+	creatorId?: Snowflake | null
+	/** name of scheduled event */
+	name: string
+	/** description of scheduled event */
+	description?: string | null
+	/** time scheduled event will start */
+	scheduledStartTime: string
+	/** time scheduled event will end */
+	scheduledEndTime: string | null
+	/** privacy level of scheduled content */
+	privacyLevel: PrivacyLevel
+	/** status of scheduled event */
+	status: EventStatus
+	/** type of scheduled event */
+	entityType: EntityType
+	/** id of entity associated with guild scheduled event */
+	entityId: Snowflake | null
+	/** addotional metadata for guild scheduled event */
+	entityMetadata: EntityMetadata | null | undefined
+	/** user that created scheduled event */
+	creator?: User
+	/** number of users subscribe to scheduled event */
+	userCount?: number
+	/** cover image hash */
+	image?: string
+}
+type ScheduledEventUser = {
+	/** the scheduled event id which the user subscribed to */
+	guildScheduledEventId: Snowflake
+	/** user which subscribed to an event */
+	user: User
+	/** guild member data for this user for the guild which this event belongs to, if any */
+	member?: GuildMember
+}
+export type { EntityMetadata, _ScheduledEvent as ScheduledEvent }

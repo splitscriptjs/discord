@@ -1,20 +1,22 @@
 import request from '../utils/request.js'
-import {
-	Snowflake,
-	WidgetSettings,
-	Widget as RawWidget,
-	WidgetImageStyle,
-	Channel,
-	User
-} from '../types.js'
 import toCamelCase from '../utils/toCamelCase.js'
 
+import type { Snowflake } from '../types'
+import type { Channel } from './channels'
+import type { User } from './users'
+
 class Widget {
+	/** guild id */
 	id!: Snowflake
+	/** guild name (2-100 characters) */
 	name!: string
+	/** instant invite for the guilds specified widget invite channel */
 	instantInvite!: string | null
+	/** voice and stage channels which are accessible by @everyone */
 	channels!: Partial<Channel>[]
+	/** special widget user objects that includes users presence (Limit 100) */
 	members!: Partial<User>[]
+	/** number of online members in this guild */
 	presenceCount!: number
 
 	/** Gets this widget settings */
@@ -44,31 +46,26 @@ class Widget {
 		return result
 	}
 
-	constructor(data: RawWidget) {
+	constructor(data: unknown) {
 		Object.assign(this, toCamelCase(data))
 	}
 }
 
 async function settings(guildId: Snowflake): Promise<WidgetSettings> {
-	return request.get(`guilds/${guildId}/widget`) as unknown as WidgetSettings
+	return (await request.get(
+		`guilds/${guildId}/widget`
+	)) as unknown as WidgetSettings
 }
 /** Edit the widget settings for the guild */
 async function edit(
 	guildId: Snowflake,
 	settings: Partial<WidgetSettings>
 ): Promise<Widget> {
-	return new Widget(
-		(await request.patch(
-			`guilds/${guildId}/widget`,
-			settings
-		)) as unknown as RawWidget
-	)
+	return new Widget(await request.patch(`guilds/${guildId}/widget`, settings))
 }
 /** Returns the widget for the guild. */
 async function get(guildId: Snowflake): Promise<Widget> {
-	return new Widget(
-		(await request.get(`guilds/${guildId}/widget.json`)) as unknown as RawWidget
-	)
+	return new Widget(await request.get(`guilds/${guildId}/widget.json`))
 }
 /** Returns a PNG image widget for the guild. */
 async function image(
@@ -77,6 +74,15 @@ async function image(
 ): Promise<string> {
 	return (await request.get(`guilds/${guildId}/widget.png`, {
 		style
-	})) as unknown as string
+	})) as string
 }
+
+type WidgetImageStyle = 'shield' | 'banner1' | 'banner2' | 'banner3' | 'banner4'
+type WidgetSettings = {
+	/** whether the widget is enabled */
+	enabled: boolean
+	/** the widget channel id */
+	channelId: Snowflake | null
+}
+export { settings, edit, get, image }
 export default { settings, edit, get, image }

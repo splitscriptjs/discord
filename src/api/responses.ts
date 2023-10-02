@@ -1,14 +1,13 @@
 import request from '../utils/request.js'
-import {
+import type {
 	AllowedMentions,
 	Attachment,
 	Component,
 	Embed,
-	InteractionResponse,
-	Message,
 	Snowflake
 } from '../types'
-
+import type { Message } from './messages'
+import { CommandOptionChoice } from './commands.js'
 class Response {
 	token: string
 
@@ -68,4 +67,91 @@ async function edit(token: string, message: EditParams): Promise<Message> {
 async function _delete(token: string) {
 	return await request.delete(`webhooks/{APP_ID}/${token}/messages/@original`)
 }
+export enum TextInputStyle {
+	/** Single-line input */
+	Short = 1,
+	/** Multi-line input */
+	Paragraph = 2
+}
+export enum CallbackType {
+	/** acknowledge a ping */
+	Pong = 1,
+	/** respond to an interaction with a message */
+	Reply = 4,
+	/** acknowledge an interaction and edit a response later, the user sees a loading state */
+	DeferredReply = 5,
+	/** for components, acknowledge an interaction and edit the original message later, the user doesn't see a loading state */
+	DeferredEditMessage = 6,
+	/** for components, edit the message the component was attached to */
+	EditMessage = 7,
+	/** respond to an autocomplete interaction with suggested choices */
+	AutocompleteResult = 8,
+	/** respond to an interaction with a popup modal */
+	Modal = 9,
+	/** respond to an interaction with an upgrade button, only available for apps with monetization enabled */
+	PremiumRequired = 10
+}
+export enum CallbackMessageType {
+	/** respond to an interaction with a message */
+	Reply = 4,
+	/** acknowledge an interaction and edit a response later, the user sees a loading state */
+	DeferredReply = 5,
+	/** for components, acknowledge an interaction and edit the original message later, the user doesn't see a loading state */
+	DeferredEditMessage = 6,
+	/** for components, edit the message the component was attached to */
+	EditMessage = 7
+}
+export { create, get, edit, _delete as delete }
 export default { create, get, edit, delete: _delete }
+
+export type InteractionResponse =
+	| {
+			/** ACK a Ping */
+			type: CallbackType.Pong
+	  }
+	| {
+			type: CallbackMessageType
+			data: InteractionCallbackDataMessage
+	  }
+	| {
+			/** respond to an autocomplete interaction with suggested choices */
+			type: CallbackType.AutocompleteResult
+			data: InteractionCallbackDataAutocomplete
+	  }
+	| {
+			/** respond to an interaction with a popup modal */
+			type: CallbackType.Modal
+			data: InteractionCallbackDataModal
+	  }
+export type InteractionCallbackData =
+	| InteractionCallbackDataMessage
+	| InteractionCallbackDataAutocomplete
+	| InteractionCallbackDataModal
+export type InteractionCallbackDataMessage = {
+	/** whether response is tts */
+	tts?: boolean
+	/** message content */
+	content?: string
+	/** up to 10 embeds */
+	embeds?: Embed[]
+	/** allowed mentions */
+	allowedMentions?: AllowedMentions
+	/** message flags combined as bitfield (only `SuppressEmbeds` and `Ephemeral` can be set) */
+	flags?: number
+	/** message components */
+	components?: Component[]
+	/** attachment objects with filename and description */
+	attachment?: Partial<Attachment>[]
+}
+export type InteractionCallbackDataAutocomplete = {
+	/** autocomplete choices (max of 25 choices) */
+	choices: CommandOptionChoice[]
+}
+export type InteractionCallbackDataModal = {
+	/** a developer-defined identifier for the modal, max 100 characters */
+	customId: string
+	/** the title of the popup modal, max 45 characters */
+	title: string
+	/** between 1 and 5 (inclusive) components that make up the modal */
+	components: Component[]
+}
