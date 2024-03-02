@@ -12,16 +12,16 @@ class Response {
 	token: string
 
 	/** Gets the message from this response */
-	async get() {
+	async get(): Promise<Message> {
 		return await get(this.token)
 	}
 	/** Edits the message from this response  */
-	async edit(message: EditParams) {
+	async edit(message: EditParams): Promise<Message> {
 		return await edit(this.token, message)
 	}
 	/** Deletes the message from this response */
-	async delete() {
-		return await _delete(this.token)
+	async delete(): Promise<void> {
+		await _delete(this.token)
 	}
 	constructor(token: string) {
 		this.token = token
@@ -42,7 +42,7 @@ async function create(
 async function get(token: string): Promise<Message> {
 	return (await request.get(
 		`webhooks/{APP_ID}/${token}/messages/@original`
-	)) as unknown as Message
+	)) as Message
 }
 type EditParams = {
 	/** the message contents (up to 2000 characters) */
@@ -62,10 +62,10 @@ async function edit(token: string, message: EditParams): Promise<Message> {
 	return (await request.patch(
 		`webhooks/{APP_ID}/${token}/messages/@original`,
 		message
-	)) as unknown as Message
+	)) as Message
 }
-async function _delete(token: string) {
-	return await request.delete(`webhooks/{APP_ID}/${token}/messages/@original`)
+async function _delete(token: string): Promise<void> {
+	await request.delete(`webhooks/{APP_ID}/${token}/messages/@original`)
 }
 export enum TextInputStyle {
 	/** Single-line input */
@@ -101,7 +101,9 @@ export enum CallbackMessageType {
 	/** for components, edit the message the component was attached to */
 	EditMessage = 7
 }
+/** Used to manage interaction responses */
 export { create, get, edit, _delete as delete }
+/** Used to manage interaction responses */
 export default { create, get, edit, delete: _delete }
 
 export type InteractionResponse =

@@ -261,6 +261,11 @@ function connect(
 		}, 5000)
 	})
 }
+/**
+ * Connects to the discord gateway to listen for events
+ *
+ * Authenticates API requests
+ */
 export function listen(token: string, options: Identify = {}) {
 	const emitter = new EventEmitter('discord', '@splitscript.js/discord', [
 		'hello',

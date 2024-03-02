@@ -34,7 +34,7 @@ class Webhook {
 	 *
 	 * Also updates this class instance
 	 */
-	async get() {
+	async get(): Promise<Omit<Webhook, 'user'>> {
 		const result =
 			this.withToken && this.token
 				? await withToken.get(this.id, this.token)
@@ -47,7 +47,7 @@ class Webhook {
 	 *
 	 * Also updates this class instance
 	 */
-	async edit(webhook: EditParams) {
+	async edit(webhook: EditParams): Promise<Omit<Webhook, 'user'>> {
 		const result =
 			this.withToken && this.token
 				? await withToken.edit(this.id, this.token, webhook)
@@ -57,7 +57,7 @@ class Webhook {
 	}
 
 	/** Deletes this webhook */
-	async delete() {
+	async delete(): Promise<void> {
 		return this.withToken && this.token
 			? await withToken.delete(this.id, this.token)
 			: await _delete(this.id)
@@ -68,7 +68,7 @@ class Webhook {
 		message: ExecuteParams,
 		options?: ExecuteOptions<Wait>,
 		token?: string
-	) {
+	): Promise<WebhookMessage<Wait>> {
 		if (!this.token || !token) throw new TypeError('webhook token not found')
 		return await execute(this.id, token ?? this.token, message, options)
 	}
@@ -123,7 +123,7 @@ class WebhookMessage<Wait extends boolean> extends BaseMessage {
 	 *
 	 * Also updates this class instance
 	 */
-	async get() {
+	async get(): Promise<Message> {
 		const result = await message.get(
 			this.webhookId,
 			this.webhookToken,
@@ -138,7 +138,7 @@ class WebhookMessage<Wait extends boolean> extends BaseMessage {
 	 *
 	 * Also updates this class instance
 	 */
-	async edit(newMessage: EditMessageParams) {
+	async edit(newMessage: EditMessageParams): Promise<Message> {
 		const result = await message.edit(
 			this.webhookId,
 			this.webhookToken,
@@ -150,7 +150,7 @@ class WebhookMessage<Wait extends boolean> extends BaseMessage {
 	}
 
 	/** Deletes this webhook message */
-	async delete() {
+	async delete(): Promise<void> {
 		return await message.delete(this.webhookId, this.webhookToken, this.id)
 	}
 	constructor(
@@ -215,7 +215,21 @@ async function edit(
 async function _delete(webhookId: Snowflake): Promise<void> {
 	await request.delete(`webhooks/${webhookId}`)
 }
-const withToken = {
+const withToken: {
+	get(
+		webhookId: Snowflake,
+		webhookToken: string
+	): Promise<Omit<Webhook, 'user'>>
+	edit(
+		webhookId: Snowflake,
+		webhookToken: string,
+		webhook: {
+			name?: string
+			avatar?: string | null
+		}
+	): Promise<Omit<Webhook, 'user'>>
+	delete(webhookId: Snowflake, webhookToken: string): Promise<void>
+} = {
 	/** Returns the new webhook object for the given id, doesn't require being logged in, by the webhook token */
 	async get(
 		webhookId: Snowflake,
@@ -311,7 +325,27 @@ type EditMessageParams = {
 	/** attached files to keep and possible descriptions for new files */
 	attachments?: Partial<Attachment[]> | null
 }
-const message = {
+const message: {
+	get(
+		webhookId: Snowflake,
+		webhookToken: string,
+		messageId: Snowflake,
+		threadId?: Snowflake
+	): Promise<Message>
+	edit(
+		webhookId: Snowflake,
+		webhookToken: string,
+		messageId: Snowflake,
+		message: EditMessageParams,
+		threadId?: Snowflake
+	): Promise<Message>
+	delete(
+		webhookId: Snowflake,
+		webhookToken: string,
+		messageId: Snowflake,
+		threadId?: Snowflake
+	): Promise<void>
+} = {
 	/** Returns a previously-sent webhook message from the same token */
 	async get(
 		webhookId: Snowflake,
@@ -322,7 +356,7 @@ const message = {
 		return (await request.get(
 			`webhooks/${webhookId}/${webhookToken}/messages/${messageId}`,
 			threadId ? { threadId } : {}
-		)) as unknown as Message
+		)) as Message
 	},
 	/** Edits a previously-sent webhook message from the same token */
 	async edit(
@@ -336,7 +370,7 @@ const message = {
 			`webhooks/${webhookId}/${webhookToken}/messages/${messageId}`,
 			message,
 			threadId ? { threadId } : undefined
-		)) as unknown as Message
+		)) as Message
 	},
 	/** Deletes a message that was created by the webhook */
 	async delete(
@@ -360,6 +394,7 @@ export enum Type {
 	/** Application webhooks are webhooks used with Interactions */
 	Application = 3
 }
+/** Used to manage webhooks */
 export {
 	create,
 	listChannel,
@@ -371,6 +406,7 @@ export {
 	execute,
 	message
 }
+/** Used to manage webhooks */
 export default {
 	create,
 	listChannel,

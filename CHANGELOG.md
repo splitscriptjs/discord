@@ -1,3 +1,7 @@
+# 3.2.2
+
+Fix slow types, add documentation comments
+
 # 3.2.0
 
 - Fixed bug where arrays with non object values would be converted to object

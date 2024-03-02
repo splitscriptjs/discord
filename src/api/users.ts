@@ -25,7 +25,7 @@ class User<isMe extends boolean> implements _User {
 	 *
 	 * Also updates this class instance
 	 */
-	async get() {
+	async get(): Promise<User<boolean>> {
 		const result: User<boolean> = this.isMe
 			? await me.get()
 			: await get(this.id)
@@ -34,7 +34,7 @@ class User<isMe extends boolean> implements _User {
 	}
 
 	/** Creates a dm channel with this user */
-	async dm() {
+	async dm(): Promise<Channel> {
 		return await dm.create(this.id)
 	}
 
@@ -68,7 +68,10 @@ type EditParams = {
 	avatar?: string | null
 }
 
-const me = {
+const me: {
+	get(): Promise<User<true>>
+	edit(settings: EditParams): Promise<User<true>>
+} = {
 	/** Returns the user object of the requester's account */
 	async get(): Promise<User<true>> {
 		return new User(await request.get(`users/@me`), true)
@@ -83,12 +86,18 @@ const me = {
 async function get(id: Snowflake): Promise<User<false>> {
 	return new User(await request.get(`users/${id}`))
 }
-const dm = {
+const dm: {
+	create(recipientId: Snowflake): Promise<Channel>
+	createGroup(
+		accessTokens: string[],
+		nicks: Record<Snowflake, string>
+	): Promise<Channel>
+} = {
 	/** Create a new DM channel with a user */
 	async create(recipientId: Snowflake): Promise<Channel> {
 		return (await request.post(`users/@me/channels`, {
 			recipientId
-		})) as unknown as Channel
+		})) as Channel
 	},
 	/** Create a new group DM channel with multiple users */
 	async createGroup(
@@ -100,7 +109,7 @@ const dm = {
 		return (await request.post(`users/@me/channels`, {
 			accessTokens,
 			nicks
-		})) as unknown as Channel
+		})) as Channel
 	}
 }
 export enum PremiumType {
@@ -109,7 +118,9 @@ export enum PremiumType {
 	Nitro,
 	NitroBasic
 }
+/** Used to manage bot, get users and create dms */
 export { me, get, dm }
+/** Used to manage bot, get users and create dms */
 export default { me, get, dm }
 
 /** User Object */

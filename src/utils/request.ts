@@ -6,7 +6,7 @@ import toSnakeCase from './toSnakeCase.js'
 
 const url = `https://discord.com/api/v10/`
 
-function handeErr(res: httpTypes.IncomingMessage, data: string | object) {
+function handeErr(res: httpTypes.IncomingMessage, data: unknown) {
 	if (res.statusCode && res.statusCode >= 400) {
 		throw new Error(
 			`${res.statusCode ? res.statusCode : ''} ${

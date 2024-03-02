@@ -24,14 +24,14 @@ class Template {
 	 *
 	 * Also updates this class instance
 	 */
-	async get() {
+	async get(): Promise<Template> {
 		const result = await get(this.code)
 		Object.assign(this, this.code)
 		return result
 	}
 
 	/** Creates a guild from this template  */
-	async createGuild(guild: CreateGuildParams) {
+	async createGuild(guild: CreateGuildParams): Promise<Guild> {
 		return await createGuild(this.code, guild)
 	}
 
@@ -39,7 +39,7 @@ class Template {
 	 *
 	 * Also updates this class instance
 	 */
-	async sync() {
+	async sync(): Promise<Template> {
 		const result = await sync(this.sourceGuildId, this.code)
 		Object.assign(this, result)
 		return result
@@ -49,14 +49,14 @@ class Template {
 	 *
 	 * Also updates this class instance
 	 */
-	async edit(template: EditParams) {
+	async edit(template: EditParams): Promise<Template> {
 		const result = await edit(this.sourceGuildId, this.code, template)
 		Object.assign(this, result)
 		return result
 	}
 
 	/** Deletes this template */
-	async delete() {
+	async delete(): Promise<void> {
 		return await _delete(this.sourceGuildId, this.code)
 	}
 
@@ -80,10 +80,7 @@ async function createGuild(
 	code: string,
 	guild: CreateGuildParams
 ): Promise<Guild> {
-	return (await request.post(
-		`guilds/templates/${code}`,
-		guild
-	)) as unknown as Guild
+	return (await request.post(`guilds/templates/${code}`, guild)) as Guild
 }
 /** Returns an array of guild template objects */
 async function list(guildId: Snowflake): Promise<Template[]> {
@@ -129,7 +126,9 @@ async function edit(
 async function _delete(guildId: Snowflake, code: string): Promise<void> {
 	await request.delete(`guilds/${guildId}/templates/${code}`)
 }
+/** Used to manage guild templates */
 export { get, createGuild, list, create, sync, edit, _delete as delete }
+/** Used to manage guild templates */
 export default { get, createGuild, list, create, sync, edit, delete: _delete }
 
 type _Template = {

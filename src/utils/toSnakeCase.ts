@@ -5,14 +5,14 @@ export default function toSnakeCase<
 ): T extends object[]
 	? { [K in keyof T]: KeysToSnakeCase<T[K]> }
 	: T extends object
-	? KeysToSnakeCase<T>
-	: T {
+		? KeysToSnakeCase<T>
+		: T {
 	if (typeof value !== 'object' || value === null) {
 		return value as T extends object[]
 			? { [K in keyof T]: KeysToSnakeCase<T[K]> }
 			: T extends object
-			? KeysToSnakeCase<T>
-			: T
+				? KeysToSnakeCase<T>
+				: T
 	}
 	if (Array.isArray(value)) {
 		if (value.every((item) => typeof item === 'object' && item !== null)) {
@@ -21,14 +21,14 @@ export default function toSnakeCase<
 			) as unknown as T extends object[]
 				? { [K in keyof T]: KeysToSnakeCase<T[K]> }
 				: T extends object
-				? KeysToSnakeCase<T>
-				: T
+					? KeysToSnakeCase<T>
+					: T
 		} else {
 			return value as unknown as T extends object[]
 				? { [K in keyof T]: KeysToSnakeCase<T[K]> }
 				: T extends object
-				? KeysToSnakeCase<T>
-				: T
+					? KeysToSnakeCase<T>
+					: T
 		}
 	}
 
@@ -47,8 +47,8 @@ export default function toSnakeCase<
 	return newObj as T extends object[]
 		? { [K in keyof T]: KeysToSnakeCase<T[K]> }
 		: T extends object
-		? KeysToSnakeCase<T>
-		: T
+			? KeysToSnakeCase<T>
+			: T
 }
 type SnakeCase<C extends string> = C extends `${infer A}${infer Rest}`
 	? Rest extends Uncapitalize<Rest>
@@ -59,6 +59,6 @@ type KeysToSnakeCase<T> = {
 	[K in keyof T as SnakeCase<string & K>]: T[K] extends unknown[]
 		? { [Key in keyof T[K]]: KeysToSnakeCase<T[K][Key]> }
 		: T[K] extends object
-		? KeysToSnakeCase<T[K]>
-		: T[K]
+			? KeysToSnakeCase<T[K]>
+			: T[K]
 }

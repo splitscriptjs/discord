@@ -28,7 +28,7 @@ class Emoji {
 	 *
 	 * Also updates this class instance
 	 */
-	async get() {
+	async get(): Promise<Emoji> {
 		const emoji = await get(this.guildId, this.id)
 		Object.assign(this, emoji)
 		return emoji
@@ -37,13 +37,13 @@ class Emoji {
 	 *
 	 * Also updates this class instance
 	 */
-	async edit(newEmoji: EditParams) {
+	async edit(newEmoji: EditParams): Promise<Emoji> {
 		const emoji = await edit(this.guildId, this.id, newEmoji)
 		Object.assign(this, emoji)
 		return emoji
 	}
 	/** Deletes this emoji */
-	async delete() {
+	async delete(): Promise<void> {
 		return await _delete(this.guildId, this.id)
 	}
 	constructor(data: unknown, guildId: Snowflake) {
@@ -100,7 +100,9 @@ async function edit(
 async function _delete(guildId: Snowflake, emojiId: Snowflake): Promise<void> {
 	await request.delete(`guilds/${guildId}/emojis/${emojiId}`)
 }
+/** Used to manage emojis */
 export { list, get, create, edit, _delete as delete }
+/** Used to manage emojis */
 export default { list, get, create, edit, delete: _delete }
 
 //#region

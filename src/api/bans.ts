@@ -14,13 +14,13 @@ class Ban<isCreate extends boolean> {
 	 *
 	 * Also updates this class instance
 	 */
-	async get() {
+	async get(): Promise<Ban<false>> {
 		const rule = await get(this.guildId, this.user.id)
 		Object.assign(this, rule)
 		return rule
 	}
 	/** Removes this ban */
-	async remove() {
+	async remove(): Promise<void> {
 		return await remove(this.guildId, this.user.id)
 	}
 	constructor(
@@ -48,17 +48,12 @@ async function list(
 		after?: Snowflake
 	}
 ): Promise<Ban<false>[]> {
-	const bans = (await request.get(
-		`guilds/${guildId}/bans`,
-		params
-	)) as unknown as _Ban[]
+	const bans = (await request.get(`guilds/${guildId}/bans`, params)) as _Ban[]
 	return bans.map((ban) => new Ban(ban, guildId))
 }
 /** Returns a ban object for the given user or errors if the ban cannot be found */
 async function get(guildId: Snowflake, userId: Snowflake): Promise<Ban<false>> {
-	return (await request.get(
-		`guilds/${guildId}/bans/${userId}`
-	)) as unknown as Ban<false>
+	return (await request.get(`guilds/${guildId}/bans/${userId}`)) as Ban<false>
 }
 /** Create a guild ban, and optionally delete previous messages sent by the banned user */
 async function create(
@@ -91,5 +86,7 @@ type _Ban = {
 	/** the banned user */
 	user: User
 }
+/** Used to manage bans */
 export { list, get, create, remove }
+/** Used to manage bans */
 export default { list, get, create, remove }

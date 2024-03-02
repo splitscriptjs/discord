@@ -1,33 +1,36 @@
+/** Visual appearance of the button */
 export enum ButtonStyle {
 	/** blurple */
 	Primary = 1,
 	/** gray */
-	Secondary,
+	Secondary = 2,
 	/** green */
-	Success,
+	Success = 3,
 	/** red */
-	Danger,
+	Danger = 4,
 	/** gray - navigates to url */
-	Link
+	Link = 5
 }
+/** Type of component for a message */
 export enum ComponentType {
 	/** Container for other components */
 	ActionRow = 1,
 	/** Button object */
-	Button,
+	Button = 2,
 	/** Select menu for picking from defined text options */
-	StringSelect,
+	StringSelect = 3,
 	/** Text input object */
-	TextInput,
+	TextInput = 4,
 	/** Select menu for users */
-	UserSelect,
+	UserSelect = 5,
 	/** Select menu for roles */
-	RoleSelect,
+	RoleSelect = 6,
 	/** Select menu for mentionables (users and roles) */
-	MentionableSelect,
+	MentionableSelect = 7,
 	/** Select menu for channels */
-	ChannelSelect
+	ChannelSelect = 8
 }
+/** Select menu components */
 export enum SelectType {
 	/** Select menu for picking from defined text options */
 	StringSelect = 3,
@@ -40,13 +43,15 @@ export enum SelectType {
 	/** Select menu for channels */
 	ChannelSelect = 8
 }
+/** Type of interaction that triggered */
 export enum InteractionType {
 	Ping = 1,
-	ApplicationCommand,
-	MessageComponent,
-	ApplicationCommandAutocomplete,
-	ModalSubmit
+	ApplicationCommand = 2,
+	MessageComponent = 3,
+	ApplicationCommandAutocomplete = 4,
+	ModalSubmit = 5
 }
+/** The type of activity */
 export enum ActivityType {
 	/** Playing {name} */
 	Game,
@@ -61,6 +66,7 @@ export enum ActivityType {
 	/** Competing in {name} */
 	Competing
 }
+/** Flag bits that describe the activity */
 export enum ActivityFlag {
 	Instance = 1 << 0,
 	Join = 1 << 1,
@@ -72,6 +78,7 @@ export enum ActivityFlag {
 	PartyPrivacyVoiceChannel = 1 << 7,
 	Embedded = 1 << 8
 }
+/** User's membership state on a team */
 export enum MembershipState {
 	Invited = 1,
 	Accepted = 2

@@ -47,10 +47,13 @@ export type Ready = {
 	/** Contains id and flags */
 	application: Partial<Application>
 }
+/** Sent when we have sent a resume payload to resume an existing connection */
 export type Resumed = null
+/** Sent when we should reconnect to the gateway */
 export type Reconnect = null
+/** Sent when session is invalidated, value is whether session is resumable*/
 export type InvalidSession = boolean
-/** sent when an application command's permissions are updated */
+/** Sent when an application command's permissions are updated */
 export type CommandPermissionsUpdate = CommandPermission
 /** Sent when a rule is created */
 export type AutomodRuleCreate = AutomodRule
