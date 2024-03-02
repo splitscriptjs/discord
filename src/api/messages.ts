@@ -17,7 +17,7 @@ import type {
 	Application,
 	RoleSubscriptionData
 } from '../types'
-import { InteractionType } from 'src/enums.js'
+import { InteractionType } from '../enums.js'
 import { GuildMember } from './members.js'
 
 export class BaseMessage {
@@ -93,7 +93,7 @@ class Message extends BaseMessage {
 	 *
 	 * Also updates this class instance
 	 */
-	async get() {
+	async get(): Promise<Message> {
 		const result = await get(this.channelId, this.id)
 		Object.assign(this, result)
 		return result
@@ -103,14 +103,14 @@ class Message extends BaseMessage {
 	 *
 	 * Also updates this class instance
 	 */
-	async edit(newMessage: EditParams) {
+	async edit(newMessage: EditParams): Promise<Message> {
 		const result = await edit(this.channelId, this.id, newMessage)
 		Object.assign(this, result)
 		return result
 	}
 
 	/** Deletes this message */
-	async delete() {
+	async delete(): Promise<void> {
 		return await _delete(this.channelId, this.id)
 	}
 
@@ -290,7 +290,9 @@ export enum MessageType {
 	StageTopic,
 	ApplicationPremiumSubscription
 }
+/** Used to manage messages */
 export { create, edit, bulkDelete, get, list, _delete as delete }
+/** Used to manage messages */
 export default { create, edit, delete: _delete, bulkDelete, get, list }
 
 type _Message = {

@@ -94,7 +94,7 @@ class Channel {
 		return result
 	}
 	/** Deletes this channel */
-	async delete() {
+	async delete(): Promise<void> {
 		return await _delete(this.id)
 	}
 	constructor(channel: unknown) {
@@ -284,7 +284,9 @@ export enum ForumLayout {
 	/** Display posts as a collection of tiles */
 	GalleryView = 2
 }
+/** Used to manage channels */
 export { get, list, create, edit, updatePositions, _delete as delete }
+/** Used to manage channels */
 export default {
 	get,
 	list,

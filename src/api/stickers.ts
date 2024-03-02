@@ -4,11 +4,11 @@ import type { Snowflake } from '../types'
 import type { User } from './users.js'
 /** Returns a sticker object for the given **Non Guild** sticker ID */
 async function get(stickerId: Snowflake): Promise<Sticker> {
-	return (await request.get(`stickers/${stickerId}`)) as unknown as Sticker
+	return (await request.get(`stickers/${stickerId}`)) as Sticker
 }
 /** Returns the list of sticker packs available to Nitro subscribers */
 async function listPacks(): Promise<{ stickerPacks: StickerPack[] }> {
-	return (await request.get(`sticker-packs`)) as unknown as {
+	return (await request.get(`sticker-packs`)) as {
 		stickerPacks: StickerPack[]
 	}
 }
@@ -31,7 +31,7 @@ class GuildSticker {
 	 *
 	 * Also updates this class instance
 	 */
-	async get() {
+	async get(): Promise<GuildSticker> {
 		const result = await guild.get(this.guildId, this.id)
 		Object.assign(this, result)
 		return result
@@ -41,14 +41,14 @@ class GuildSticker {
 	 *
 	 * Also updates this class instance
 	 */
-	async edit(sticker: EditParams) {
+	async edit(sticker: EditParams): Promise<GuildSticker> {
 		const result = await guild.edit(this.guildId, this.id, sticker)
 		Object.assign(this, result)
 		return result
 	}
 
 	/** Deletes this sticker */
-	async delete() {
+	async delete(): Promise<void> {
 		return await guild.delete(this.guildId, this.id)
 	}
 
@@ -65,7 +65,25 @@ type EditParams = {
 	/** autocomplete/suggestion tags for the sticker (max 200 characters) */
 	tags: string
 }
-const guild = {
+const guild: {
+	list(guildId: Snowflake): Promise<GuildSticker[]>
+	get(guildId: Snowflake, stickerId: Snowflake): Promise<GuildSticker>
+	create(
+		guildId: Snowflake,
+		sticker: {
+			name: string
+			description: string
+			tags: string
+			file: string
+		}
+	): Promise<GuildSticker>
+	edit(
+		guildId: Snowflake,
+		stickerId: Snowflake,
+		sticker: EditParams
+	): Promise<GuildSticker>
+	delete(guildId: Snowflake, stickerId: Snowflake): Promise<void>
+} = {
 	/** Returns an array of sticker objects for the given guild */
 	async list(guildId: Snowflake): Promise<GuildSticker[]> {
 		return ((await request.get(`guilds/${guildId}/stickers`)) as unknown[]).map(
@@ -123,7 +141,9 @@ export enum StickerType {
 	/** a sticker uploaded to a guild for the guild's members*/
 	Guild
 }
+/** Used to manage stickers */
 export { get, listPacks, guild }
+/** Used to manage stickers */
 export default { get, listPacks, guild }
 
 type Sticker = {

@@ -35,7 +35,7 @@ class ScheduledEvent {
 	}
 
 	/** Gets a list of users subscribed to this scheduled event */
-	async getUsers(options?: GetUserOptions) {
+	async getUsers(options?: GetUserOptions): Promise<ScheduledEventUser[]> {
 		return await getUsers(this.guildId, this.id, options)
 	}
 
@@ -50,7 +50,7 @@ class ScheduledEvent {
 	}
 
 	/** Deletes this scheduled event */
-	async delete() {
+	async delete(): Promise<void> {
 		return await _delete(this.guildId, this.id)
 	}
 
@@ -184,7 +184,7 @@ async function getUsers(
 	return (await request.get(
 		`guilds/${guildId}/scheduled-events/${scheduledEventId}/users`,
 		options
-	)) as unknown as ScheduledEventUser[]
+	)) as ScheduledEventUser[]
 }
 
 enum EntityType {
@@ -201,7 +201,7 @@ enum EventStatus {
 	Completed = 3,
 	Canceled = 4
 }
-
+/** Used to manage guild scheduled events */
 export {
 	list,
 	create,
@@ -213,6 +213,7 @@ export {
 	PrivacyLevel,
 	EventStatus
 }
+/** Used to manage guild scheduled events */
 export default {
 	list,
 	create,

@@ -9,17 +9,17 @@ class Reaction {
 	emoji: string
 
 	/** Get a list of users who reacted with this */
-	async listUsers(options?: ListUsersOptions) {
+	async listUsers(options?: ListUsersOptions): Promise<User[]> {
 		return await listUsers(this.channelId, this.messageId, this.emoji, options)
 	}
 
 	delete = {
 		/** Delete the bots reaction */
-		own: async () => {
+		own: async (): Promise<void> => {
 			return await _delete.own(this.channelId, this.messageId, this.emoji)
 		},
 		/** Deletes a users reaction */
-		user: async (userId: Snowflake) => {
+		user: async (userId: Snowflake): Promise<void> => {
 			return await _delete.user(
 				this.channelId,
 				this.messageId,
@@ -53,14 +53,14 @@ async function listUsers(
 			emoji
 		)}`,
 		options
-	)) as unknown as User[]
+	)) as User[]
 }
 /** Add a reaction to a message */
 async function create(
 	channelId: Snowflake,
 	messageId: Snowflake,
 	emoji: string
-) {
+): Promise<Reaction> {
 	await request.put(
 		`channels/${channelId}/messages/${messageId}/reactions/${encodeURIComponent(
 			emoji
@@ -68,7 +68,15 @@ async function create(
 	)
 	return new Reaction(channelId, messageId, emoji)
 }
-const _delete = {
+const _delete: {
+	own(channelId: Snowflake, messageId: Snowflake, emoji: string): Promise<void>
+	user(
+		channelId: Snowflake,
+		messageId: Snowflake,
+		emoji: string,
+		userId: Snowflake
+	): Promise<void>
+} = {
 	/** Delete the bots own reaction */
 	async own(
 		channelId: Snowflake,
@@ -95,7 +103,9 @@ const _delete = {
 		)
 	}
 }
+/** Used to manage message reactions */
 export { listUsers, create, _delete as delete }
+/** Used to manage message reactions */
 export default { listUsers, create, delete: _delete }
 
 type _Reaction = {

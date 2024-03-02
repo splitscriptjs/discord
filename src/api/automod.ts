@@ -15,17 +15,17 @@ class Rule {
 	exemptRoles!: Snowflake[]
 	exemptChannels!: Snowflake[]
 
-	async get() {
+	async get(): Promise<Rule> {
 		const rule = await get(this.guildId, this.id)
 		Object.assign(this, rule)
 		return rule
 	}
-	async edit(updatedRule: Partial<EditParams>) {
+	async edit(updatedRule: Partial<EditParams>): Promise<Rule> {
 		const modified = await edit(this.guildId, this.id, updatedRule)
 		Object.assign(this, modified)
 		return modified
 	}
-	async delete() {
+	async delete(): Promise<void> {
 		return await _delete(this.guildId, this.id)
 	}
 	constructor(rule: unknown) {
@@ -120,7 +120,9 @@ export enum KeywordPresetType {
 	/** personal insults or words that may be considered hate speech */
 	Slurs = 3
 }
+/** Used to manage automod rules */
 export { list, get, create, edit, _delete as delete }
+/** Used to manage automod rules */
 export default {
 	list,
 	get,

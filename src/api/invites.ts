@@ -39,13 +39,13 @@ class Invite<hasMetadata extends boolean> implements _Invite {
 	 *
 	 * Also updates this class instance
 	 */
-	async get(params?: GetParams) {
+	async get(params?: GetParams): Promise<Invite<false>> {
 		const result = await get(this.code, params)
 		Object.assign(this, result)
 		return result
 	}
 	/** Deletes this invite */
-	async delete() {
+	async delete(): Promise<void> {
 		return await _delete(this.code)
 	}
 
@@ -108,7 +108,9 @@ export enum TargetType {
 	EmbeddedApplication = 2
 }
 
+/** Used to manage invites */
 export { list, create, get, _delete as delete }
+/** Used to manage invites */
 export default { list, create, get, delete: _delete }
 
 //#region

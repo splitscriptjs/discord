@@ -30,7 +30,7 @@ class StageInstance {
 		return result
 	}
 	/** Deletes this stage instance */
-	async delete() {
+	async delete(): Promise<void> {
 		return await _delete(this.channelId)
 	}
 
@@ -99,5 +99,7 @@ type _StageInstance = {
 	guildScheduledEventId: Snowflake | null
 }
 export type { _StageInstance as StageInstance }
+/** Used to manage stage instances */
 export { create, get, edit, _delete as delete, PrivacyLevel }
+/** Used to manage stage instances */
 export default { create, get, edit, delete: _delete, PrivacyLevel }

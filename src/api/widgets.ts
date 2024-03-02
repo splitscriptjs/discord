@@ -20,18 +20,18 @@ class Widget {
 	presenceCount!: number
 
 	/** Gets this widget settings */
-	async settings() {
+	async settings(): Promise<WidgetSettings> {
 		return await settings(this.id)
 	}
 	/** Gets the widget image */
-	async image(style?: WidgetImageStyle) {
+	async image(style?: WidgetImageStyle): Promise<string> {
 		return await image(this.id, style)
 	}
 	/** Gets this widget
 	 *
 	 * Also updates this class instance
 	 */
-	async get() {
+	async get(): Promise<Widget> {
 		const result = await get(this.id)
 		Object.assign(this, result)
 		return result
@@ -40,7 +40,7 @@ class Widget {
 	 *
 	 * Also updates this class instance
 	 */
-	async edit(settings: Partial<WidgetSettings>) {
+	async edit(settings: Partial<WidgetSettings>): Promise<Widget> {
 		const result = await edit(this.id, settings)
 		Object.assign(this, result)
 		return result
@@ -52,9 +52,7 @@ class Widget {
 }
 
 async function settings(guildId: Snowflake): Promise<WidgetSettings> {
-	return (await request.get(
-		`guilds/${guildId}/widget`
-	)) as unknown as WidgetSettings
+	return (await request.get(`guilds/${guildId}/widget`)) as WidgetSettings
 }
 /** Edit the widget settings for the guild */
 async function edit(
@@ -84,5 +82,7 @@ type WidgetSettings = {
 	/** the widget channel id */
 	channelId: Snowflake | null
 }
+/** Used to manage guild widgets */
 export { settings, edit, get, image }
+/** Used to manage guild widgets */
 export default { settings, edit, get, image }

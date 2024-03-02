@@ -99,61 +99,71 @@ class Guild<isPartial extends boolean> {
 	 *
 	 * Also updates this class instance
 	 */
-	async get(withCounts?: boolean) {
+	async get(withCounts?: boolean): Promise<Guild<false>> {
 		const result = await get(this.id, withCounts)
 		Object.assign(this, result)
 		return result
 	}
 	/** Gets the preview for this guild */
-	async preview() {
+	async preview(): Promise<GuildPreview> {
 		return await preview(this.id)
 	}
 	/** Gets the vanity invite for this guild */
-	async vanity() {
+	async vanity(): Promise<Partial<Invite>> {
 		return await vanity(this.id)
 	}
 	/** Gets the audit log for this guild */
-	async auditLog(options?: GetAuditLogOptions) {
+	async auditLog(options?: GetAuditLogOptions): Promise<AuditLog> {
 		return await auditLog(this.id, options)
 	}
 	/** Edits this guild
 	 *
 	 * Also updates this class instance
 	 */
-	async edit(editParams: Partial<EditParams>) {
+	async edit(editParams: Partial<EditParams>): Promise<Guild<false>> {
 		const result = await edit(this.id, editParams)
 		Object.assign(this, result)
 		return result
 	}
 	/** Updates this guild's MFA level */
-	async updateMfa(level: MfaLevel) {
+	async updateMfa(level: MfaLevel): Promise<MfaLevel> {
 		return await updateMfa(this.id, level)
 	}
 	/** Deletes this guild */
-	async delete() {
+	async delete(): Promise<void> {
 		return await _delete(this.id)
 	}
 	/** Leaves this guild */
-	async leave() {
+	async leave(): Promise<void> {
 		return await leave(this.id)
 	}
 	welcomeScreen = {
 		/** Gets the welcome screen for this guild */
-		get: async () => {
+		get: async (): Promise<WelcomeScreen> => {
 			return await welcomeScreen.get(this.id)
 		},
 		/** Updates the welcome screen for this guild */
-		edit: async (newWelcomeScreen: Partial<EditWelcomeScreenParams>) => {
+		edit: async (
+			newWelcomeScreen: Partial<EditWelcomeScreenParams>
+		): Promise<WelcomeScreen> => {
 			return await welcomeScreen.edit(this.id, newWelcomeScreen)
 		}
 	}
 	prune = {
 		/** Gets the number of members that would be removed in a prune operation */
-		count: async (options?: GetPruneCountOptions) => {
+		count: async (
+			options?: GetPruneCountOptions
+		): Promise<{
+			pruned: number
+		}> => {
 			return await prune.count(this.id, options)
 		},
 		/** Begins a prune operation for this guild */
-		begin: async (options?: BeginPruneOptions) => {
+		begin: async (
+			options?: BeginPruneOptions
+		): Promise<{
+			pruned: number | null
+		}> => {
 			return await prune.begin(this.id, options)
 		}
 	}
@@ -216,13 +226,11 @@ async function list(options?: ListParams): Promise<Guild<true>[]> {
 
 /** Returns the guild preview object for the given id. If the user is not in the guild, then the guild must be lurkable. */
 async function preview(id: Snowflake): Promise<GuildPreview> {
-	return (await request.get(`guilds/${id}/preview`)) as unknown as GuildPreview
+	return (await request.get(`guilds/${id}/preview`)) as GuildPreview
 }
 /** Returns a partial invite object for guilds with that feature enabled. */
 async function vanity(id: Snowflake): Promise<Partial<Invite>> {
-	return (await request.get(
-		`guilds/${id}/vanity-url`
-	)) as unknown as Partial<Invite>
+	return (await request.get(`guilds/${id}/vanity-url`)) as Partial<Invite>
 }
 type GetAuditLogOptions = {
 	/** Entries from a specific user ID */
@@ -244,7 +252,7 @@ async function auditLog(
 	return (await request.get(
 		`guilds/${guildId}/audit-logs`,
 		options
-	)) as unknown as AuditLog
+	)) as AuditLog
 }
 type EditParams = {
 	/** guild name */
@@ -304,7 +312,7 @@ async function updateMfa(
 ): Promise<MfaLevel> {
 	return (await request.post(`guilds/${guildId}/mfa`, {
 		level: level
-	})) as unknown as MfaLevel
+	})) as MfaLevel
 }
 /** Delete a guild permanently. User must be owner. */
 async function _delete(id: Snowflake): Promise<void> {
@@ -318,12 +326,18 @@ type EditWelcomeScreenParams = {
 	/** the server description to show in the welcome screen */
 	description: string
 }
-const welcomeScreen = {
+const welcomeScreen: {
+	get(guildId: Snowflake): Promise<WelcomeScreen>
+	edit(
+		guildId: Snowflake,
+		welcomeScreen: Partial<EditWelcomeScreenParams>
+	): Promise<WelcomeScreen>
+} = {
 	/** Returns the Welcome Screen object for the guild.  */
 	async get(guildId: Snowflake): Promise<WelcomeScreen> {
 		return (await request.get(
 			`guilds/${guildId}/welcome-screen`
-		)) as unknown as WelcomeScreen
+		)) as WelcomeScreen
 	},
 	/** Edit the guild's Welcome Screen. */
 	async edit(
@@ -333,7 +347,7 @@ const welcomeScreen = {
 		return (await request.patch(
 			`guilds/${guildId}/welcome-screen`,
 			welcomeScreen
-		)) as unknown as WelcomeScreen
+		)) as WelcomeScreen
 	}
 }
 type GetPruneCountOptions = {
@@ -350,7 +364,20 @@ type BeginPruneOptions = {
 	/** role(s) to include */
 	includeRoles?: string
 }
-const prune = {
+const prune: {
+	count(
+		guildId: Snowflake,
+		options?: GetPruneCountOptions
+	): Promise<{
+		pruned: number
+	}>
+	begin(
+		guildId: Snowflake,
+		options?: BeginPruneOptions
+	): Promise<{
+		pruned: number | null
+	}>
+} = {
 	/** Returns an object with one pruned key indicating the number of members that would be removed in a prune operation. */
 	async count(
 		guildId: Snowflake,
@@ -358,10 +385,7 @@ const prune = {
 	): Promise<{
 		pruned: number
 	}> {
-		return (await request.get(
-			`guilds/${guildId}/prune`,
-			options
-		)) as unknown as {
+		return (await request.get(`guilds/${guildId}/prune`, options)) as {
 			pruned: number
 		}
 	},
@@ -432,6 +456,7 @@ export enum NsfwLevel {
 	Safe,
 	AgeRestricted
 }
+/** Used to manage guilds */
 export {
 	create,
 	get,
@@ -446,6 +471,7 @@ export {
 	welcomeScreen,
 	_delete as delete
 }
+/** Used to manage guilds */
 export default {
 	create,
 	get,

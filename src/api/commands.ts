@@ -20,7 +20,7 @@ class Command {
 	version!: string
 
 	/** Deletes this channel */
-	async delete() {
+	async delete(): Promise<void> {
 		return await _delete(this.id, this.guildId)
 	}
 	/** Updates this channel
@@ -36,7 +36,7 @@ class Command {
 	 *
 	 * Also updates this class instance
 	 */
-	async get() {
+	async get(): Promise<Command> {
 		const result = await get(this.id, this.guildId)
 		Object.assign(this, result)
 		return result
@@ -181,11 +181,14 @@ async function get(
 	const command = await request.get(URL)
 	return new Command(command)
 }
-const permissions = {
+const permissions: {
+	list(guildId: Snowflake): Promise<CommandPermission[]>
+	get(commandId: Snowflake, guildId: Snowflake): Promise<CommandPermission>
+} = {
 	async list(guildId: Snowflake): Promise<CommandPermission[]> {
 		return (await request.get(
 			`applications/{APP_ID}/guilds/${guildId}/commands/permissions`
-		)) as unknown as CommandPermission[]
+		)) as CommandPermission[]
 	},
 	async get(
 		commandId: Snowflake,
@@ -193,7 +196,7 @@ const permissions = {
 	): Promise<CommandPermission> {
 		return (await request.get(
 			`applications/{APP_ID}/guilds/${guildId}/commands/${commandId}/permissions`
-		)) as unknown as CommandPermission
+		)) as CommandPermission
 	}
 }
 export enum CommandType {
@@ -222,6 +225,7 @@ export enum PermissionType {
 	User = 2,
 	Channel = 3
 }
+/** Used to manage commands */
 export {
 	create,
 	edit,
@@ -231,6 +235,7 @@ export {
 	permissions,
 	_delete as delete
 }
+/** Used to manage commands */
 export default {
 	create,
 	delete: _delete,

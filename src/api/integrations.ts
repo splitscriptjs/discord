@@ -24,7 +24,7 @@ class Integration {
 	guildId: Snowflake
 
 	/** Deletes this integration */
-	async delete() {
+	async delete(): Promise<void> {
 		return await _delete(this.guildId, this.id)
 	}
 	constructor(data: unknown, guildId: Snowflake) {
@@ -119,5 +119,7 @@ type OAuth2Scope =
 	| 'webhook.incoming'
 //#endregion
 export type { _Integration as Integration }
+/** Used to manage integrations */
 export { list, _delete as Delete }
+/** Used to manage integrations */
 export default { list, delete: _delete }

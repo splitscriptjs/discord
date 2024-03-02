@@ -79,7 +79,9 @@ export default {
 	webhooks,
 	widgets
 }
-
+/**
+ * Types used for events
+ */
 import * as Events from './Events.js'
 export type { Events }
 

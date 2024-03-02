@@ -36,7 +36,7 @@ class GuildMember {
 	 *
 	 * Also updates this class instance
 	 */
-	async get() {
+	async get(): Promise<GuildMember> {
 		const result = await get(this.guildId, this.user.id)
 		Object.assign(this, result)
 		return result
@@ -45,34 +45,34 @@ class GuildMember {
 	 *
 	 * Returns a new `GuildMember`
 	 */
-	async add(guildId: Snowflake, options: AddOptions) {
+	async add(guildId: Snowflake, options: AddOptions): Promise<GuildMember> {
 		return await add(guildId, this.user.id, options)
 	}
 
 	/** Removes the member from its guild */
-	async remove() {
+	async remove(): Promise<void> {
 		return await remove(this.guildId, this.user.id)
 	}
 
 	/** Updates attributes of this member */
-	async edit(newMember: EditParams) {
+	async edit(newMember: EditParams): Promise<GuildMember> {
 		const result = await edit(this.guildId, this.user.id, newMember)
 		Object.assign(this, result)
 		return result
 	}
 
 	/** Updates the voice state of this member */
-	async updateVoice(newState: EditVoiceOptions) {
+	async updateVoice(newState: EditVoiceOptions): Promise<void> {
 		return await voice.update(this.guildId, this.user.id, newState)
 	}
 
 	role = {
 		/** Adds a role to this user */
-		add: async (roleId: Snowflake) => {
+		add: async (roleId: Snowflake): Promise<void> => {
 			return await roles.add(this.guildId, this.user.id, roleId)
 		},
 		/** Removes a role from this user */
-		remove: async (roleId: Snowflake) => {
+		remove: async (roleId: Snowflake): Promise<void> => {
 			return await roles.remove(this.guildId, this.user.id, roleId)
 		}
 	}
@@ -186,7 +186,21 @@ type EditVoiceOptions = {
 	/** toggles the user's suppress state */
 	suppress?: boolean
 }
-const voice = {
+const voice: {
+	updateMe(
+		guildId: Snowflake,
+		options: {
+			channelId?: Snowflake
+			suppress?: boolean
+			requestToSpeakTimestamp?: string | null
+		}
+	): Promise<void>
+	update(
+		guildId: Snowflake,
+		userId: Snowflake,
+		options: EditVoiceOptions
+	): Promise<void>
+} = {
 	/** Updates the current user's voice state. */
 	async updateMe(
 		guildId: Snowflake,
@@ -210,7 +224,14 @@ const voice = {
 		await request.patch(`guilds/${guildId}/voice-states/${userId}`, options)
 	}
 }
-const roles = {
+const roles: {
+	add(guildId: Snowflake, userId: Snowflake, roleId: Snowflake): Promise<void>
+	remove(
+		guildId: Snowflake,
+		userId: Snowflake,
+		roleId: Snowflake
+	): Promise<void>
+} = {
 	/** Adds a role to a guild member.  */
 	async add(
 		guildId: Snowflake,
@@ -228,7 +249,9 @@ const roles = {
 		await request.delete(`guilds/${guildId}/members/${userId}/roles/${roleId}`)
 	}
 }
+/** Used to manage guild members */
 export { get, list, search, add, remove, edit, voice, roles }
+/** Used to manage guild members */
 export default { get, list, search, add, remove, edit, voice, roles }
 
 //#region

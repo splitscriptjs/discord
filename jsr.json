@@ -1,92 +1,9 @@
 {
-	"name": "@splitscript.js/discord",
+	"name": "@splitscript/discord",
 	"version": "3.2.2",
 	"description": "Interact with the discord API in SplitScript.js",
-	"types": "./dist/types/index.d.ts",
-	"typings": "./dist/types/index.d.ts",
-	"typesVersions": {
-		"*": {
-			"automod": [
-				"./dist/types/api/automod.d.ts"
-			],
-			"bans": [
-				"./dist/types/api/bans.d.ts"
-			],
-			"channels": [
-				"./dist/types/api/channels.d.ts"
-			],
-			"commands": [
-				"./dist/types/api/commands.d.ts"
-			],
-			"emojis": [
-				"./dist/types/api/emojis.d.ts"
-			],
-			"followups": [
-				"./dist/types/api/followups.d.ts"
-			],
-			"guilds": [
-				"./dist/types/api/guilds.d.ts"
-			],
-			"integrations": [
-				"./dist/types/api/integrations.d.ts"
-			],
-			"invites": [
-				"./dist/types/api/invites.d.ts"
-			],
-			"members": [
-				"./dist/types/api/members.d.ts"
-			],
-			"messages": [
-				"./dist/types/api/messages.d.ts"
-			],
-			"reactions": [
-				"./dist/types/api/reactions.d.ts"
-			],
-			"responses": [
-				"./dist/types/api/responses.d.ts"
-			],
-			"roles": [
-				"./dist/types/api/roles.d.ts"
-			],
-			"scheduledEvents": [
-				"./dist/types/api/scheduledEvents.d.ts"
-			],
-			"stageInstances": [
-				"./dist/types/api/stageInstances.d.ts"
-			],
-			"stickers": [
-				"./dist/types/api/stickers.d.ts"
-			],
-			"templates": [
-				"./dist/types/api/templates.d.ts"
-			],
-			"users": [
-				"./dist/types/api/users.d.ts"
-			],
-			"webhooks": [
-				"./dist/types/api/webhooks.d.ts"
-			],
-			"widgets": [
-				"./dist/types/api/widgets.d.ts"
-			]
-		}
-	},
-	"exports": {
-		".": {
-			"import": "./dist/esm/index.js",
-			"require": "./dist/cjs/index.js",
-			"types": "./dist/types/index.d.ts",
-			"default": "./dist/esm/index.js"
-		},
-		"./*": {
-			"import": "./dist/esm/api/*.js",
-			"require": "./dist/cjs/api/*.js",
-			"types": "./dist/types/api/*.d.ts",
-			"default": "./dist/esm/api/*.js"
-		}
-	},
+    "exports": "./src/index.ts",
 	"files": [
-		"dist",
 		"CHANGELOG.md",
 		"README.md",
 		"LICENSE"
@@ -97,7 +14,7 @@
 		"test:cjs": "cd test/cjs && node . && cd ../../",
 		"lint": "eslint src",
 		"lint:fix": "eslint src --fix",
-		"format": "prettier src --write"
+		"knip": "knip"
 	},
 	"repository": {
 		"type": "git",
@@ -126,10 +43,13 @@
 		"typescript": "^5.2.2"
 	},
 	"dependencies": {
-		"@splitscript.js/core": "2.1",
+		"@splitscript/core": "2.3",
 		"@splitscript.js/https": "1.0",
 		"ws": "^8.13.0"
 	},
+    "imports": {
+        "@splitscript.js/core": "jsr:@splitscript/core@2.3"
+    },
 	"eslintConfig": {
 		"extends": [
 			"eslint:recommended",

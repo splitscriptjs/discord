@@ -5,14 +5,14 @@ export default function toCamelCase<
 ): T extends object[]
 	? { [K in keyof T]: KeysToCamelCase<T[K]> }
 	: T extends object
-	? KeysToCamelCase<T>
-	: T {
+		? KeysToCamelCase<T>
+		: T {
 	if (typeof value !== 'object' || value === null) {
 		return value as T extends object[]
 			? { [K in keyof T]: KeysToCamelCase<T[K]> }
 			: T extends object
-			? KeysToCamelCase<T>
-			: T
+				? KeysToCamelCase<T>
+				: T
 	}
 	if (Array.isArray(value)) {
 		if (value.every((item) => typeof item === 'object' && item !== null)) {
@@ -21,14 +21,14 @@ export default function toCamelCase<
 			) as unknown as T extends object[]
 				? { [K in keyof T]: KeysToCamelCase<T[K]> }
 				: T extends object
-				? KeysToCamelCase<T>
-				: T
+					? KeysToCamelCase<T>
+					: T
 		} else {
 			return value as T extends object[]
 				? { [K in keyof T]: KeysToCamelCase<T[K]> }
 				: T extends object
-				? KeysToCamelCase<T>
-				: T
+					? KeysToCamelCase<T>
+					: T
 		}
 	}
 	const newObj: Record<string, unknown> = {}
@@ -47,8 +47,8 @@ export default function toCamelCase<
 	return newObj as T extends object[]
 		? { [K in keyof T]: KeysToCamelCase<T[K]> }
 		: T extends object
-		? KeysToCamelCase<T>
-		: T
+			? KeysToCamelCase<T>
+			: T
 }
 
 type CamelCase<S extends string> = S extends `${infer P}_${infer Rest}`
@@ -59,6 +59,6 @@ type KeysToCamelCase<T> = {
 	[K in keyof T as CamelCase<string & K>]: T[K] extends unknown[]
 		? { [Key in keyof T[K]]: KeysToCamelCase<T[K][Key]> }
 		: T[K] extends object
-		? KeysToCamelCase<T[K]>
-		: T[K]
+			? KeysToCamelCase<T[K]>
+			: T[K]
 }

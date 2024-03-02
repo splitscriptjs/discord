@@ -16,7 +16,7 @@ class FollowupMessage extends BaseMessage {
 	 *
 	 * Also updates this class instance
 	 */
-	async get() {
+	async get(): Promise<FollowupMessage> {
 		const result = await get(this.token, this.id)
 		Object.assign(this, result)
 		return result
@@ -25,7 +25,7 @@ class FollowupMessage extends BaseMessage {
 	 *
 	 * Also updates this class instance
 	 */
-	async edit(newMessage: EditParams) {
+	async edit(newMessage: EditParams): Promise<FollowupMessage> {
 		const result = await edit(this.token, this.id, newMessage)
 		Object.assign(this, result)
 		return result
@@ -34,7 +34,7 @@ class FollowupMessage extends BaseMessage {
 	 *
 	 * Also updates this class instance
 	 */
-	async delete() {
+	async delete(): Promise<void> {
 		return await _delete(this.token, this.id)
 	}
 	constructor(data: unknown, token: string) {
@@ -95,5 +95,7 @@ async function edit(
 async function _delete(token: string, messageId: Snowflake): Promise<void> {
 	await request.delete(`webhooks/{APP_ID}/${token}/messages/${messageId}`)
 }
+/** Used to manage followup messages */
 export { create, get, edit, _delete as delete }
+/** Used to manage followup messages */
 export default { create, get, edit, delete: _delete }
